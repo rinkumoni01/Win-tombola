@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Win Tombola - Admin</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  background:#f1f3f6;
+  color:#222;
+}
+
+/* ADMIN LOGIN BUTTON */
+.admin-btn{
+  position:fixed;
+  top:15px;
+  right:15px;
+  background:#111827;
+  color:white;
+  border:0;
+  padding:11px 16px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:bold;
+  z-index:100;
+}
+
+/* LOGIN BOX */
+.login-page{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.65);
+  align-items:center;
+  justify-content:center;
+  z-index:200;
+  padding:20px;
+}
+
+.login-box{
+  width:100%;
+  max-width:380px;
+  background:white;
+  border-radius:18px;
+  padding:28px;
+  box-shadow:0 10px 40px rgba(0,0,0,.3);
+}
+
+.login-box h2{
+  text-align:center;
+  margin-bottom:8px;
+}
+
+.login-box p{
+  text-align:center;
+  color:#777;
+  margin-bottom:22px;
+}
+
+.input{
+  width:100%;
+  padding:13px;
+  border:1px solid #ddd;
+  border-radius:9px;
+  margin-bottom:14px;
+  font-size:16px;
+}
+
+.login-btn{
+  width:100%;
+  padding:13px;
+  border:0;
+  border-radius:9px;
+  background:#16a34a;
+  color:white;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.close-btn{
+  width:100%;
+  padding:11px;
+  margin-top:10px;
+  border:0;
+  border-radius:9px;
+  background:#e5e7eb;
+  cursor:pointer;
+}
+
+.error{
+  color:#dc2626;
+  text-align:center;
+  margin-top:12px;
+  display:none;
+}
+
+/* DASHBOARD */
+.dashboard{
+  display:none;
+  min-height:100vh;
+}
+
+.sidebar{
+  position:fixed;
+  left:0;
+  top:0;
+  width:240px;
+  height:100vh;
+  background:#111827;
+  color:white;
+  padding:25px 15px;
+}
+
+.logo{
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+  margin-bottom:30px;
+}
+
+.menu{
+  width:100%;
+  padding:13px;
+  margin-bottom:9px;
+  border:0;
+  border-radius:9px;
+  background:#1f2937;
+  color:white;
+  text-align:left;
+  cursor:pointer;
+  font-size:15px;
+}
+
+.menu:hover{
+  background:#374151;
+}
+
+.logout{
+  background:#dc2626;
+  margin-top:20px;
+}
+
+.main{
+  margin-left:240px;
+  padding:25px;
+}
+
+.topbar{
+  background:white;
+  padding:18px;
+  border-radius:14px;
+  margin-bottom:20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+.topbar h1{
+  font-size:24px;
+}
+
+.status{
+  background:#dcfce7;
+  color:#15803d;
+  padding:8px 12px;
+  border-radius:20px;
+  font-weight:bold;
+  font-size:13px;
+}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+}
+
+.card{
+  background:white;
+  padding:20px;
+  border-radius:14px;
+  box-shadow:0 3px 12px rgba(0,0,0,.06);
+}
+
+.card h3{
+  color:#777;
+  font-size:14px;
+  margin-bottom:10px;
+}
+
+.card strong{
+  font-size:28px;
+}
+
+.section{
+  background:white;
+  margin-top:20px;
+  padding:20px;
+  border-radius:14px;
+}
+
+.section h2{
+  margin-bottom:18px;
+}
+
+.form-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.field{
+  margin-bottom:15px;
+}
+
+.field label{
+  display:block;
+  font-weight:bold;
+  margin-bottom:7px;
+}
+
+.field input,
+.field select{
+  width:100%;
+  padding:12px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  font-size:15px;
+}
+
+.save-btn{
+  background:#16a34a;
+  color:white;
+  border:0;
+  padding:12px 20px;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.message{
+  display:none;
+  margin-top:12px;
+  color:#15803d;
+  font-weight:bold;
+}
+
+/* MOBILE */
+@media(max-width:800px){
+
+  .sidebar{
+    width:70px;
+    padding:15px 8px;
+  }
+
+  .logo{
+    font-size:25px;
+  }
+
+  .logo span{
+    display:none;
+  }
+
+  .menu{
+    text-align:center;
+    font-size:0;
+  }
+
+  .menu::first-letter{
+    font-size:20px;
+  }
+
+  .main{
+    margin-left:70px;
+    padding:15px;
+  }
+
+  .cards{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .form-row{
+    grid-template-columns:1fr;
+  }
+
+  .topbar{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+}
+
+@media(max-width:450px){
+
+  .cards{
+    grid-template-columns:1fr;
+  }
+
+  .main{
+    padding:10px;
+  }
+
+  .topbar h1{
+    font-size:20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ADMIN BUTTON -->
+<button class="admin-btn" onclick="openLogin()">
+  🔐 Admin Login
+</button>
+
+<!-- LOGIN -->
+<div class="login-page" id="loginPage">
+
+  <div class="login-box">
+
+    <h2>🔐 Admin Login</h2>
+    <p>Win Tombola Administration</p>
+
+    <input
+      type="text"
+      id="username"
+      class="input"
+      placeholder="Username"
+    >
+
+    <input
+      type="password"
+      id="password"
+      class="input"
+      placeholder="Password"
+    >
+
+    <button class="login-btn" onclick="login()">
+      LOGIN
+    </button>
+
+    <button class="close-btn" onclick="closeLogin()">
+      CANCEL
+    </button>
+
+    <div class="error" id="error">
+      ❌ Wrong username or password
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="logo">
+      🎟️ <span>WIN TOMBOLA</span>
+    </div>
+
+    <button class="menu" onclick="showDashboard()">
+      🏠 Dashboard
+    </button>
+
+    <button class="menu" onclick="showSettings()">
+      ⚙️ Game Settings
+    </button>
+
+    <button class="menu" onclick="showPlayers()">
+      👥 Players
+    </button>
+
+    <button class="menu" onclick="showTickets()">
+      🎟️ Tickets
+    </button>
+
+    <button class="menu" onclick="showGame()">
+      🎲 Game Control
+    </button>
+
+    <button class="menu logout" onclick="logout()">
+      🚪 Logout
+    </button>
+
+  </aside>
+
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <div class="topbar">
+      <h1 id="pageTitle">Admin Dashboard</h1>
+      <div class="status">● Admin Online</div>
+    </div>
+
+
+    <!-- DASHBOARD HOME -->
+    <div id="homeSection">
+
+      <div class="cards">
+
+        <div class="card">
+          <h3>👥 Players</h3>
+          <strong id="playersCount">0</strong>
+        </div>
+
+        <div class="card">
+          <h3>🎟️ Tickets Sold</h3>
+          <strong id="ticketsCount">0</strong>
+        </div>
+
+        <div class="card">
+          <h3>🎲 Game Status</h3>
+          <strong style="font-size:20px">READY</strong>
+        </div>
+
+        <div class="card">
+          <h3>🏆 Winners</h3>
+          <strong>0</strong>
+        </div>
+
+      </div>
+
+      <div class="section">
+        <h2>🎯 Quick Information</h2>
+        <p>
+          Welcome to Win Tombola Admin Dashboard.
+          Yahan se aap game settings, tickets, players aur game control
+          manage kar sakte ho.
+        </p>
+      </div>
+
+    </div>
+
+
+    <!-- SETTINGS -->
+    <div id="settingsSection" class="section" style="display:none">
+
+      <h2>⚙️ Game Settings</h2>
+
+      <div class="form-row">
+
+        <div class="field">
+          <label>Game Name</label>
+          <input
+            type="text"
+            id="gameName"
+            value="Win Tombola"
+          >
+        </div>
+
+        <div class="field">
+          <label>Ticket Price (₹)</label>
+          <input
+            type="number"
+            id="ticketPrice"
+            value="100"
+          >
+        </div>
+
+      </div>
+
+      <div class="form-row">
+
+        <div class="field">
+          <label>Game Date</label>
+          <input
+            type="date"
+            id="gameDate"
+          >
+        </div>
+
+        <div class="field">
+          <label>Game Time</label>
+          <input
+            type="time"
+            id="gameTime"
+          >
+        </div>
+
+      </div>
+
+      <div class="field">
+        <label>Game Status</label>
+
+        <select id="gameStatus">
+          <option>Upcoming</option>
+          <option>Booking Open</option>
+          <option>Live</option>
+          <option>Completed</option>
+        </select>
+
+      </div>
+
+      <button class="save-btn" onclick="saveSettings()">
+        💾 Save Settings
+      </button>
+
+      <div class="message" id="saveMessage">
+        ✅ Settings saved successfully!
+      </div>
+
+    </div>
+
+
+    <!-- PLAYERS -->
+    <div id="playersSection" class="section" style="display:none">
+
+      <h2>👥 Players</h2>
+
+      <p>
+        Abhi koi player registered nahi hai.
+      </p>
+
+    </div>
+
+
+    <!-- TICKETS -->
+    <div id="ticketsSection" class="section" style="display:none">
+
+      <h2>🎟️ Tickets</h2>
+
+      <p>
+        Ticket management yahan add kiya jayega.
+      </p>
+
+    </div>
+
+
+    <!-- GAME CONTROL -->
+    <div id="gameSection" class="section" style="display:none">
+
+      <h2>🎲 Game Control</h2>
+
+      <p style="margin-bottom:15px">
+        Game abhi ready hai.
+      </p>
+
+      <button class="save-btn" onclick="alert('Game started!')">
+        ▶️ START GAME
+      </button>
+
+      <button
+        class="save-btn"
+        style="background:#dc2626;margin-left:8px"
+        onclick="alert('Game stopped!')"
+      >
+        ⏹ STOP GAME
+      </button>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<script>
+
+/* LOGIN DETAILS */
+const ADMIN_USERNAME = "gyandeep";
+const ADMIN_PASSWORD = "785673";
+
+
+function openLogin(){
+  document.getElementById("loginPage").style.display="flex";
+}
+
+
+function closeLogin(){
+  document.getElementById("loginPage").style.display="none";
+  document.getElementById("error").style.display="none";
+}
+
+
+function login(){
+
+  const username =
+    document.getElementById("username").value.trim();
+
+  const password =
+    document.getElementById("password").value;
+
+  if(
+    username === ADMIN_USERNAME &&
+    password === ADMIN_PASSWORD
+  ){
+
+    document.getElementById("loginPage").style.display="none";
+
+    document.getElementById("dashboard").style.display="block";
+
+    document.getElementById("error").style.display="none";
+
+    document.getElementById("username").value="";
+    document.getElementById("password").value="";
+
+  }else{
+
+    document.getElementById("error").style.display="block";
+
+  }
+
+}
+
+
+function hideAll(){
+
+  document.getElementById("homeSection").style.display="none";
+  document.getElementById("settingsSection").style.display="none";
+  document.getElementById("playersSection").style.display="none";
+  document.getElementById("ticketsSection").style.display="none";
+  document.getElementById("gameSection").style.display="none";
+
+}
+
+
+function showDashboard(){
+
+  hideAll();
+
+  document.getElementById("homeSection").style.display="block";
+
+  document.getElementById("pageTitle").innerText=
+    "Admin Dashboard";
+
+}
+
+
+function showSettings(){
+
+  hideAll();
+
+  document.getElementById("settingsSection").style.display="block";
+
+  document.getElementById("pageTitle").innerText=
+    "Game Settings";
+
+}
+
+
+function showPlayers(){
+
+  hideAll();
+
+  document.getElementById("playersSection").style.display="block";
+
+  document.getElementById("pageTitle").innerText=
+    "Players";
+
+}
+
+
+function showTickets(){
+
+  hideAll();
+
+  document.getElementById("ticketsSection").style.display="block";
+
+  document.getElementById("pageTitle").innerText=
+    "Tickets";
+
+}
+
+
+function showGame(){
+
+  hideAll();
+
+  document.getElementById("gameSection").style.display="block";
+
+  document.getElementById("pageTitle").innerText=
+    "Game Control";
+
+}
+
+
+function saveSettings(){
+
+  const settings = {
+
+    name:document.getElementById("gameName").value,
+
+    price:document.getElementById("ticketPrice").value,
+
+    date:document.getElementById("gameDate").value,
+
+    time:document.getElementById("gameTime").value,
+
+    status:document.getElementById("gameStatus").value
+
+  };
+
+  localStorage.setItem(
+    "winTombolaSettings",
+    JSON.stringify(settings)
+  );
+
+  document.getElementById("saveMessage").style.display="block";
+
+  setTimeout(function(){
+
+    document.getElementById("saveMessage").style.display="none";
+
+  },3000);
+
+}
+
+
+function loadSettings(){
+
+  const data =
+    localStorage.getItem("winTombolaSettings");
+
+  if(!data) return;
+
+  const settings = JSON.parse(data);
+
+  document.getElementById("gameName").value =
+    settings.name || "Win Tombola";
+
+  document.getElementById("ticketPrice").value =
+    settings.price || 100;
+
+  document.getElementById("gameDate").value =
+    settings.date || "";
+
+  document.getElementById("gameTime").value =
+    settings.time || "";
+
+  document.getElementById("gameStatus").value =
+    settings.status || "Upcoming";
+
+}
+
+
+function logout(){
+
+  document.getElementById("dashboard").style.display="none";
+
+  document.getElementById("username").value="";
+  document.getElementById("password").value="";
+
+  alert("You have been logged out.");
+
+}
+
+
+loadSettings();
+
+</script>
+
+</body>
+</html>
