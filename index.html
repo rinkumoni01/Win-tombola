@@ -6,661 +6,1052 @@
 <title>Win Tombola</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-body{background:#f3f4f6;color:#111827}
-button{cursor:pointer}
+*{
+ box-sizing:border-box;
+ margin:0;
+ padding:0;
+ font-family:Arial,sans-serif;
+}
+
+body{
+ background:#f3f4f6;
+ color:#111827;
+}
+
+button{
+ cursor:pointer;
+}
 
 .header{
-background:#111827;color:white;padding:20px;text-align:center
+ background:#111827;
+ color:white;
+ padding:20px;
+ text-align:center;
 }
-.header h1{font-size:28px}
-.header p{margin-top:6px;color:#d1d5db}
+
+.header h1{
+ font-size:28px;
+}
+
+.header p{
+ margin-top:6px;
+ color:#d1d5db;
+}
 
 .container{
-max-width:600px;margin:auto;padding:15px
+ max-width:600px;
+ margin:auto;
+ padding:15px;
 }
 
 .card{
-background:white;margin-top:15px;padding:20px;
-border-radius:18px;
-box-shadow:0 3px 15px rgba(0,0,0,.08)
+ background:white;
+ margin-top:15px;
+ padding:20px;
+ border-radius:18px;
+ box-shadow:0 3px 15px rgba(0,0,0,.08);
 }
 
-.card h2{margin-bottom:15px}
+.card h2{
+ margin-bottom:15px;
+}
 
 .price{
-font-size:30px;font-weight:bold
+ font-size:30px;
+ font-weight:bold;
 }
 
 .available{
-color:#16a34a;margin:6px 0 18px;font-weight:bold
+ color:#16a34a;
+ margin:6px 0 18px;
+ font-weight:bold;
 }
 
 .input{
-width:100%;padding:13px;
-border:1px solid #d1d5db;
-border-radius:9px;
-margin-bottom:12px;
-font-size:16px
+ width:100%;
+ padding:13px;
+ border:1px solid #d1d5db;
+ border-radius:9px;
+ margin-bottom:12px;
+ font-size:16px;
 }
 
 .qty{
-display:flex;
-justify-content:center;
-align-items:center;
-gap:18px;
-margin:18px 0
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ gap:18px;
+ margin:18px 0;
 }
 
 .qty button{
-width:45px;height:45px;
-border:0;border-radius:50%;
-background:#111827;color:white;
-font-size:24px
+ width:45px;
+ height:45px;
+ border:0;
+ border-radius:50%;
+ background:#111827;
+ color:white;
+ font-size:24px;
 }
 
 .qty span{
-font-size:25px;font-weight:bold
+ font-size:25px;
+ font-weight:bold;
 }
 
 .total{
-background:#f3f4f6;
-padding:14px;
-border-radius:9px;
-text-align:center;
-margin-bottom:12px
+ background:#f3f4f6;
+ padding:14px;
+ border-radius:9px;
+ text-align:center;
+ margin-bottom:12px;
 }
 
 .book{
-width:100%;
-padding:14px;
-border:0;
-border-radius:10px;
-background:#16a34a;
-color:white;
-font-size:17px;
-font-weight:bold
+ width:100%;
+ padding:14px;
+ border:0;
+ border-radius:10px;
+ background:#16a34a;
+ color:white;
+ font-size:17px;
+ font-weight:bold;
 }
 
 .message{
-margin-top:12px;
-padding:12px;
-border-radius:8px;
-display:none
+ margin-top:12px;
+ padding:12px;
+ border-radius:8px;
+ display:none;
 }
 
 .success{
-background:#dcfce7;
-color:#15803d
+ background:#dcfce7;
+ color:#15803d;
 }
 
 .error{
-background:#fee2e2;
-color:#b91c1c
+ background:#fee2e2;
+ color:#b91c1c;
 }
 
 .countdown{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:7px;
-margin-top:15px
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:7px;
+ margin-top:15px;
 }
 
 .time{
-background:#111827;
-color:white;
-text-align:center;
-padding:10px 4px;
-border-radius:8px
+ background:#111827;
+ color:white;
+ text-align:center;
+ padding:10px 4px;
+ border-radius:8px;
 }
 
 .time b{
-display:block;font-size:21px
+ display:block;
+ font-size:21px;
 }
 
-.time small{color:#d1d5db}
+.time small{
+ color:#d1d5db;
+}
+
+.prize-list{
+ margin-top:15px;
+}
+
+.prize-item{
+ padding:11px;
+ background:#f9fafb;
+ border-radius:8px;
+ margin-bottom:7px;
+ font-weight:bold;
+}
+
+/* ADMIN BUTTON */
 
 .admin-btn{
-position:fixed;
-right:12px;
-bottom:12px;
-z-index:100;
-padding:11px 15px;
-border:0;
-border-radius:10px;
-background:#111827;
-color:white;
-font-weight:bold
+ position:fixed;
+ right:12px;
+ bottom:12px;
+ z-index:100;
+ padding:11px 15px;
+ border:0;
+ border-radius:10px;
+ background:#111827;
+ color:white;
+ font-weight:bold;
 }
 
 /* LOGIN */
 
 .login{
-display:none;
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.7);
-z-index:500;
-align-items:center;
-justify-content:center;
-padding:20px
+ display:none;
+ position:fixed;
+ inset:0;
+ background:rgba(0,0,0,.7);
+ z-index:500;
+ align-items:center;
+ justify-content:center;
+ padding:20px;
 }
 
 .login-box{
-background:white;
-width:100%;
-max-width:380px;
-padding:25px;
-border-radius:18px
+ background:white;
+ width:100%;
+ max-width:380px;
+ padding:25px;
+ border-radius:18px;
 }
 
 .login-box h2{
-text-align:center;
-margin-bottom:18px
+ text-align:center;
+ margin-bottom:18px;
 }
 
 .login-box button{
-width:100%;
-padding:13px;
-border:0;
-border-radius:9px;
-background:#16a34a;
-color:white;
-font-weight:bold
+ width:100%;
+ padding:13px;
+ border:0;
+ border-radius:9px;
+ background:#16a34a;
+ color:white;
+ font-weight:bold;
 }
 
 .close{
-margin-top:8px;
-background:#e5e7eb!important;
-color:#111827!important
+ margin-top:8px;
+ background:#e5e7eb!important;
+ color:#111827!important;
 }
 
 /* ADMIN */
 
 .admin{
-display:none;
-min-height:100vh
+ display:none;
+ min-height:100vh;
 }
 
 .sidebar{
-position:fixed;
-left:0;
-top:0;
-bottom:0;
-width:230px;
-background:#111827;
-color:white;
-padding:20px 12px
+ position:fixed;
+ left:0;
+ top:0;
+ bottom:0;
+ width:230px;
+ background:#111827;
+ color:white;
+ padding:20px 12px;
 }
 
 .logo{
-text-align:center;
-font-size:20px;
-font-weight:bold;
-margin-bottom:25px
+ text-align:center;
+ font-size:20px;
+ font-weight:bold;
+ margin-bottom:25px;
 }
 
 .menu{
-width:100%;
-padding:13px;
-margin-bottom:8px;
-border:0;
-border-radius:8px;
-background:#1f2937;
-color:white;
-text-align:left
+ width:100%;
+ padding:13px;
+ margin-bottom:8px;
+ border:0;
+ border-radius:8px;
+ background:#1f2937;
+ color:white;
+ text-align:left;
 }
 
 .logout{
-background:#dc2626;
-margin-top:15px
+ background:#dc2626;
+ margin-top:15px;
 }
 
 .main{
-margin-left:230px;
-padding:20px
+ margin-left:230px;
+ padding:20px;
 }
 
 .top{
-background:white;
-padding:17px;
-border-radius:14px;
-display:flex;
-justify-content:space-between;
-align-items:center
+ background:white;
+ padding:17px;
+ border-radius:14px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
 }
 
 .status{
-background:#dcfce7;
-color:#15803d;
-padding:8px 12px;
-border-radius:20px;
-font-size:13px;
-font-weight:bold
+ background:#dcfce7;
+ color:#15803d;
+ padding:8px 12px;
+ border-radius:20px;
+ font-size:13px;
+ font-weight:bold;
 }
 
 .stats{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:15px;
-margin-top:18px
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:15px;
+ margin-top:18px;
 }
 
 .stat{
-background:white;
-padding:20px;
-border-radius:14px
+ background:white;
+ padding:20px;
+ border-radius:14px;
 }
 
-.stat small{color:#6b7280}
+.stat small{
+ color:#6b7280;
+}
 
 .stat b{
-display:block;
-font-size:28px;
-margin-top:8px
+ display:block;
+ font-size:28px;
+ margin-top:8px;
 }
 
 .panel{
-background:white;
-padding:20px;
-margin-top:18px;
-border-radius:14px
+ background:white;
+ padding:20px;
+ margin-top:18px;
+ border-radius:14px;
 }
 
-.panel h2{margin-bottom:15px}
+.panel h2{
+ margin-bottom:15px;
+}
 
 .booking{
-border:1px solid #e5e7eb;
-padding:15px;
-border-radius:10px;
-margin-bottom:10px
+ border:1px solid #e5e7eb;
+ padding:15px;
+ border-radius:10px;
+ margin-bottom:10px;
 }
 
-.booking p{margin:5px 0}
+.booking p{
+ margin:5px 0;
+}
 
-.booking strong{font-size:17px}
+.booking strong{
+ font-size:17px;
+}
 
 .booking-actions{
-margin-top:12px;
-display:flex;
-gap:8px
+ margin-top:12px;
+ display:flex;
+ gap:8px;
 }
 
-.confirm,.reject{
-border:0;
-padding:9px 13px;
-border-radius:7px;
-color:white;
-font-weight:bold
+.confirm,
+.reject{
+ border:0;
+ padding:9px 13px;
+ border-radius:7px;
+ color:white;
+ font-weight:bold;
 }
 
-.confirm{background:#16a34a}
-.reject{background:#dc2626}
+.confirm{
+ background:#16a34a;
+}
+
+.reject{
+ background:#dc2626;
+}
 
 .badge{
-display:inline-block;
-padding:5px 9px;
-border-radius:15px;
-font-size:12px;
-font-weight:bold
+ display:inline-block;
+ padding:5px 9px;
+ border-radius:15px;
+ font-size:12px;
+ font-weight:bold;
 }
 
 .pending{
-background:#fef3c7;
-color:#92400e
+ background:#fef3c7;
+ color:#92400e;
 }
 
 .confirmed{
-background:#dcfce7;
-color:#15803d
+ background:#dcfce7;
+ color:#15803d;
 }
 
 .rejected{
-background:#fee2e2;
-color:#b91c1c
+ background:#fee2e2;
+ color:#b91c1c;
+}
+
+/* PRIZE MANAGEMENT */
+
+.prize-admin{
+ border:1px solid #e5e7eb;
+ border-radius:10px;
+ padding:12px;
+ margin-bottom:9px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+}
+
+.prize-name{
+ font-weight:bold;
+ font-size:15px;
+}
+
+.switch{
+ position:relative;
+ width:52px;
+ height:28px;
+ flex-shrink:0;
+}
+
+.switch input{
+ opacity:0;
+ width:0;
+ height:0;
+}
+
+.slider{
+ position:absolute;
+ inset:0;
+ background:#d1d5db;
+ border-radius:30px;
+ transition:.2s;
+}
+
+.slider:before{
+ content:"";
+ position:absolute;
+ width:22px;
+ height:22px;
+ left:3px;
+ top:3px;
+ background:white;
+ border-radius:50%;
+ transition:.2s;
+}
+
+.switch input:checked + .slider{
+ background:#16a34a;
+}
+
+.switch input:checked + .slider:before{
+ transform:translateX(24px);
+}
+
+.save-prize{
+ width:100%;
+ padding:13px;
+ border:0;
+ border-radius:9px;
+ background:#16a34a;
+ color:white;
+ font-weight:bold;
+ margin-top:10px;
 }
 
 @media(max-width:750px){
 
-.sidebar{
-width:65px;
-padding:15px 7px
-}
+ .sidebar{
+  width:65px;
+  padding:15px 7px;
+ }
 
-.logo{font-size:22px}
+ .logo{
+  font-size:22px;
+ }
 
-.logo span{display:none}
+ .logo span{
+  display:none;
+ }
 
-.menu{
-font-size:0;
-text-align:center
-}
+ .menu{
+  font-size:0;
+  text-align:center;
+ }
 
-.menu::first-letter{font-size:20px}
+ .menu::first-letter{
+  font-size:20px;
+ }
 
-.main{
-margin-left:65px;
-padding:10px
-}
+ .main{
+  margin-left:65px;
+  padding:10px;
+ }
 
-.stats{
-grid-template-columns:1fr
-}
+ .stats{
+  grid-template-columns:1fr;
+ }
 
-.top{
-flex-direction:column;
-align-items:flex-start;
-gap:10px
-}
+ .top{
+  flex-direction:column;
+  align-items:flex-start;
+  gap:10px;
+ }
 }
 </style>
 </head>
 
 <body>
 
-<!-- PLAYER -->
+<!-- ================= PLAYER PAGE ================= -->
 
 <div id="playerPage">
 
-<div class="header">
-<h1>🎟️ WIN TOMBOLA</h1>
-<p>Play • Enjoy • Win</p>
+ <div class="header">
+  <h1>🎟️ WIN TOMBOLA</h1>
+  <p>Play • Enjoy • Win</p>
+ </div>
+
+ <div class="container">
+
+  <div class="card">
+
+   <h2 id="gameName">
+    Win Tombola
+   </h2>
+
+   <p id="gameStatus">
+    Booking Open
+   </p>
+
+   <div class="countdown">
+
+    <div class="time">
+     <b id="days">00</b>
+     <small>DAYS</small>
+    </div>
+
+    <div class="time">
+     <b id="hours">00</b>
+     <small>HOURS</small>
+    </div>
+
+    <div class="time">
+     <b id="minutes">00</b>
+     <small>MIN</small>
+    </div>
+
+    <div class="time">
+     <b id="seconds">00</b>
+     <small>SEC</small>
+    </div>
+
+   </div>
+
+  </div>
+
+
+  <!-- ACTIVE PRIZES -->
+
+  <div class="card">
+
+   <h2>🏆 Prizes</h2>
+
+   <div id="playerPrizes" class="prize-list">
+    Loading prizes...
+   </div>
+
+  </div>
+
+
+  <!-- BOOKING -->
+
+  <div class="card">
+
+   <h2>🎟️ Book Ticket</h2>
+
+   <div class="price">
+    ₹<span id="ticketPrice">100</span>
+   </div>
+
+   <div class="available">
+    ● Booking Available
+   </div>
+
+   <input
+    id="playerName"
+    class="input"
+    placeholder="Your Name"
+   >
+
+   <input
+    id="playerPhone"
+    class="input"
+    type="tel"
+    maxlength="10"
+    placeholder="Mobile Number"
+   >
+
+   <p>Select Tickets:</p>
+
+   <div class="qty">
+
+    <button onclick="changeQty(-1)">
+     −
+    </button>
+
+    <span id="quantity">1</span>
+
+    <button onclick="changeQty(1)">
+     +
+    </button>
+
+   </div>
+
+   <div class="total">
+    Total: ₹<strong id="total">100</strong>
+   </div>
+
+   <button
+    class="book"
+    onclick="createBooking()"
+   >
+    📲 BOOK TICKETS
+   </button>
+
+   <div
+    id="playerMessage"
+    class="message">
+   </div>
+
+  </div>
+
+ </div>
+
 </div>
 
-<div class="container">
 
-<div class="card">
+<!-- ADMIN BUTTON -->
 
-<h2 id="gameName">Win Tombola</h2>
-
-<p id="gameStatus">Booking Open</p>
-
-<div class="countdown">
-
-<div class="time">
-<b id="days">00</b>
-<small>DAYS</small>
-</div>
-
-<div class="time">
-<b id="hours">00</b>
-<small>HOURS</small>
-</div>
-
-<div class="time">
-<b id="minutes">00</b>
-<small>MIN</small>
-</div>
-
-<div class="time">
-<b id="seconds">00</b>
-<small>SEC</small>
-</div>
-
-</div>
-</div>
-
-<div class="card">
-
-<h2>🎟️ Book Ticket</h2>
-
-<div class="price">
-₹<span id="ticketPrice">100</span>
-</div>
-
-<div class="available">
-● Booking Available
-</div>
-
-<input
-id="playerName"
-class="input"
-placeholder="Your Name"
+<button
+ class="admin-btn"
+ onclick="openLogin()"
 >
-
-<input
-id="playerPhone"
-class="input"
-type="tel"
-maxlength="10"
-placeholder="Mobile Number"
->
-
-<p>Select Tickets:</p>
-
-<div class="qty">
-
-<button onclick="changeQty(-1)">−</button>
-
-<span id="quantity">1</span>
-
-<button onclick="changeQty(1)">+</button>
-
-</div>
-
-<div class="total">
-Total: ₹<strong id="total">100</strong>
-</div>
-
-<button class="book" onclick="createBooking()">
-📲 BOOK TICKETS
-</button>
-
-<div id="playerMessage" class="message"></div>
-
-</div>
-</div>
-</div>
-
-<button class="admin-btn" onclick="openLogin()">
-🔐 Admin
+ 🔐 Admin
 </button>
 
 
 <!-- LOGIN -->
 
-<div class="login" id="login">
-
-<div class="login-box">
-
-<h2>🔐 Admin Login</h2>
-
-<input
-id="adminUsername"
-class="input"
-placeholder="Username"
+<div
+ class="login"
+ id="login"
 >
 
-<input
-id="adminPassword"
-class="input"
-type="password"
-placeholder="Password"
->
+ <div class="login-box">
 
-<button onclick="adminLogin()">
-LOGIN
-</button>
+  <h2>🔐 Admin Login</h2>
 
-<button class="close" onclick="closeLogin()">
-CANCEL
-</button>
+  <input
+   id="adminUsername"
+   class="input"
+   placeholder="Username"
+  >
 
-<div id="loginError" class="message error">
-Wrong username or password.
-</div>
+  <input
+   id="adminPassword"
+   class="input"
+   type="password"
+   placeholder="Password"
+  >
 
-</div>
-</div>
+  <button onclick="adminLogin()">
+   LOGIN
+  </button>
 
+  <button
+   class="close"
+   onclick="closeLogin()"
+  >
+   CANCEL
+  </button>
 
-<!-- ADMIN -->
+  <div
+   id="loginError"
+   class="message error"
+  >
+   Wrong username or password.
+  </div>
 
-<div class="admin" id="adminPage">
-
-<aside class="sidebar">
-
-<div class="logo">
-🎟️ <span>WIN TOMBOLA</span>
-</div>
-
-<button class="menu" onclick="showAdmin('dashboard')">
-🏠 Dashboard
-</button>
-
-<button class="menu" onclick="showAdmin('bookings')">
-🎟️ Bookings
-</button>
-
-<button class="menu" onclick="showAdmin('settings')">
-⚙️ Settings
-</button>
-
-<button class="menu logout" onclick="adminLogout()">
-🚪 Logout
-</button>
-
-</aside>
-
-
-<main class="main">
-
-<div class="top">
-<h2 id="adminTitle">Admin Dashboard</h2>
-<span class="status">● Online</span>
-</div>
-
-<div id="dashboardSection">
-
-<div class="stats">
-
-<div class="stat">
-<small>All Bookings</small>
-<b id="bookingCount">0</b>
-</div>
-
-<div class="stat">
-<small>Tickets</small>
-<b id="ticketCount">0</b>
-</div>
-
-<div class="stat">
-<small>Pending</small>
-<b id="pendingCount">0</b>
-</div>
-
-</div>
-</div>
-
-
-<div id="bookingsSection"
-class="panel"
-style="display:none">
-
-<h2>🎟️ Booking List</h2>
-
-<div id="bookingList">
-Loading bookings...
-</div>
+ </div>
 
 </div>
 
 
-<div id="settingsSection"
-class="panel"
-style="display:none">
-
-<h2>⚙️ Game Settings</h2>
-
-<input
-id="settingName"
-class="input"
-placeholder="Game Name"
->
-
-<input
-id="settingPrice"
-class="input"
-type="number"
-placeholder="Ticket Price"
->
-
-<input
-id="settingDate"
-class="input"
-type="date"
->
-
-<input
-id="settingTime"
-class="input"
-type="time"
->
-
-<select id="settingStatus" class="input">
-
-<option>Upcoming</option>
-<option>Booking Open</option>
-<option>Live</option>
-<option>Completed</option>
-
-</select>
-
-<button class="book" onclick="saveGameSettings()">
-💾 SAVE SETTINGS
-</button>
+<!-- ================= ADMIN ================= -->
 
 <div
-id="settingMessage"
-class="message success">
+ class="admin"
+ id="adminPage"
+>
 
-Settings saved.
+ <aside class="sidebar">
+
+  <div class="logo">
+   🎟️ <span>WIN TOMBOLA</span>
+  </div>
+
+  <button
+   class="menu"
+   onclick="showAdmin('dashboard')"
+  >
+   🏠 Dashboard
+  </button>
+
+  <button
+   class="menu"
+   onclick="showAdmin('bookings')"
+  >
+   🎟️ Bookings
+  </button>
+
+  <button
+   class="menu"
+   onclick="showAdmin('prizes')"
+  >
+   🏆 Prizes
+  </button>
+
+  <button
+   class="menu"
+   onclick="showAdmin('settings')"
+  >
+   ⚙️ Settings
+  </button>
+
+  <button
+   class="menu logout"
+   onclick="adminLogout()"
+  >
+   🚪 Logout
+  </button>
+
+ </aside>
+
+
+ <main class="main">
+
+  <div class="top">
+
+   <h2 id="adminTitle">
+    Admin Dashboard
+   </h2>
+
+   <span class="status">
+    ● Online
+   </span>
+
+  </div>
+
+
+  <!-- DASHBOARD -->
+
+  <div id="dashboardSection">
+
+   <div class="stats">
+
+    <div class="stat">
+     <small>All Bookings</small>
+     <b id="bookingCount">0</b>
+    </div>
+
+    <div class="stat">
+     <small>Tickets</small>
+     <b id="ticketCount">0</b>
+    </div>
+
+    <div class="stat">
+     <small>Pending</small>
+     <b id="pendingCount">0</b>
+    </div>
+
+   </div>
+
+  </div>
+
+
+  <!-- BOOKINGS -->
+
+  <div
+   id="bookingsSection"
+   class="panel"
+   style="display:none"
+  >
+
+   <h2>🎟️ Booking List</h2>
+
+   <div id="bookingList">
+    Loading bookings...
+   </div>
+
+  </div>
+
+
+  <!-- PRIZE MANAGEMENT -->
+
+  <div
+   id="prizesSection"
+   class="panel"
+   style="display:none"
+  >
+
+   <h2>🏆 Prize Management</h2>
+
+   <p style="margin-bottom:15px;color:#6b7280">
+    Prize ko ON/OFF karke Save karein.
+   </p>
+
+   <div class="prize-admin">
+    <span class="prize-name">
+     🥇 First Line
+    </span>
+
+    <label class="switch">
+     <input
+      type="checkbox"
+      id="prize_first"
+     >
+     <span class="slider"></span>
+    </label>
+   </div>
+
+   <div class="prize-admin">
+    <span class="prize-name">
+     🥈 Second Line
+    </span>
+
+    <label class="switch">
+     <input
+      type="checkbox"
+      id="prize_second"
+     >
+     <span class="slider"></span>
+    </label>
+   </div>
+
+   <div class="prize-admin">
+    <span class="prize-name">
+     🥉 Third Line
+    </span>
+
+    <label class="switch">
+     <input
+      type="checkbox"
+      id="prize_third"
+     >
+     <span class="slider"></span>
+    </label>
+   </div>
+
+   <div class="prize-admin">
+    <span class="prize-name">
+     🎯 Four Corners
+    </span>
+
+    <label class="switch">
+     <input
+      type="checkbox"
+      id="prize_corners"
+     >
+     <span class="slider"></span>
+    </label>
+   </div>
+
+   <div class="prize-admin">
+    <span class="prize-name">
+     ⭐ Full House
+    </span>
+
+    <label class="switch">
+     <input
+      type="checkbox"
+      id="prize_full"
+     >
+     <span class="slider"></span>
+    </label>
+   </div>
+
+   <div class="prize-admin">
+    <span class="prize-name">
+     👑 Second Full House
+    </span>
+
+    <label class="switch">
+     <input
+      type="checkbox"
+      id="prize_secondfull"
+     >
+     <span class="slider"></span>
+    </label>
+   </div>
+
+   <div class="prize-admin">
+    <span class="prize-name">
+     💎 Third Full House
+    </span>
+
+    <label class="switch">
+     <input
+      type="checkbox"
+      id="prize_thirdfull"
+     >
+     <span class="slider"></span>
+    </label>
+   </div>
+
+   <div class="prize-admin">
+    <span class="prize-name">
+     🎯 Early 5
+    </span>
+
+    <label class="switch">
+     <input
+      type="checkbox"
+      id="prize_early5"
+     >
+     <span class="slider"></span>
+    </label>
+   </div>
+
+   <div class="prize-admin">
+    <span class="prize-name">
+     🎯 Early 7
+    </span>
+
+    <label class="switch">
+     <input
+      type="checkbox"
+      id="prize_early7"
+     >
+     <span class="slider"></span>
+    </label>
+   </div>
+
+   <button
+    class="save-prize"
+    onclick="savePrizeSettings()"
+   >
+    💾 SAVE PRIZE SETTINGS
+   </button>
+
+   <div
+    id="prizeMessage"
+    class="message success"
+   >
+    ✅ Prize settings saved!
+   </div>
+
+  </div>
+
+
+  <!-- SETTINGS -->
+
+  <div
+   id="settingsSection"
+   class="panel"
+   style="display:none"
+  >
+
+   <h2>⚙️ Game Settings</h2>
+
+   <input
+    id="settingName"
+    class="input"
+    placeholder="Game Name"
+   >
+
+   <input
+    id="settingPrice"
+    class="input"
+    type="number"
+    placeholder="Ticket Price"
+   >
+
+   <input
+    id="settingDate"
+    class="input"
+    type="date"
+   >
+
+   <input
+    id="settingTime"
+    class="input"
+    type="time"
+   >
+
+   <select
+    id="settingStatus"
+    class="input"
+   >
+    <option>Upcoming</option>
+    <option>Booking Open</option>
+    <option>Live</option>
+    <option>Completed</option>
+   </select>
+
+   <button
+    class="book"
+    onclick="saveGameSettings()"
+   >
+    💾 SAVE SETTINGS
+   </button>
+
+   <div
+    id="settingMessage"
+    class="message success"
+   >
+    Settings saved.
+   </div>
+
+  </div>
+
+ </main>
 
 </div>
-
-</div>
-
-</main>
-</div>
-
-<!-- FIREBASE -->
 
 <script type="module">
 
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 
 import {
-  getFirestore,
-  collection,
-  addDoc,
-  onSnapshot,
-  doc,
-  updateDoc,
-  setDoc,
-  getDoc
-} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+ getFirestore,
+ collection,
+ addDoc,
+ onSnapshot,
+ doc,
+ updateDoc,
+ setDoc,
+ getDoc
+}
+from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
 
-/* =================================================
+/* =====================================================
    FIREBASE CONFIG
-   Firebase se milne wali details yahan paste karna
-   ================================================= */
+   ===================================================== */
 
 const firebaseConfig = {
 
-  apiKey: "YOUR_API_KEY",
+ apiKey:"YOUR_API_KEY",
 
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
+ authDomain:"YOUR_PROJECT.firebaseapp.com",
 
-  projectId: "YOUR_PROJECT_ID",
+ projectId:"YOUR_PROJECT_ID",
 
-  storageBucket: "YOUR_PROJECT.firebasestorage.app",
+ storageBucket:"YOUR_PROJECT.firebasestorage.app",
 
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+ messagingSenderId:"YOUR_MESSAGING_SENDER_ID",
 
-  appId: "YOUR_APP_ID"
+ appId:"YOUR_APP_ID"
 
 };
 
@@ -670,574 +1061,1054 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 
-/* ================= GAME SETTINGS ================= */
+/* =====================================================
+   PRIZE DATA
+   ===================================================== */
 
-async function loadGameSettings(){
+const prizeData = [
 
-  try{
+ {
+  id:"prize_first",
+  name:"🥇 First Line"
+ },
 
-    const ref =
-      doc(db,"settings","game");
+ {
+  id:"prize_second",
+  name:"🥈 Second Line"
+ },
 
-    const snap =
-      await getDoc(ref);
+ {
+  id:"prize_third",
+  name:"🥉 Third Line"
+ },
 
-    if(snap.exists()){
+ {
+  id:"prize_corners",
+  name:"🎯 Four Corners"
+ },
 
-      const s = snap.data();
+ {
+  id:"prize_full",
+  name:"⭐ Full House"
+ },
 
-      document.getElementById("gameName").innerText =
-        s.name || "Win Tombola";
+ {
+  id:"prize_secondfull",
+  name:"👑 Second Full House"
+ },
 
-      document.getElementById("ticketPrice").innerText =
-        s.price || 100;
+ {
+  id:"prize_thirdfull",
+  name:"💎 Third Full House"
+ },
 
-      document.getElementById("gameStatus").innerText =
-        s.status || "Booking Open";
+ {
+  id:"prize_early5",
+  name:"🎯 Early 5"
+ },
 
-      document.getElementById("settingName").value =
-        s.name || "Win Tombola";
+ {
+  id:"prize_early7",
+  name:"🎯 Early 7"
+ }
 
-      document.getElementById("settingPrice").value =
-        s.price || 100;
-
-      document.getElementById("settingDate").value =
-        s.date || "";
-
-      document.getElementById("settingTime").value =
-        s.time || "";
-
-      document.getElementById("settingStatus").value =
-        s.status || "Booking Open";
-
-    }
-
-  }catch(error){
-
-    console.log("Settings error:",error);
-
-  }
-
-}
+];
 
 
-window.saveGameSettings =
-async function(){
+/* =====================================================
+   DEFAULT PRIZES
+   ===================================================== */
 
-  const data = {
+const defaultPrizes = {
 
-    name:
-      document.getElementById("settingName").value,
+ prize_first:true,
 
-    price:
-      Number(
-        document.getElementById("settingPrice").value
-      ),
+ prize_second:true,
 
-    date:
-      document.getElementById("settingDate").value,
+ prize_third:true,
 
-    time:
-      document.getElementById("settingTime").value,
+ prize_corners:true,
 
-    status:
-      document.getElementById("settingStatus").value
+ prize_full:true,
 
-  };
+ prize_secondfull:true,
 
-  try{
+ prize_thirdfull:true,
 
-    await setDoc(
-      doc(db,"settings","game"),
-      data
-    );
+ prize_early5:true,
 
-    document.getElementById(
-      "settingMessage"
-    ).style.display="block";
-
-    loadGameSettings();
-
-    setTimeout(function(){
-
-      document.getElementById(
-        "settingMessage"
-      ).style.display="none";
-
-    },2500);
-
-  }catch(error){
-
-    alert(
-      "Settings save error: "+
-      error.message
-    );
-
-  }
+ prize_early7:true
 
 };
 
 
-/* ================= TICKET QUANTITY ================= */
+/* =====================================================
+   LOAD PRIZES
+   ===================================================== */
 
-let quantity = 1;
+async function loadPrizeSettings(){
+
+ try{
+
+  const ref =
+   doc(db,"settings","prizes");
+
+  const snap =
+   await getDoc(ref);
+
+
+  let settings =
+   defaultPrizes;
+
+
+  if(snap.exists()){
+
+   settings = {
+    ...defaultPrizes,
+    ...snap.data()
+   };
+
+  }
+
+
+  prizeData.forEach(function(prize){
+
+   const checkbox =
+    document.getElementById(
+     prize.id
+    );
+
+
+   if(checkbox){
+
+    checkbox.checked =
+     settings[prize.id] === true;
+
+   }
+
+  });
+
+
+  showPlayerPrizes(settings);
+
+
+ }catch(error){
+
+  console.log(
+   "Prize loading error:",
+   error
+  );
+
+  showPlayerPrizes(
+   defaultPrizes
+  );
+
+ }
+
+}
+
+
+/* =====================================================
+   SHOW PLAYER PRIZES
+   ===================================================== */
+
+function showPlayerPrizes(settings){
+
+ const box =
+  document.getElementById(
+   "playerPrizes"
+  );
+
+
+ box.innerHTML="";
+
+
+ let active=0;
+
+
+ prizeData.forEach(function(prize){
+
+  if(settings[prize.id] === true){
+
+   active++;
+
+
+   const div =
+    document.createElement(
+     "div"
+    );
+
+
+   div.className="prize-item";
+
+   div.innerText =
+    prize.name;
+
+
+   box.appendChild(div);
+
+  }
+
+ });
+
+
+ if(active===0){
+
+  box.innerHTML =
+   "<p>No prizes currently active.</p>";
+
+ }
+
+}
+
+
+/* =====================================================
+   SAVE PRIZE SETTINGS
+   ===================================================== */
+
+window.savePrizeSettings =
+async function(){
+
+ try{
+
+  const settings = {};
+
+
+  prizeData.forEach(function(prize){
+
+   const checkbox =
+    document.getElementById(
+     prize.id
+    );
+
+
+   settings[prize.id] =
+    checkbox.checked;
+
+  });
+
+
+  await setDoc(
+
+   doc(
+    db,
+    "settings",
+    "prizes"
+   ),
+
+   settings
+
+  );
+
+
+  showPlayerPrizes(
+   settings
+  );
+
+
+  const message =
+   document.getElementById(
+    "prizeMessage"
+   );
+
+
+  message.style.display =
+   "block";
+
+
+  setTimeout(function(){
+
+   message.style.display =
+    "none";
+
+  },2500);
+
+
+ }catch(error){
+
+  alert(
+   "Prize settings save error:\n"+
+   error.message
+  );
+
+ }
+
+};
+
+
+/* =====================================================
+   REAL-TIME PRIZE UPDATE
+   ===================================================== */
+
+onSnapshot(
+
+ doc(
+  db,
+  "settings",
+  "prizes"
+ ),
+
+ function(snapshot){
+
+  if(snapshot.exists()){
+
+   const settings = {
+    ...defaultPrizes,
+    ...snapshot.data()
+   };
+
+
+   showPlayerPrizes(
+    settings
+   );
+
+  }
+
+ },
+
+ function(error){
+
+  console.log(
+   "Prize listener:",
+   error
+  );
+
+ }
+
+);
+
+
+/* =====================================================
+   GAME SETTINGS
+   ===================================================== */
+
+async function loadGameSettings(){
+
+ try{
+
+  const ref =
+   doc(
+    db,
+    "settings",
+    "game"
+   );
+
+
+  const snap =
+   await getDoc(ref);
+
+
+  if(snap.exists()){
+
+   const s =
+    snap.data();
+
+
+   document.getElementById(
+    "gameName"
+   ).innerText =
+    s.name || "Win Tombola";
+
+
+   document.getElementById(
+    "ticketPrice"
+   ).innerText =
+    s.price || 100;
+
+
+   document.getElementById(
+    "gameStatus"
+   ).innerText =
+    s.status || "Booking Open";
+
+
+   document.getElementById(
+    "settingName"
+   ).value =
+    s.name || "Win Tombola";
+
+
+   document.getElementById(
+    "settingPrice"
+   ).value =
+    s.price || 100;
+
+
+   document.getElementById(
+    "settingDate"
+   ).value =
+    s.date || "";
+
+
+   document.getElementById(
+    "settingTime"
+   ).value =
+    s.time || "";
+
+
+   document.getElementById(
+    "settingStatus"
+   ).value =
+    s.status || "Booking Open";
+
+
+   updateTotal();
+
+  }
+
+ }catch(error){
+
+  console.log(
+   "Game settings error:",
+   error
+  );
+
+ }
+
+}
+
+
+/* =====================================================
+   SAVE GAME SETTINGS
+   ===================================================== */
+
+window.saveGameSettings =
+async function(){
+
+ const name =
+  document.getElementById(
+   "settingName"
+  ).value.trim();
+
+
+ const price =
+  Number(
+   document.getElementById(
+    "settingPrice"
+   ).value
+  );
+
+
+ const date =
+  document.getElementById(
+   "settingDate"
+  ).value;
+
+
+ const time =
+  document.getElementById(
+   "settingTime"
+  ).value;
+
+
+ const status =
+  document.getElementById(
+   "settingStatus"
+  ).value;
+
+
+ if(!name){
+
+  alert(
+   "Game name enter karein."
+  );
+
+  return;
+
+ }
+
+
+ if(!price || price<1){
+
+  alert(
+   "Valid ticket price enter karein."
+  );
+
+  return;
+
+ }
+
+
+ try{
+
+  await setDoc(
+
+   doc(
+    db,
+    "settings",
+    "game"
+   ),
+
+   {
+    name:name,
+    price:price,
+    date:date,
+    time:time,
+    status:status
+   }
+
+  );
+
+
+  document.getElementById(
+   "gameName"
+  ).innerText=name;
+
+
+  document.getElementById(
+   "ticketPrice"
+  ).innerText=price;
+
+
+  document.getElementById(
+   "gameStatus"
+  ).innerText=status;
+
+
+  updateTotal();
+
+
+  const msg =
+   document.getElementById(
+    "settingMessage"
+   );
+
+
+  msg.style.display="block";
+
+
+  setTimeout(function(){
+
+   msg.style.display="none";
+
+  },2500);
+
+
+ }catch(error){
+
+  alert(
+   "Settings save error:\n"+
+   error.message
+  );
+
+ }
+
+};
+
+
+/* =====================================================
+   QUANTITY
+   ===================================================== */
+
+let quantity=1;
 
 
 window.changeQty =
 function(amount){
 
-  quantity += amount;
+ quantity += amount;
 
-  if(quantity < 1){
 
-    quantity = 1;
+ if(quantity<1){
 
-  }
+  quantity=1;
 
-  if(quantity > 20){
+ }
 
-    quantity = 20;
 
-  }
+ if(quantity>20){
 
-  document.getElementById(
-    "quantity"
-  ).innerText = quantity;
+  quantity=20;
 
-  updateTotal();
+ }
+
+
+ document.getElementById(
+  "quantity"
+ ).innerText=quantity;
+
+
+ updateTotal();
 
 };
 
 
 function updateTotal(){
 
-  const price =
-    Number(
-      document.getElementById(
-        "ticketPrice"
-      ).innerText
-    ) || 0;
+ const price =
+  Number(
+   document.getElementById(
+    "ticketPrice"
+   ).innerText
+  ) || 0;
 
-  document.getElementById(
-    "total"
-  ).innerText =
-    price * quantity;
+
+ document.getElementById(
+  "total"
+ ).innerText =
+  price*quantity;
 
 }
 
 
-/* ================= BOOKING ================= */
+/* =====================================================
+   PLAYER BOOKING
+   ===================================================== */
 
 window.createBooking =
 async function(){
 
-  const name =
-    document.getElementById(
-      "playerName"
-    ).value.trim();
-
-  const phone =
-    document.getElementById(
-      "playerPhone"
-    ).value.trim();
-
-  const price =
-    Number(
-      document.getElementById(
-        "ticketPrice"
-      ).innerText
-    ) || 0;
+ const name =
+  document.getElementById(
+   "playerName"
+  ).value.trim();
 
 
-  if(!name){
-
-    showPlayerMessage(
-      "Please enter your name.",
-      "error"
-    );
-
-    return;
-
-  }
+ const phone =
+  document.getElementById(
+   "playerPhone"
+  ).value.trim();
 
 
-  if(!/^[0-9]{10}$/.test(phone)){
-
-    showPlayerMessage(
-      "Please enter a valid 10 digit mobile number.",
-      "error"
-    );
-
-    return;
-
-  }
+ const price =
+  Number(
+   document.getElementById(
+    "ticketPrice"
+   ).innerText
+  ) || 0;
 
 
-  try{
+ if(!name){
 
-    const booking = {
+  showPlayerMessage(
+   "Please enter your name.",
+   "error"
+  );
 
-      name:name,
+  return;
 
-      phone:phone,
-
-      tickets:quantity,
-
-      price:price,
-
-      total:price * quantity,
-
-      status:"Pending",
-
-      createdAt:Date.now()
-
-    };
+ }
 
 
-    const bookingRef =
-      await addDoc(
-        collection(db,"bookings"),
-        booking
-      );
+ if(!/^[0-9]{10}$/.test(phone)){
+
+  showPlayerMessage(
+   "Please enter a valid 10 digit mobile number.",
+   "error"
+  );
+
+  return;
+
+ }
 
 
-    /* ================= WHATSAPP ================= */
+ try{
 
-    const whatsappNumber =
-      "919101151835";
+  const booking = {
+
+   name:name,
+
+   phone:phone,
+
+   tickets:quantity,
+
+   price:price,
+
+   total:price*quantity,
+
+   status:"Pending",
+
+   createdAt:Date.now()
+
+  };
 
 
-    const gameName =
-      document.getElementById(
-        "gameName"
-      ).innerText;
+  const bookingRef =
+   await addDoc(
+
+    collection(
+     db,
+     "bookings"
+    ),
+
+    booking
+
+   );
 
 
-    const text =
+  /* =================================================
+     WHATSAPP NUMBER
+     9101151835
+     ================================================= */
+
+  const whatsappNumber =
+   "919101151835";
+
+
+  const gameName =
+   document.getElementById(
+    "gameName"
+   ).innerText;
+
+
+  const message =
+
 `Hello, I want to book Tombola tickets.
 
 Game: ${gameName}
+
 Name: ${name}
+
 Mobile: ${phone}
+
 Tickets: ${quantity}
+
 Ticket Price: ₹${price}
-Total: ₹${price * quantity}
+
+Total: ₹${price*quantity}
 
 Booking ID: ${bookingRef.id}
 
 Please confirm my booking.`;
 
 
-    const whatsappURL =
-      "https://wa.me/" +
-      whatsappNumber +
-      "?text=" +
-      encodeURIComponent(text);
+  const whatsappURL =
+   "https://wa.me/"+
+   whatsappNumber+
+   "?text="+
+   encodeURIComponent(message);
 
 
-    window.open(
-      whatsappURL,
-      "_blank"
-    );
+  window.open(
+   whatsappURL,
+   "_blank"
+  );
 
 
-    showPlayerMessage(
-      "✅ Booking submitted successfully!",
-      "success"
-    );
+  showPlayerMessage(
+   "✅ Booking submitted successfully!",
+   "success"
+  );
 
 
-    document.getElementById(
-      "playerName"
-    ).value="";
+  document.getElementById(
+   "playerName"
+  ).value="";
 
 
-    document.getElementById(
-      "playerPhone"
-    ).value="";
+  document.getElementById(
+   "playerPhone"
+  ).value="";
 
 
-    quantity=1;
+  quantity=1;
 
 
-    document.getElementById(
-      "quantity"
-    ).innerText="1";
+  document.getElementById(
+   "quantity"
+  ).innerText="1";
 
 
-    updateTotal();
+  updateTotal();
 
 
-  }catch(error){
+ }catch(error){
 
-    showPlayerMessage(
-      "Booking error: "+
-      error.message,
-      "error"
-    );
+  showPlayerMessage(
+   "Booking error: "+
+   error.message,
+   "error"
+  );
 
-  }
+ }
 
 };
 
 
+/* =====================================================
+   PLAYER MESSAGE
+   ===================================================== */
+
 function showPlayerMessage(
-  text,
-  type
+ text,
+ type
 ){
 
-  const box =
-    document.getElementById(
-      "playerMessage"
-    );
-
-  box.innerText=text;
-
-  box.className =
-    "message "+type;
-
-  box.style.display="block";
+ const box =
+  document.getElementById(
+   "playerMessage"
+  );
 
 
-  setTimeout(function(){
+ box.innerText=text;
 
-    box.style.display="none";
 
-  },4000);
+ box.className =
+  "message "+type;
+
+
+ box.style.display="block";
+
+
+ setTimeout(function(){
+
+  box.style.display="none";
+
+ },4000);
 
 }
 
 
-/* ================= ADMIN BOOKING LIST ================= */
+/* =====================================================
+   ADMIN BOOKINGS
+   ===================================================== */
 
 function listenBookings(){
 
-  onSnapshot(
+ onSnapshot(
 
-    collection(db,"bookings"),
+  collection(
+   db,
+   "bookings"
+  ),
 
-    function(snapshot){
+  function(snapshot){
 
-      const list =
-        document.getElementById(
-          "bookingList"
-        );
-
-      list.innerHTML="";
-
-
-      let totalTickets=0;
-
-      let pending=0;
+   const list =
+    document.getElementById(
+     "bookingList"
+    );
 
 
-      snapshot.forEach(function(item){
-
-        const b =
-          item.data();
+   list.innerHTML="";
 
 
-        totalTickets +=
-          Number(b.tickets) || 0;
+   let totalTickets=0;
+
+   let pending=0;
 
 
-        if(b.status==="Pending"){
+   snapshot.forEach(function(item){
 
-          pending++;
-
-        }
-
-
-        const div =
-          document.createElement(
-            "div"
-          );
+    const b =
+     item.data();
 
 
-        div.className="booking";
+    totalTickets +=
+     Number(b.tickets)||0;
 
 
-        div.innerHTML = `
+    if(b.status==="Pending"){
 
-          <p>
-            👤 <strong>
-              ${escapeHTML(b.name)}
-            </strong>
-          </p>
-
-          <p>
-            📱 ${escapeHTML(b.phone)}
-          </p>
-
-          <p>
-            🎟️ Tickets:
-            <strong>${b.tickets}</strong>
-          </p>
-
-          <p>
-            💰 Total:
-            <strong>₹${b.total}</strong>
-          </p>
-
-          <p>
-            Status:
-
-            <span class="badge
-              ${String(b.status).toLowerCase()}">
-
-              ${escapeHTML(b.status)}
-
-            </span>
-          </p>
-
-
-          <div class="booking-actions">
-
-            <button
-              class="confirm"
-              onclick="
-                changeBookingStatus(
-                  '${item.id}',
-                  'Confirmed'
-                )
-              "
-            >
-              ✅ Confirm
-            </button>
-
-
-            <button
-              class="reject"
-              onclick="
-                changeBookingStatus(
-                  '${item.id}',
-                  'Rejected'
-                )
-              "
-            >
-              ❌ Reject
-            </button>
-
-          </div>
-
-        `;
-
-
-        list.appendChild(div);
-
-      });
-
-
-      if(snapshot.empty){
-
-        list.innerHTML =
-          "<p>No bookings yet.</p>";
-
-      }
-
-
-      document.getElementById(
-        "bookingCount"
-      ).innerText =
-        snapshot.size;
-
-
-      document.getElementById(
-        "ticketCount"
-      ).innerText =
-        totalTickets;
-
-
-      document.getElementById(
-        "pendingCount"
-      ).innerText =
-        pending;
+     pending++;
 
     }
 
+
+    const div =
+     document.createElement(
+      "div"
+     );
+
+
+    div.className="booking";
+
+
+    const statusClass =
+     String(
+      b.status||"Pending"
+     ).toLowerCase();
+
+
+    div.innerHTML=`
+
+      <p>
+       👤 <strong>
+       ${escapeHTML(b.name)}
+       </strong>
+      </p>
+
+      <p>
+       📱 ${escapeHTML(b.phone)}
+      </p>
+
+      <p>
+       🎟️ Tickets:
+       <strong>${b.tickets}</strong>
+      </p>
+
+      <p>
+       💰 Total:
+       <strong>₹${b.total}</strong>
+      </p>
+
+      <p>
+       Status:
+
+       <span class="badge ${statusClass}">
+       ${escapeHTML(b.status)}
+       </span>
+      </p>
+
+      <div class="booking-actions">
+
+       <button
+        class="confirm"
+        onclick="
+        changeBookingStatus(
+        '${item.id}',
+        'Confirmed'
+        )"
+       >
+        ✅ Confirm
+       </button>
+
+       <button
+        class="reject"
+        onclick="
+        changeBookingStatus(
+        '${item.id}',
+        'Rejected'
+        )"
+       >
+        ❌ Reject
+       </button>
+
+      </div>
+
+    `;
+
+
+    list.appendChild(div);
+
+   });
+
+
+   if(snapshot.empty){
+
+    list.innerHTML =
+     "<p>No bookings yet.</p>";
+
+   }
+
+
+   document.getElementById(
+    "bookingCount"
+   ).innerText =
+    snapshot.size;
+
+
+   document.getElementById(
+    "ticketCount"
+   ).innerText =
+    totalTickets;
+
+
+   document.getElementById(
+    "pendingCount"
+   ).innerText =
+    pending;
+
+  },
+
+  function(error){
+
+   console.log(
+    "Booking listener:",
+    error
+   );
+
+  }
+
+ );
+
+}
+
+
+/* =====================================================
+   CHANGE BOOKING STATUS
+   ===================================================== */
+
+window.changeBookingStatus =
+async function(
+ id,
+ status
+){
+
+ try{
+
+  await updateDoc(
+
+   doc(
+    db,
+    "bookings",
+    id
+   ),
+
+   {
+    status:status
+   }
+
+  );
+
+ }catch(error){
+
+  alert(
+   "Could not update booking:\n"+
+   error.message
+  );
+
+ }
+
+};
+
+
+/* =====================================================
+   ESCAPE HTML
+   ===================================================== */
+
+function escapeHTML(value){
+
+ return String(value)
+
+  .replaceAll(
+   "&",
+   "&amp;"
+  )
+
+  .replaceAll(
+   "<",
+   "&lt;"
+  )
+
+  .replaceAll(
+   ">",
+   "&gt;"
+  )
+
+  .replaceAll(
+   '"',
+   "&quot;"
+  )
+
+  .replaceAll(
+   "'",
+   "&#039;"
   );
 
 }
 
 
-/* ================= CHANGE BOOKING STATUS ================= */
-
-window.changeBookingStatus =
-async function(
-  id,
-  status
-){
-
-  try{
-
-    await updateDoc(
-
-      doc(
-        db,
-        "bookings",
-        id
-      ),
-
-      {
-        status:status
-      }
-
-    );
-
-  }catch(error){
-
-    alert(
-      "Could not update booking: "+
-      error.message
-    );
-
-  }
-
-};
-
-
-/* ================= SECURITY FOR DISPLAY ================= */
-
-function escapeHTML(value){
-
-  return String(value)
-
-    .replaceAll(
-      "&",
-      "&amp;"
-    )
-
-    .replaceAll(
-      "<",
-      "&lt;"
-    )
-
-    .replaceAll(
-      ">",
-      "&gt;"
-    )
-
-    .replaceAll(
-      '"',
-      "&quot;"
-    )
-
-    .replaceAll(
-      "'",
-      "&#039;"
-    );
-
-}
-
-
-/* ================= ADMIN LOGIN ================= */
+/* =====================================================
+   ADMIN LOGIN
+   ===================================================== */
 
 window.openLogin =
 function(){
 
-  document.getElementById(
-    "login"
-  ).style.display="flex";
+ document.getElementById(
+  "login"
+ ).style.display="flex";
 
 };
 
@@ -1245,13 +2116,14 @@ function(){
 window.closeLogin =
 function(){
 
-  document.getElementById(
-    "login"
-  ).style.display="none";
+ document.getElementById(
+  "login"
+ ).style.display="none";
 
-  document.getElementById(
-    "loginError"
-  ).style.display="none";
+
+ document.getElementById(
+  "loginError"
+ ).style.display="none";
 
 };
 
@@ -1259,272 +2131,336 @@ function(){
 window.adminLogin =
 function(){
 
-  const username =
-    document.getElementById(
-      "adminUsername"
-    ).value.trim();
+ const username =
+  document.getElementById(
+   "adminUsername"
+  ).value.trim();
 
 
-  const password =
-    document.getElementById(
-      "adminPassword"
-    ).value;
+ const password =
+  document.getElementById(
+   "adminPassword"
+  ).value;
 
 
-  if(
-    username === "gyandeep" &&
-    password === "785673"
-  ){
+ if(
+  username==="gyandeep" &&
+  password==="785673"
+ ){
 
-    document.getElementById(
-      "login"
-    ).style.display="none";
-
-
-    document.getElementById(
-      "playerPage"
-    ).style.display="none";
+  document.getElementById(
+   "login"
+  ).style.display="none";
 
 
-    document.getElementById(
-      "adminPage"
-    ).style.display="block";
+  document.getElementById(
+   "playerPage"
+  ).style.display="none";
 
 
-  }else{
+  document.getElementById(
+   "adminPage"
+  ).style.display="block";
 
-    document.getElementById(
-      "loginError"
-    ).style.display="block";
 
-  }
+  loadPrizeSettings();
+
+
+  showAdmin(
+   "dashboard"
+  );
+
+
+ }else{
+
+  document.getElementById(
+   "loginError"
+  ).style.display="block";
+
+ }
 
 };
 
+
+/* =====================================================
+   LOGOUT
+   ===================================================== */
 
 window.adminLogout =
 function(){
 
-  document.getElementById(
-    "adminPage"
-  ).style.display="none";
+ document.getElementById(
+  "adminPage"
+ ).style.display="none";
 
 
-  document.getElementById(
-    "playerPage"
-  ).style.display="block";
+ document.getElementById(
+  "playerPage"
+ ).style.display="block";
 
 };
 
 
-/* ================= ADMIN MENU ================= */
+/* =====================================================
+   ADMIN MENU
+   ===================================================== */
 
 window.showAdmin =
 function(section){
 
+ document.getElementById(
+  "dashboardSection"
+ ).style.display="none";
+
+
+ document.getElementById(
+  "bookingsSection"
+ ).style.display="none";
+
+
+ document.getElementById(
+  "prizesSection"
+ ).style.display="none";
+
+
+ document.getElementById(
+  "settingsSection"
+ ).style.display="none";
+
+
+ if(section==="dashboard"){
+
   document.getElementById(
-    "dashboardSection"
-  ).style.display="none";
+   "dashboardSection"
+  ).style.display="block";
 
 
   document.getElementById(
-    "bookingsSection"
-  ).style.display="none";
+   "adminTitle"
+  ).innerText=
+   "Admin Dashboard";
+
+ }
+
+
+ if(section==="bookings"){
+
+  document.getElementById(
+   "bookingsSection"
+  ).style.display="block";
 
 
   document.getElementById(
-    "settingsSection"
-  ).style.display="none";
+   "adminTitle"
+  ).innerText=
+   "Bookings";
+
+ }
 
 
-  if(section==="dashboard"){
+ if(section==="prizes"){
 
-    document.getElementById(
-      "dashboardSection"
-    ).style.display="block";
-
-
-    document.getElementById(
-      "adminTitle"
-    ).innerText =
-      "Admin Dashboard";
-
-  }
+  document.getElementById(
+   "prizesSection"
+  ).style.display="block";
 
 
-  if(section==="bookings"){
-
-    document.getElementById(
-      "bookingsSection"
-    ).style.display="block";
-
-
-    document.getElementById(
-      "adminTitle"
-    ).innerText =
-      "Bookings";
-
-  }
+  document.getElementById(
+   "adminTitle"
+  ).innerText=
+   "Prize Management";
 
 
-  if(section==="settings"){
+  loadPrizeSettings();
 
-    document.getElementById(
-      "settingsSection"
-    ).style.display="block";
+ }
 
 
-    document.getElementById(
-      "adminTitle"
-    ).innerText =
-      "Game Settings";
+ if(section==="settings"){
 
-  }
+  document.getElementById(
+   "settingsSection"
+  ).style.display="block";
+
+
+  document.getElementById(
+   "adminTitle"
+  ).innerText=
+   "Game Settings";
+
+ }
 
 };
 
 
-/* ================= COUNTDOWN ================= */
+/* =====================================================
+   COUNTDOWN
+   ===================================================== */
 
 function countdown(){
 
-  const date =
-    document.getElementById(
-      "settingDate"
-    ).value;
+ const date =
+  document.getElementById(
+   "settingDate"
+  ).value;
 
 
-  const time =
-    document.getElementById(
-      "settingTime"
-    ).value;
+ const time =
+  document.getElementById(
+   "settingTime"
+  ).value;
 
 
-  if(!date || !time){
+ if(!date || !time){
 
-    return;
+  return;
 
-  }
-
-
-  const target =
-    new Date(
-      date+"T"+time
-    ).getTime();
+ }
 
 
-  const now =
-    Date.now();
+ const target =
+  new Date(
+   date+"T"+time
+  ).getTime();
 
 
-  let distance =
-    target-now;
+ const now =
+  Date.now();
 
 
-  if(distance <= 0){
-
-    setCountdown(
-      0,0,0,0
-    );
-
-    return;
-
-  }
+ let distance =
+  target-now;
 
 
-  const days =
-    Math.floor(
-      distance /
-      (1000*60*60*24)
-    );
-
-
-  distance %=
-    1000*60*60*24;
-
-
-  const hours =
-    Math.floor(
-      distance /
-      (1000*60*60)
-    );
-
-
-  distance %=
-    1000*60*60;
-
-
-  const minutes =
-    Math.floor(
-      distance /
-      (1000*60)
-    );
-
-
-  distance %=
-    1000*60;
-
-
-  const seconds =
-    Math.floor(
-      distance /
-      1000
-    );
-
+ if(distance<=0){
 
   setCountdown(
-    days,
-    hours,
-    minutes,
-    seconds
+   0,
+   0,
+   0,
+   0
+  );
+
+  return;
+
+ }
+
+
+ const days =
+  Math.floor(
+   distance/
+   (1000*60*60*24)
+  );
+
+
+ distance %=
+  1000*60*60*24;
+
+
+ const hours =
+  Math.floor(
+   distance/
+   (1000*60*60)
+  );
+
+
+ distance %=
+  1000*60*60;
+
+
+ const minutes =
+  Math.floor(
+   distance/
+   (1000*60)
+  );
+
+
+ distance %=
+  1000*60;
+
+
+ const seconds =
+  Math.floor(
+   distance/
+   1000
+  );
+
+
+ setCountdown(
+  days,
+  hours,
+  minutes,
+  seconds
+ );
+
+}
+
+
+/* =====================================================
+   SET COUNTDOWN
+   ===================================================== */
+
+function setCountdown(
+ d,
+ h,
+ m,
+ s
+){
+
+ document.getElementById(
+  "days"
+ ).innerText=
+  String(d).padStart(
+   2,
+   "0"
+  );
+
+
+ document.getElementById(
+  "hours"
+ ).innerText=
+  String(h).padStart(
+   2,
+   "0"
+  );
+
+
+ document.getElementById(
+  "minutes"
+ ).innerText=
+  String(m).padStart(
+   2,
+   "0"
+  );
+
+
+ document.getElementById(
+  "seconds"
+ ).innerText=
+  String(s).padStart(
+   2,
+   "0"
   );
 
 }
 
 
-function setCountdown(
-  d,
-  h,
-  m,
-  s
-){
-
-  document.getElementById(
-    "days"
-  ).innerText =
-    String(d).padStart(2,"0");
-
-
-  document.getElementById(
-    "hours"
-  ).innerText =
-    String(h).padStart(2,"0");
-
-
-  document.getElementById(
-    "minutes"
-  ).innerText =
-    String(m).padStart(2,"0");
-
-
-  document.getElementById(
-    "seconds"
-  ).innerText =
-    String(s).padStart(2,"0");
-
-}
-
-
-/* ================= START ================= */
+/* =====================================================
+   START
+   ===================================================== */
 
 loadGameSettings();
+
+loadPrizeSettings();
 
 listenBookings();
 
 setInterval(
-  countdown,
-  1000
+ countdown,
+ 1000
 );
+
+updateTotal();
 
 </script>
 
