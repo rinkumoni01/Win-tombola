@@ -3,13 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-
 <title>Win Tombola</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
@@ -21,10 +18,6 @@ body{
 button,input{
   font-family:inherit;
 }
-
-/* =========================
-   HEADER
-========================= */
 
 .header{
   background:#ff0068;
@@ -46,10 +39,6 @@ button,input{
   font-size:13px;
   margin-top:4px;
 }
-
-/* =========================
-   TOP GAME INFO
-========================= */
 
 .gameInfo{
   display:grid;
@@ -74,21 +63,9 @@ button,input{
   box-shadow:0 0 5px #fff;
 }
 
-#gameDateDisplay{
-  font-size:17px;
-}
-
-#countdown{
-  font-size:18px;
-}
-
-#gameTimeDisplay{
-  font-size:17px;
-}
-
-/* =========================
-   ADMIN BUTTON
-========================= */
+#gameDateDisplay{font-size:17px}
+#countdown{font-size:18px}
+#gameTimeDisplay{font-size:17px}
 
 .adminBtn{
   margin-top:10px;
@@ -99,11 +76,8 @@ button,input{
   border-radius:8px;
   font-weight:bold;
   font-size:15px;
+  cursor:pointer;
 }
-
-/* =========================
-   CONTAINER
-========================= */
 
 .container{
   max-width:900px;
@@ -120,10 +94,6 @@ button,input{
   font-weight:bold;
   font-size:18px;
 }
-
-/* =========================
-   TICKET
-========================= */
 
 .ticket{
   background:#ff005f;
@@ -161,10 +131,6 @@ button,input{
   overflow:hidden;
 }
 
-/* =========================
-   TICKET GRID
-========================= */
-
 .ticketGrid{
   background:#fff;
   border:6px solid #ff684e;
@@ -190,10 +156,6 @@ button,input{
   color:transparent;
 }
 
-/* =========================
-   BOOK BUTTON
-========================= */
-
 .bookBtn{
   display:block;
   margin-left:auto;
@@ -209,10 +171,6 @@ button,input{
 .bookedBtn{
   background:#e65b45;
 }
-
-/* =========================
-   MODAL
-========================= */
 
 .modal{
   display:none;
@@ -255,6 +213,7 @@ button,input{
   border-radius:8px;
   font-size:17px;
   font-weight:bold;
+  cursor:pointer;
 }
 
 .closeBtn{
@@ -264,6 +223,7 @@ button,input{
   border:0;
   padding:12px;
   border-radius:8px;
+  cursor:pointer;
 }
 
 .adminCard{
@@ -292,6 +252,7 @@ button,input{
   border-radius:8px;
   width:100%;
   margin-top:10px;
+  cursor:pointer;
 }
 
 .emptyMessage{
@@ -300,10 +261,6 @@ button,input{
   padding:40px 10px;
   font-size:18px;
 }
-
-/* =========================
-   MOBILE
-========================= */
 
 @media(max-width:600px){
 
@@ -364,10 +321,6 @@ button,input{
 
 <body>
 
-<!-- =========================
-     HEADER
-========================= -->
-
 <div class="header">
 
   <div class="logo">
@@ -378,28 +331,30 @@ button,input{
     Choose your ticket and book it
   </div>
 
-
-  <!-- GAME INFORMATION -->
-
   <div class="gameInfo">
 
-    <!-- GAME DATE -->
-    <div class="gameBox" id="gameDateDisplay">
+    <div
+      class="gameBox"
+      id="gameDateDisplay"
+    >
       --/--/----
     </div>
 
-    <!-- COUNTDOWN -->
-    <div class="gameBox" id="countdown">
+    <div
+      class="gameBox"
+      id="countdown"
+    >
       00:00:00
     </div>
 
-    <!-- GAME TIME -->
-    <div class="gameBox" id="gameTimeDisplay">
+    <div
+      class="gameBox"
+      id="gameTimeDisplay"
+    >
       --:-- --
     </div>
 
   </div>
-
 
   <button
     class="adminBtn"
@@ -411,16 +366,16 @@ button,input{
 </div>
 
 
-<!-- =========================
-     MAIN
-========================= -->
-
 <div class="container">
 
   <div class="info">
 
     🎟️ Available Tickets:
-    <span id="visibleCount">0</span>
+
+    <span id="visibleCount">
+      0
+    </span>
+
     / 600
 
   </div>
@@ -430,15 +385,18 @@ button,input{
 </div>
 
 
-<!-- =========================
-     ADMIN LOGIN
-========================= -->
+<!-- ADMIN LOGIN -->
 
-<div class="modal" id="loginModal">
+<div
+  class="modal"
+  id="loginModal"
+>
 
   <div class="modalBox">
 
-    <h2>🔐 Admin Login</h2>
+    <h2>
+      🔐 Admin Login
+    </h2>
 
     <input
       class="input"
@@ -473,18 +431,18 @@ button,input{
 </div>
 
 
-<!-- =========================
-     ADMIN PANEL
-========================= -->
+<!-- ADMIN PANEL -->
 
-<div class="modal" id="adminModal">
+<div
+  class="modal"
+  id="adminModal"
+>
 
   <div class="modalBox">
 
-    <h2>⚙️ Game Settings</h2>
-
-
-    <!-- VISIBLE TICKETS -->
+    <h2>
+      ⚙️ Game Settings
+    </h2>
 
     <div class="adminCard">
 
@@ -509,8 +467,6 @@ button,input{
     </div>
 
 
-    <!-- DATE + TIME -->
-
     <div class="adminCard">
 
       <label>
@@ -522,7 +478,6 @@ button,input{
         id="gameDate"
         type="date"
       >
-
 
       <label>
         ⏰ Game Time
@@ -544,14 +499,12 @@ button,input{
       💾 SAVE SETTINGS
     </button>
 
-
     <button
       class="resetBtn"
       onclick="resetBookings()"
     >
       🗑️ RESET ALL BOOKINGS
     </button>
-
 
     <button
       class="closeBtn"
@@ -567,35 +520,21 @@ button,input{
 
 <script>
 
-/* =========================
-   ADMIN LOGIN
-========================= */
-
 const ADMIN_USERNAME = "gyandeep";
 const ADMIN_PASSWORD = "785673";
 
-
-/* =========================
-   DEFAULT SETTINGS
-========================= */
 
 let settings =
   JSON.parse(
     localStorage.getItem("tombolaSettings")
   ) || {
 
-    visibleTickets: 50,
-
-    gameDate: "",
-
-    gameTime: ""
+    visibleTickets:50,
+    gameDate:"",
+    gameTime:""
 
   };
 
-
-/* =========================
-   BOOKINGS
-========================= */
 
 let bookings =
   JSON.parse(
@@ -604,66 +543,137 @@ let bookings =
 
 
 /* =========================
-   GENERATE TICKET NUMBERS
+   TICKET GENERATOR
 ========================= */
 
 function generateTicketNumbers(ticketNo){
 
-  let numbers = [];
-
   let seed = ticketNo * 997;
-
 
   function random(){
 
     seed =
-      (seed * 9301 + 49297)
-      % 233280;
+      (seed * 9301 + 49297) % 233280;
 
     return seed / 233280;
   }
 
 
-  let columns = [];
+  let grid = [
 
+    Array(9).fill(false),
+    Array(9).fill(false),
+    Array(9).fill(false)
+
+  ];
+
+
+  let rowCount = [0,0,0];
+
+
+  /* Every column gets at least 1 number */
 
   for(let c=0;c<9;c++){
 
-    let min =
-      c===0
-      ? 1
-      : c*10;
+    let availableRows = [];
 
-    let max =
-      c===0
-      ? 9
-      : c===8
-        ? 90
-        : c*10+9;
+    for(let r=0;r<3;r++){
 
+      if(rowCount[r] < 5){
 
-    let arr=[];
-
-
-    while(arr.length < 3){
-
-      let n =
-        Math.floor(
-          random() *
-          (max-min+1)
-        ) + min;
-
-
-      if(!arr.includes(n)){
-
-        arr.push(n);
+        availableRows.push(r);
 
       }
 
     }
 
 
-    columns.push(arr);
+    let minCount =
+      Math.min(
+        ...availableRows.map(
+          r => rowCount[r]
+        )
+      );
+
+
+    let bestRows =
+      availableRows.filter(
+        r => rowCount[r] === minCount
+      );
+
+
+    let row =
+      bestRows[
+        Math.floor(
+          random() * bestRows.length
+        )
+      ];
+
+
+    grid[row][c] = true;
+
+    rowCount[row]++;
+
+  }
+
+
+  /* Add remaining 6 numbers */
+
+  while(
+    rowCount[0] < 5 ||
+    rowCount[1] < 5 ||
+    rowCount[2] < 5
+  ){
+
+    let possible = [];
+
+    for(let r=0;r<3;r++){
+
+      for(let c=0;c<9;c++){
+
+        if(
+          !grid[r][c] &&
+          rowCount[r] < 5
+        ){
+
+          possible.push({
+            r:r,
+            c:c
+          });
+
+        }
+
+      }
+
+    }
+
+
+    if(possible.length === 0){
+      break;
+    }
+
+
+    let minRowCount =
+      Math.min(...rowCount);
+
+
+    let preferred =
+      possible.filter(
+        x => rowCount[x.r] === minRowCount
+      );
+
+
+    let selected =
+      preferred[
+        Math.floor(
+          random() * preferred.length
+        )
+      ];
+
+
+    grid[selected.r][selected.c] = true;
+
+    rowCount[selected.r]++;
 
   }
 
@@ -671,52 +681,88 @@ function generateTicketNumbers(ticketNo){
   let result = [
 
     Array(9).fill(""),
-
     Array(9).fill(""),
-
     Array(9).fill("")
 
   ];
 
 
-  for(let r=0;r<3;r++){
+  /* Generate numbers for each column */
 
-    let selected=[];
+  for(let c=0;c<9;c++){
+
+    let min =
+      c === 0
+      ? 1
+      : c * 10;
 
 
-    while(selected.length < 5){
+    let max =
+      c === 0
+      ? 9
+      : c === 8
+        ? 90
+        : c * 10 + 9;
 
-      let c =
+
+    let needed = 0;
+
+
+    for(let r=0;r<3;r++){
+
+      if(grid[r][c]){
+        needed++;
+      }
+
+    }
+
+
+    let numbers = [];
+
+
+    while(numbers.length < needed){
+
+      let n =
         Math.floor(
-          random()*9
-        );
+          random() * (max-min+1)
+        ) + min;
 
 
-      if(!selected.includes(c)){
+      if(!numbers.includes(n)){
 
-        selected.push(c);
+        numbers.push(n);
 
       }
 
     }
 
 
-    selected.sort(
-      (a,b)=>a-b
+    numbers.sort(
+      (a,b) => a-b
     );
 
 
-    selected.forEach(c=>{
+    let index = 0;
 
-      result[r][c] =
-        columns[c][r];
 
-    });
+    for(let r=0;r<3;r++){
+
+      if(grid[r][c]){
+
+        result[r][c] =
+          numbers[index];
+
+        index++;
+
+      }
+
+    }
 
   }
 
 
   return result;
+
 }
 
 
@@ -728,7 +774,6 @@ function renderTickets(){
 
   const box =
     document.getElementById("tickets");
-
 
   box.innerHTML = "";
 
@@ -757,6 +802,7 @@ function renderTickets(){
     `;
 
     return;
+
   }
 
 
@@ -783,15 +829,13 @@ function renderTickets(){
 
 
         cells += `
-
           <div
             class="cell ${
-              value==="" ? "empty" : ""
+              value === "" ? "empty" : ""
             }"
           >
             ${value}
           </div>
-
         `;
 
       }
@@ -819,38 +863,27 @@ function renderTickets(){
 
         </div>
 
-
         <div class="ticketGrid">
-
           ${cells}
-
         </div>
-
 
         <div style="padding:7px 0">
 
           <button
-
             class="bookBtn ${
-              booked
-              ? "bookedBtn"
-              : ""
+              booked ? "bookedBtn" : ""
             }"
-
             ${
               booked
               ? "disabled"
               : `onclick="bookTicket(${i})"`
             }
-
           >
-
             ${
               booked
               ? "BOOKED"
               : "BOOK THIS"
             }
-
           </button>
 
         </div>
@@ -888,7 +921,6 @@ function bookTicket(ticketNo){
 
 
   if(!name){
-
     return;
   }
 
@@ -900,7 +932,6 @@ function bookTicket(ticketNo){
 
 
   if(!phone){
-
     return;
   }
 
@@ -908,11 +939,8 @@ function bookTicket(ticketNo){
   bookings[ticketNo] = {
 
     booked:true,
-
     name:name,
-
     phone:phone,
-
     time:new Date().toISOString()
 
   };
@@ -937,21 +965,17 @@ function bookTicket(ticketNo){
 
 
 /* =========================
-   OPEN ADMIN LOGIN
+   ADMIN LOGIN
 ========================= */
 
 function openAdminLogin(){
 
   document.getElementById(
     "loginModal"
-  ).style.display="block";
+  ).style.display = "block";
 
 }
 
-
-/* =========================
-   LOGIN ADMIN
-========================= */
 
 function loginAdmin(){
 
@@ -1013,7 +1037,7 @@ function openAdminPanel(){
 
   document.getElementById(
     "adminModal"
-  ).style.display="block";
+  ).style.display = "block";
 
 }
 
@@ -1043,6 +1067,7 @@ function saveSettings(){
     );
 
     return;
+
   }
 
 
@@ -1078,9 +1103,7 @@ function saveSettings(){
   );
 
 
-  closeModal(
-    "adminModal"
-  );
+  closeModal("adminModal");
 
 }
 
@@ -1098,7 +1121,6 @@ function resetBookings(){
 
 
   if(!ok){
-
     return;
   }
 
@@ -1130,21 +1152,19 @@ function closeModal(id){
 
   document.getElementById(
     id
-  ).style.display="none";
+  ).style.display = "none";
 
 }
 
 
 /* =========================
-   FORMAT GAME DATE
+   DATE FORMAT
 ========================= */
 
 function formatGameDate(dateString){
 
   if(!dateString){
-
     return "--/--/----";
-
   }
 
 
@@ -1153,9 +1173,7 @@ function formatGameDate(dateString){
 
 
   if(parts.length !== 3){
-
     return "--/--/----";
-
   }
 
 
@@ -1171,15 +1189,13 @@ function formatGameDate(dateString){
 
 
 /* =========================
-   FORMAT GAME TIME
+   TIME FORMAT
 ========================= */
 
 function formatGameTime(timeString){
 
   if(!timeString){
-
     return "--:-- --";
-
   }
 
 
@@ -1196,19 +1212,14 @@ function formatGameTime(timeString){
 
 
   let ampm =
-    hour >= 12
-    ? "PM"
-    : "AM";
+    hour >= 12 ? "PM" : "AM";
 
 
-  hour =
-    hour % 12;
+  hour = hour % 12;
 
 
   if(hour === 0){
-
     hour = 12;
-
   }
 
 
@@ -1221,10 +1232,8 @@ function formatGameTime(timeString){
   );
 
 }
-
-
-/* =========================
-   UPDATE GAME DATE/TIME
+  /* =========================
+   GAME DISPLAY
 ========================= */
 
 function updateGameDisplay(){
@@ -1232,34 +1241,25 @@ function updateGameDisplay(){
   document.getElementById(
     "gameDateDisplay"
   ).textContent =
-    formatGameDate(
-      settings.gameDate
-    );
+    formatGameDate(settings.gameDate);
 
 
   document.getElementById(
     "gameTimeDisplay"
   ).textContent =
-    formatGameTime(
-      settings.gameTime
-    );
-
-
-  updateCountdown();
+    formatGameTime(settings.gameTime);
 
 }
 
 
 /* =========================
-   COUNTDOWN
+   GAME COUNTDOWN
 ========================= */
 
 function updateCountdown(){
 
   const el =
-    document.getElementById(
-      "countdown"
-    );
+    document.getElementById("countdown");
 
 
   if(
@@ -1267,11 +1267,9 @@ function updateCountdown(){
     !settings.gameTime
   ){
 
-    el.textContent =
-      "00:00:00";
+    el.textContent = "00:00:00";
 
     return;
-
   }
 
 
@@ -1296,71 +1294,53 @@ function updateCountdown(){
   if(diff <= 0){
 
     el.textContent =
-      "GAME STARTED";
+      "00:00:00";
 
     return;
-
   }
 
 
-  let days =
-    Math.floor(
-      diff /
-      (1000*60*60*24)
-    );
-
-
-  diff %=
-    (1000*60*60*24);
+  let totalSeconds =
+    Math.floor(diff / 1000);
 
 
   let hours =
     Math.floor(
-      diff /
-      (1000*60*60)
+      totalSeconds / 3600
     );
-
-
-  diff %=
-    (1000*60*60);
 
 
   let minutes =
     Math.floor(
-      diff /
-      (1000*60)
+      (totalSeconds % 3600) / 60
     );
-
-
-  diff %=
-    (1000*60);
 
 
   let seconds =
-    Math.floor(
-      diff / 1000
-    );
+    totalSeconds % 60;
 
 
   /*
-    Agar 1 din se kam hai:
-    00:44:05
-
-    Agar din zyada hai:
-    1D 00:44:05
+    Countdown ko 24 hours ke
+    andar bhi sahi dikhayega.
   */
+
+  let days =
+    Math.floor(hours / 24);
+
+
+  hours =
+    hours % 24;
 
 
   if(days > 0){
 
     el.textContent =
-      days +
-      "D " +
+      String(days).padStart(2,"0") +
+      ":" +
       String(hours).padStart(2,"0") +
       ":" +
-      String(minutes).padStart(2,"0") +
-      ":" +
-      String(seconds).padStart(2,"0");
+      String(minutes).padStart(2,"0");
 
   }else{
 
@@ -1384,10 +1364,48 @@ renderTickets();
 
 updateGameDisplay();
 
+updateCountdown();
+
 
 setInterval(
-  updateGameDisplay,
+  updateCountdown,
   1000
+);
+
+
+/* =========================
+   MODAL OUTSIDE CLICK
+========================= */
+
+window.addEventListener(
+  "click",
+  function(event){
+
+    const login =
+      document.getElementById(
+        "loginModal"
+      );
+
+    const admin =
+      document.getElementById(
+        "adminModal"
+      );
+
+
+    if(event.target === login){
+
+      login.style.display = "none";
+
+    }
+
+
+    if(event.target === admin){
+
+      admin.style.display = "none";
+
+    }
+
+  }
 );
 
 </script>
