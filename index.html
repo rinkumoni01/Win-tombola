@@ -28,15 +28,8 @@ button,input{font-family:inherit}
   box-shadow:0 2px 8px #a00045;
 }
 
-.logo{
-  font-size:28px;
-  font-weight:bold;
-}
-
-.sub{
-  font-size:13px;
-  margin-top:4px;
-}
+.logo{font-size:28px;font-weight:bold}
+.sub{font-size:13px;margin-top:4px}
 
 .gameInfo{
   display:grid;
@@ -58,7 +51,6 @@ button,input{font-family:inherit}
   padding:5px;
   font-size:20px;
   font-weight:bold;
-  box-shadow:0 0 5px #fff;
 }
 
 #gameDateDisplay{font-size:17px}
@@ -91,6 +83,95 @@ button,input{font-family:inherit}
   text-align:center;
   font-weight:bold;
   font-size:18px;
+}
+
+.liveBox{
+  display:none;
+  background:#00c900;
+  color:white;
+  padding:12px;
+  border-radius:12px;
+  text-align:center;
+  font-size:24px;
+  font-weight:bold;
+  margin-bottom:12px;
+}
+
+.numberPanel{
+  background:#07145e;
+  padding:12px;
+  border-radius:12px;
+  margin-bottom:12px;
+  color:white;
+}
+
+.lastNumber{
+  text-align:center;
+  font-size:55px;
+  font-weight:bold;
+  color:#e9f900;
+}
+
+.callText{
+  text-align:center;
+  font-size:19px;
+  margin-top:5px;
+}
+
+.numberGrid{
+  display:grid;
+  grid-template-columns:repeat(10,1fr);
+  gap:5px;
+  margin-top:12px;
+}
+
+.number{
+  background:white;
+  color:#111;
+  border-radius:6px;
+  padding:10px 2px;
+  text-align:center;
+  font-weight:bold;
+  font-size:17px;
+}
+
+.number.called{
+  background:#ff0068;
+  color:white;
+}
+
+.number.last{
+  background:#00d900;
+  color:white;
+  box-shadow:0 0 8px white;
+}
+
+.prizeBox{
+  background:#fff;
+  border-radius:12px;
+  padding:12px;
+  margin-bottom:12px;
+}
+
+.prizeBox h2{
+  margin:0 0 10px;
+  color:#ed005f;
+  text-align:center;
+}
+
+.playerPrize{
+  background:#f1f1f1;
+  padding:11px;
+  border-radius:8px;
+  margin-bottom:7px;
+  font-weight:bold;
+  font-size:17px;
+}
+
+.noPrize{
+  text-align:center;
+  color:#777;
+  padding:10px;
 }
 
 .ticket{
@@ -151,9 +232,7 @@ button,input{font-family:inherit}
   background:#fff;
 }
 
-.empty{
-  color:transparent;
-}
+.empty{color:transparent}
 
 .modal{
   display:none;
@@ -222,6 +301,22 @@ button,input{font-family:inherit}
   margin-bottom:5px;
 }
 
+.prizeRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:white;
+  padding:11px;
+  border-radius:8px;
+  margin:6px 0;
+  font-weight:bold;
+}
+
+.prizeRow input{
+  width:22px;
+  height:22px;
+}
+
 .small{
   font-size:13px;
   color:#666;
@@ -238,10 +333,21 @@ button,input{font-family:inherit}
   cursor:pointer;
 }
 
+.callBtn{
+  width:100%;
+  background:#00a900;
+  color:white;
+  border:0;
+  padding:14px;
+  border-radius:8px;
+  font-size:18px;
+  font-weight:bold;
+  margin-top:7px;
+}
+
 .adminList{
   max-height:350px;
   overflow:auto;
-  margin-top:10px;
 }
 
 .adminBooking{
@@ -266,153 +372,17 @@ button,input{font-family:inherit}
   cursor:pointer;
 }
 
-/* PRIZE SETTINGS */
-
-.prizeList{
-  margin-top:10px;
-}
-
-.prizeRow{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  background:white;
-  border:1px solid #ddd;
-  border-radius:8px;
-  padding:10px;
-  margin-bottom:7px;
-  font-weight:bold;
-}
-
-.prizeName{
-  flex:1;
-}
-
-.prizeToggle{
-  width:58px;
-  height:30px;
-  position:relative;
-  flex-shrink:0;
-}
-
-.prizeToggle input{
-  display:none;
-}
-
-.slider{
-  position:absolute;
-  inset:0;
-  background:#bbb;
-  border-radius:30px;
-  cursor:pointer;
-  transition:.2s;
-}
-
-.slider:before{
-  content:"";
-  position:absolute;
-  width:24px;
-  height:24px;
-  left:3px;
-  top:3px;
-  background:white;
-  border-radius:50%;
-  transition:.2s;
-}
-
-.prizeToggle input:checked + .slider{
-  background:#16b84e;
-}
-
-.prizeToggle input:checked + .slider:before{
-  transform:translateX(28px);
-}
-
-.prizeStatus{
-  font-size:12px;
-  min-width:35px;
-  text-align:right;
-}
-
-/* TICKET STATUS */
-
-.ticketStatusGrid{
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
-  gap:6px;
-  margin-top:10px;
-  max-height:420px;
-  overflow-y:auto;
-  padding:4px;
-}
-
-.statusTicket{
-  min-height:55px;
-  border:3px solid #aaa;
-  border-radius:5px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:22px;
-  font-weight:bold;
-  cursor:pointer;
-  user-select:none;
-}
-
-.statusTicket.unsold{
-  background:#fff;
-  color:#111;
-}
-
-.statusTicket.booked{
-  background:#fff900;
-  color:#111;
-}
-
-.statusTitle{
+.emptyMessage{
   text-align:center;
-  font-weight:bold;
-  margin-bottom:8px;
-}
-
-.statusLegend{
-  display:flex;
-  gap:15px;
-  justify-content:center;
-  flex-wrap:wrap;
-  margin-top:10px;
-  font-size:13px;
-  font-weight:bold;
-}
-
-.legendBox{
-  display:flex;
-  align-items:center;
-  gap:5px;
-}
-
-.legendColor{
-  width:22px;
-  height:22px;
-  border:2px solid #aaa;
-  border-radius:4px;
-}
-
-.legendUnsold{
-  background:#fff;
-}
-
-.legendBooked{
-  background:#fff900;
+  color:white;
+  padding:40px 10px;
+  font-size:18px;
 }
 
 @media(max-width:600px){
 
   .logo{font-size:23px}
   .sub{font-size:12px}
-
-  .gameInfo{gap:4px}
 
   .gameBox{
     min-height:58px;
@@ -424,6 +394,13 @@ button,input{font-family:inherit}
   #gameDateDisplay{font-size:13px}
   #countdown{font-size:14px}
   #gameTimeDisplay{font-size:13px}
+
+  .number{
+    padding:8px 1px;
+    font-size:14px;
+  }
+
+  .lastNumber{font-size:45px}
 
   .cell{
     min-height:43px;
@@ -440,17 +417,6 @@ button,input{font-family:inherit}
     font-size:16px;
     padding:12px 6px;
   }
-
-  .ticketStatusGrid{
-    grid-template-columns:repeat(5,1fr);
-    gap:5px;
-  }
-
-  .statusTicket{
-    min-height:48px;
-    font-size:17px;
-    border-width:2px;
-  }
 }
 </style>
 </head>
@@ -459,7 +425,9 @@ button,input{font-family:inherit}
 
 <div class="header">
 
-  <div class="logo">🎟️ WIN TOMBOLA</div>
+  <div class="logo">
+    🎟️ WIN TOMBOLA
+  </div>
 
   <div class="sub">
     Choose your ticket and book it
@@ -487,6 +455,7 @@ button,input{font-family:inherit}
 
 </div>
 
+
 <div class="container">
 
   <div class="info">
@@ -494,9 +463,48 @@ button,input{font-family:inherit}
     <span id="visibleCount">0</span>
   </div>
 
+
+  <div id="liveBox" class="liveBox">
+    🔴 GAME IS LIVE
+  </div>
+
+
+  <div id="gamePanel" class="numberPanel">
+
+    <div style="text-align:center">
+      🎙️ LAST NUMBER
+    </div>
+
+    <div id="lastNumber" class="lastNumber">
+      -
+    </div>
+
+    <div id="callText" class="callText">
+      Game has not started
+    </div>
+
+    <div id="numberGrid" class="numberGrid"></div>
+
+  </div>
+
+
+  <!-- SAVED PRIZES ONLY -->
+
+  <div class="prizeBox">
+
+    <h2>
+      🏆 GAME PRIZES
+    </h2>
+
+    <div id="playerPrizes"></div>
+
+  </div>
+
+
   <div id="tickets"></div>
 
 </div>
+
 
 <!-- ADMIN LOGIN -->
 
@@ -504,7 +512,9 @@ button,input{font-family:inherit}
 
   <div class="modalBox">
 
-    <h2>🔐 Admin Login</h2>
+    <h2>
+      🔐 Admin Login
+    </h2>
 
     <input
       class="input"
@@ -524,7 +534,10 @@ button,input{font-family:inherit}
       LOGIN
     </button>
 
-    <button class="closeBtn" onclick="closeModal('loginModal')">
+    <button
+      class="closeBtn"
+      onclick="closeModal('loginModal')"
+    >
       CLOSE
     </button>
 
@@ -532,17 +545,23 @@ button,input{font-family:inherit}
 
 </div>
 
+
 <!-- ADMIN PANEL -->
 
 <div class="modal" id="adminModal">
 
   <div class="modalBox">
 
-    <h2>⚙️ Game Settings</h2>
+    <h2>
+      ⚙️ Game Settings
+    </h2>
+
 
     <div class="adminCard">
 
-      <label>🎟️ Visible Tickets</label>
+      <label>
+        🎟️ Visible Tickets
+      </label>
 
       <input
         class="input"
@@ -555,167 +574,157 @@ button,input{font-family:inherit}
 
       <div class="small">
         Player ko Ticket 1 se yahan tak dikhenge.
-        Example: 100 = Ticket 1–100.
       </div>
 
     </div>
 
+
     <div class="adminCard">
 
-      <label>📅 Game Date</label>
+      <label>
+        📅 Game Date
+      </label>
 
-      <input class="input" id="gameDate" type="date">
+      <input
+        class="input"
+        id="gameDate"
+        type="date"
+      >
 
-      <label>⏰ Game Time</label>
+      <label>
+        ⏰ Game Time
+      </label>
 
-      <input class="input" id="gameTime" type="time">
+      <input
+        class="input"
+        id="gameTime"
+        type="time"
+      >
 
     </div>
 
-    <button class="saveBtn" onclick="saveSettings()">
-      💾 SAVE SETTINGS
-    </button>
+
+    <!-- PRIZE MANAGEMENT -->
 
     <div class="adminCard">
 
-      <h3>🏆 Prize Settings</h3>
+      <h3>
+        🏆 Prize Management
+      </h3>
 
       <div class="small">
-        Prize ko ON/OFF karke SAVE PRIZES dabayein.
+        Prize ON/OFF karke SAVE karein.
+        Player side par sirf ON prizes dikhenge.
       </div>
 
-      <div class="prizeList">
 
-        <div class="prizeRow">
-          <span class="prizeName">🥇 First Line</span>
-          <label class="prizeToggle">
-            <input type="checkbox" id="prize_firstLine">
-            <span class="slider"></span>
-          </label>
-          <span class="prizeStatus" id="status_firstLine">OFF</span>
-        </div>
-
-        <div class="prizeRow">
-          <span class="prizeName">🥈 Second Line</span>
-          <label class="prizeToggle">
-            <input type="checkbox" id="prize_secondLine">
-            <span class="slider"></span>
-          </label>
-          <span class="prizeStatus" id="status_secondLine">OFF</span>
-        </div>
-
-        <div class="prizeRow">
-          <span class="prizeName">🥉 Third Line</span>
-          <label class="prizeToggle">
-            <input type="checkbox" id="prize_thirdLine">
-            <span class="slider"></span>
-          </label>
-          <span class="prizeStatus" id="status_thirdLine">OFF</span>
-        </div>
-
-        <div class="prizeRow">
-          <span class="prizeName">🎯 Four Corners</span>
-          <label class="prizeToggle">
-            <input type="checkbox" id="prize_fourCorners">
-            <span class="slider"></span>
-          </label>
-          <span class="prizeStatus" id="status_fourCorners">OFF</span>
-        </div>
-
-        <div class="prizeRow">
-          <span class="prizeName">⭐ Full House</span>
-          <label class="prizeToggle">
-            <input type="checkbox" id="prize_fullHouse">
-            <span class="slider"></span>
-          </label>
-          <span class="prizeStatus" id="status_fullHouse">OFF</span>
-        </div>
-
-        <div class="prizeRow">
-          <span class="prizeName">👑 Second Full House</span>
-          <label class="prizeToggle">
-            <input type="checkbox" id="prize_secondFullHouse">
-            <span class="slider"></span>
-          </label>
-          <span class="prizeStatus" id="status_secondFullHouse">OFF</span>
-        </div>
-
-        <div class="prizeRow">
-          <span class="prizeName">💎 Third Full House</span>
-          <label class="prizeToggle">
-            <input type="checkbox" id="prize_thirdFullHouse">
-            <span class="slider"></span>
-          </label>
-          <span class="prizeStatus" id="status_thirdFullHouse">OFF</span>
-        </div>
-
-        <div class="prizeRow">
-          <span class="prizeName">🎯 Early 5</span>
-          <label class="prizeToggle">
-            <input type="checkbox" id="prize_early5">
-            <span class="slider"></span>
-          </label>
-          <span class="prizeStatus" id="status_early5">OFF</span>
-        </div>
-
-        <div class="prizeRow">
-          <span class="prizeName">🎯 Early 7</span>
-          <label class="prizeToggle">
-            <input type="checkbox" id="prize_early7">
-            <span class="slider"></span>
-          </label>
-          <span class="prizeStatus" id="status_early7">OFF</span>
-        </div>
-
+      <div class="prizeRow">
+        <span>🥇 First Line</span>
+        <input type="checkbox" id="prize_first">
       </div>
+
+      <div class="prizeRow">
+        <span>🥈 Second Line</span>
+        <input type="checkbox" id="prize_second">
+      </div>
+
+      <div class="prizeRow">
+        <span>🥉 Third Line</span>
+        <input type="checkbox" id="prize_third">
+      </div>
+
+      <div class="prizeRow">
+        <span>🎯 Four Corners</span>
+        <input type="checkbox" id="prize_corners">
+      </div>
+
+      <div class="prizeRow">
+        <span>⭐ Full House</span>
+        <input type="checkbox" id="prize_full">
+      </div>
+
+      <div class="prizeRow">
+        <span>👑 Second Full House</span>
+        <input type="checkbox" id="prize_secondfull">
+      </div>
+
+      <div class="prizeRow">
+        <span>💎 Third Full House</span>
+        <input type="checkbox" id="prize_thirdfull">
+      </div>
+
+      <div class="prizeRow">
+        <span>🎯 Early 5</span>
+        <input type="checkbox" id="prize_early5">
+      </div>
+
+      <div class="prizeRow">
+        <span>🎯 Early 7</span>
+        <input type="checkbox" id="prize_early7">
+      </div>
+
 
       <button
         class="saveBtn"
-        style="margin-top:12px"
-        onclick="savePrizes()"
+        onclick="savePrizeSettings()"
       >
-        💾 SAVE PRIZES
+        💾 SAVE PRIZE SETTINGS
       </button>
 
     </div>
-        <!-- TICKET STATUS -->
+
+
+    <button
+      class="saveBtn"
+      onclick="saveSettings()"
+    >
+      💾 SAVE SETTINGS
+    </button>
+
+
+    <!-- LIVE GAME -->
 
     <div class="adminCard">
 
-      <h3>🎟️ Ticket Status</h3>
+      <h3>
+        🎙️ Live Game Control
+      </h3>
 
-      <div class="statusTitle">
-        🟨 BOOKED &nbsp; | &nbsp; ⬜ UNSOLD
-      </div>
+      <button
+        class="callBtn"
+        onclick="startGameManually()"
+      >
+        ▶️ START GAME
+      </button>
 
-      <div
-        id="adminTicketStatusGrid"
-        class="ticketStatusGrid"
-      ></div>
+      <button
+        class="callBtn"
+        onclick="callNextNumber()"
+      >
+        🎙️ CALL NEXT NUMBER
+      </button>
 
-      <div class="statusLegend">
-
-        <div class="legendBox">
-          <span class="legendColor legendUnsold"></span>
-          UNSOLD
-        </div>
-
-        <div class="legendBox">
-          <span class="legendColor legendBooked"></span>
-          BOOKED
-        </div>
-
-      </div>
+      <button
+        class="resetBtn"
+        onclick="resetGame()"
+      >
+        🔄 RESET GAME
+      </button>
 
     </div>
 
-    <!-- TICKET BOOKING -->
+
+    <!-- BOOKING -->
 
     <div class="adminCard">
 
-      <h3>🎟️ Ticket Booking</h3>
+      <h3>
+        🎟️ Ticket Booking
+      </h3>
 
-      <label>Ticket Number</label>
+      <label>
+        Ticket Number
+      </label>
 
       <input
         class="input"
@@ -726,7 +735,9 @@ button,input{font-family:inherit}
         placeholder="Example: 25"
       >
 
-      <label>👤 Customer Name</label>
+      <label>
+        👤 Customer Name
+      </label>
 
       <input
         class="input"
@@ -735,25 +746,42 @@ button,input{font-family:inherit}
         placeholder="Customer name"
       >
 
-      <button class="saveBtn" onclick="adminBookTicket()">
+      <button
+        class="saveBtn"
+        onclick="adminBookTicket()"
+      >
         🎟️ BOOK TICKET
       </button>
 
     </div>
 
+
     <div class="adminCard">
 
-      <h3>📋 Booked Tickets</h3>
+      <h3>
+        📋 Booked Tickets
+      </h3>
 
-      <div id="adminBookings" class="adminList"></div>
+      <div
+        id="adminBookings"
+        class="adminList"
+      ></div>
 
     </div>
 
-    <button class="resetBtn" onclick="resetBookings()">
+
+    <button
+      class="resetBtn"
+      onclick="resetBookings()"
+    >
       🗑️ RESET ALL BOOKINGS
     </button>
 
-    <button class="closeBtn" onclick="closeModal('adminModal')">
+
+    <button
+      class="closeBtn"
+      onclick="closeModal('adminModal')"
+    >
       CLOSE
     </button>
 
@@ -761,10 +789,12 @@ button,input{font-family:inherit}
 
 </div>
 
+
 <script>
 
 const ADMIN_USERNAME = "gyandeep";
 const ADMIN_PASSWORD = "785673";
+
 
 let settings =
   JSON.parse(
@@ -775,25 +805,652 @@ let settings =
     gameTime:""
   };
 
+
 let bookings =
   JSON.parse(
     localStorage.getItem("tombolaBookings")
   ) || {};
 
+
 let prizes =
   JSON.parse(
     localStorage.getItem("tombolaPrizes")
   ) || {
-    firstLine:false,
-    secondLine:false,
-    thirdLine:false,
-    fourCorners:false,
-    fullHouse:false,
-    secondFullHouse:false,
-    thirdFullHouse:false,
-    early5:false,
-    early7:false
+
+    first:true,
+    second:true,
+    third:true,
+    corners:true,
+    full:true,
+    secondfull:true,
+    thirdfull:true,
+    early5:true,
+    early7:true
+
   };
+
+
+let gameStarted =
+  localStorage.getItem("tombolaLive") === "true";
+
+
+let calledNumbers =
+  JSON.parse(
+    localStorage.getItem("calledNumbers") || "[]"
+  );
+
+
+let currentNumber =
+  Number(
+    localStorage.getItem("currentNumber") || 0
+  );
+
+
+const calls = {
+
+1:"Top of the house",
+2:"Little duck",
+3:"Dil wala",
+4:"Murgi chor",
+5:"High five",
+6:"Chhakka",
+7:"Lucky seven",
+8:"Gol gol",
+9:"Cloud nine",
+10:"Perfect ten",
+
+11:"Double one",
+12:"One dozen",
+13:"Unlucky thirteen",
+14:"Valentine",
+15:"Young fifteen",
+16:"Sweet sixteen",
+17:"Dancing seventeen",
+18:"Adult eighteen",
+19:"Last of the teens",
+20:"Score twenty",
+
+21:"Key of the door",
+22:"Two little ducks",
+23:"Cricket number",
+24:"Two dozen",
+25:"Silver jubilee",
+26:"Pick and mix",
+27:"Gateway to heaven",
+28:"Feeling great",
+29:"Rise and shine",
+30:"Dirty thirty",
+
+31:"Flirty thirty-one",
+32:"Birthday number",
+33:"All the threes",
+34:"Ask for more",
+35:"Jump and jive",
+36:"Three dozen",
+37:"More than thirty",
+38:"Dancing eight",
+39:"Feeling fine",
+40:"Naughty forty",
+
+41:"Time for fun",
+42:"Answer to everything",
+43:"More than forty",
+44:"Four by four",
+45:"Halfway to ninety",
+46:"Super fix",
+47:"Lucky forty-seven",
+48:"Four dozen",
+49:"Almost fifty",
+50:"Half century",
+
+51:"Lots of fun",
+52:"Pack of cards",
+53:"Look at me",
+54:"Ask for more",
+55:"Double five",
+56:"Five dozen minus four",
+57:"Heinz varieties",
+58:"Feeling great",
+59:"Just before sixty",
+60:"Six decades",
+
+61:"More fun",
+62:"Coming to you",
+63:"Lucky sixty-three",
+64:"Computer number",
+65:"Retirement number",
+66:"Clickety-click",
+67:"Lucky heaven",
+68:"Feeling great",
+69:"The funny number",
+70:"Seventy, plenty of fun",
+
+71:"Bang on seventy-one",
+72:"Six dozen",
+73:"Lucky seventy-three",
+74:"Knock at the door",
+75:"Diamond jubilee",
+76:"Tricks and kicks",
+77:"Double lucky seven",
+78:"Don't be late",
+79:"One before eighty",
+80:"Eighty, still naughty",
+
+81:"Game begun",
+82:"Coming to you",
+83:"Easy as can be",
+84:"Seven dozen",
+85:"Feeling alive",
+86:"Quick quick tricks",
+87:"Lucky heaven",
+88:"Two fat ladies",
+89:"One before ninety",
+90:"Top of the town"
+
+};
+  /* =========================
+   PRIZE DISPLAY
+========================= */
+
+const prizeList = [
+
+  {
+    key:"first",
+    text:"🥇 First Line"
+  },
+
+  {
+    key:"second",
+    text:"🥈 Second Line"
+  },
+
+  {
+    key:"third",
+    text:"🥉 Third Line"
+  },
+
+  {
+    key:"corners",
+    text:"🎯 Four Corners"
+  },
+
+  {
+    key:"full",
+    text:"⭐ Full House"
+  },
+
+  {
+    key:"secondfull",
+    text:"👑 Second Full House"
+  },
+
+  {
+    key:"thirdfull",
+    text:"💎 Third Full House"
+  },
+
+  {
+    key:"early5",
+    text:"🎯 Early 5"
+  },
+
+  {
+    key:"early7",
+    text:"🎯 Early 7"
+  }
+
+];
+
+
+function renderPlayerPrizes(){
+
+  const box =
+    document.getElementById(
+      "playerPrizes"
+    );
+
+  box.innerHTML = "";
+
+
+  let count = 0;
+
+
+  prizeList.forEach(prize => {
+
+    if(prizes[prize.key] === true){
+
+      count++;
+
+
+      box.innerHTML += `
+        <div class="playerPrize">
+          ${prize.text}
+        </div>
+      `;
+
+    }
+
+  });
+
+
+  if(count === 0){
+
+    box.innerHTML = `
+      <div class="noPrize">
+        No prizes available.
+      </div>
+    `;
+
+  }
+
+}
+
+
+/* =========================
+   ADMIN PRIZE SETTINGS
+========================= */
+
+function loadPrizeSettings(){
+
+  prizeList.forEach(prize => {
+
+    const el =
+      document.getElementById(
+        "prize_" + prize.key
+      );
+
+
+    if(el){
+
+      el.checked =
+        prizes[prize.key] === true;
+
+    }
+
+  });
+
+}
+
+
+function savePrizeSettings(){
+
+  prizeList.forEach(prize => {
+
+    const el =
+      document.getElementById(
+        "prize_" + prize.key
+      );
+
+
+    prizes[prize.key] =
+      el.checked;
+
+  });
+
+
+  localStorage.setItem(
+    "tombolaPrizes",
+    JSON.stringify(prizes)
+  );
+
+
+  renderPlayerPrizes();
+
+
+  alert(
+    "Prize settings saved successfully!"
+  );
+
+}
+
+
+/* =========================
+   NUMBER BOARD
+========================= */
+
+function renderNumberGrid(){
+
+  const box =
+    document.getElementById(
+      "numberGrid"
+    );
+
+
+  box.innerHTML = "";
+
+
+  for(let i=1;i<=90;i++){
+
+    let cls = "number";
+
+
+    if(
+      calledNumbers.includes(i)
+    ){
+
+      cls += " called";
+
+    }
+
+
+    if(
+      i === currentNumber
+    ){
+
+      cls += " last";
+
+    }
+
+
+    box.innerHTML += `
+      <div class="${cls}">
+        ${i}
+      </div>
+    `;
+
+  }
+
+}
+
+
+/* =========================
+   VOICE
+========================= */
+
+function speak(text){
+
+  if(
+    !("speechSynthesis" in window)
+  ){
+
+    return;
+
+  }
+
+
+  speechSynthesis.cancel();
+
+
+  const voice =
+    new SpeechSynthesisUtterance(
+      text
+    );
+
+
+  voice.rate = 0.9;
+  voice.pitch = 1;
+  voice.volume = 1;
+
+
+  speechSynthesis.speak(
+    voice
+  );
+
+}
+
+
+/* =========================
+   START GAME
+========================= */
+
+function startGame(){
+
+  gameStarted = true;
+
+
+  localStorage.setItem(
+    "tombolaLive",
+    "true"
+  );
+
+
+  document.getElementById(
+    "liveBox"
+  ).style.display = "block";
+
+
+  document.getElementById(
+    "liveBox"
+  ).textContent =
+    "🔴 GAME IS LIVE";
+
+
+  document.getElementById(
+    "callText"
+  ).textContent =
+    "GAME IS ON!";
+
+
+  speak(
+    "Game is on! Ladies and gentlemen, get ready! Eyes on your tickets. Let's play Win Tombola!"
+  );
+
+}
+
+
+/* =========================
+   NEXT NUMBER
+========================= */
+
+function callNextNumber(){
+
+  if(!gameStarted){
+
+    startGame();
+
+    return;
+
+  }
+
+
+  if(
+    calledNumbers.length >= 90
+  ){
+
+    gameOver();
+
+    return;
+
+  }
+
+
+  let remaining = [];
+
+
+  for(
+    let i=1;
+    i<=90;
+    i++
+  ){
+
+    if(
+      !calledNumbers.includes(i)
+    ){
+
+      remaining.push(i);
+
+    }
+
+  }
+
+
+  const randomIndex =
+    Math.floor(
+      Math.random() *
+      remaining.length
+    );
+
+
+  const number =
+    remaining[randomIndex];
+
+
+  calledNumbers.push(
+    number
+  );
+
+
+  currentNumber =
+    number;
+
+
+  localStorage.setItem(
+    "calledNumbers",
+    JSON.stringify(
+      calledNumbers
+    )
+  );
+
+
+  localStorage.setItem(
+    "currentNumber",
+    currentNumber
+  );
+
+
+  document.getElementById(
+    "lastNumber"
+  ).textContent =
+    number;
+
+
+  document.getElementById(
+    "callText"
+  ).textContent =
+    calls[number] +
+    " — Number " +
+    number;
+
+
+  speak(
+    calls[number] +
+    " — Number " +
+    number
+  );
+
+
+  renderNumberGrid();
+
+
+  if(
+    calledNumbers.length >= 90
+  ){
+
+    setTimeout(
+      gameOver,
+      2500
+    );
+
+  }
+
+}
+
+
+/* =========================
+   GAME OVER
+========================= */
+
+function gameOver(){
+
+  document.getElementById(
+    "liveBox"
+  ).style.display =
+    "block";
+
+
+  document.getElementById(
+    "liveBox"
+  ).textContent =
+    "🏁 GAME OVER";
+
+
+  document.getElementById(
+    "callText"
+  ).textContent =
+    "Thank you for playing Win Tombola!";
+
+
+  speak(
+    "Game over! Thank you for playing Win Tombola!"
+  );
+
+}
+
+
+/* =========================
+   MANUAL START
+========================= */
+
+function startGameManually(){
+
+  startGame();
+
+}
+
+
+/* =========================
+   RESET GAME
+========================= */
+
+function resetGame(){
+
+  const ok =
+    confirm(
+      "Reset live game and all called numbers?"
+    );
+
+
+  if(!ok){
+
+    return;
+
+  }
+
+
+  gameStarted = false;
+  calledNumbers = [];
+  currentNumber = 0;
+
+
+  localStorage.setItem(
+    "tombolaLive",
+    "false"
+  );
+
+
+  localStorage.setItem(
+    "calledNumbers",
+    JSON.stringify([])
+  );
+
+
+  localStorage.setItem(
+    "currentNumber",
+    "0"
+  );
+
+
+  document.getElementById(
+    "liveBox"
+  ).style.display =
+    "none";
+
+
+  document.getElementById(
+    "lastNumber"
+  ).textContent =
+    "-";
+
+
+  document.getElementById(
+    "callText"
+  ).textContent =
+    "Game has not started";
+
+
+  renderNumberGrid();
+
+}
 
 
 /* =========================
@@ -802,35 +1459,51 @@ let prizes =
 
 function generateTicketNumbers(ticketNo){
 
-  let seed = ticketNo * 997;
+  let seed =
+    ticketNo * 997;
+
 
   function random(){
 
     seed =
-      (seed * 9301 + 49297) % 233280;
+      (seed * 9301 + 49297)
+      % 233280;
 
     return seed / 233280;
+
   }
 
+
   let grid = [
+
     Array(9).fill(false),
     Array(9).fill(false),
     Array(9).fill(false)
+
   ];
 
-  let rowCount = [0,0,0];
+
+  let rowCount =
+    [0,0,0];
+
 
   for(let c=0;c<9;c++){
 
     let availableRows = [];
 
+
     for(let r=0;r<3;r++){
 
-      if(rowCount[r] < 5){
+      if(
+        rowCount[r] < 5
+      ){
+
         availableRows.push(r);
+
       }
 
     }
+
 
     let minCount =
       Math.min(
@@ -839,21 +1512,29 @@ function generateTicketNumbers(ticketNo){
         )
       );
 
+
     let bestRows =
       availableRows.filter(
-        r => rowCount[r] === minCount
+        r =>
+          rowCount[r] ===
+          minCount
       );
+
 
     let row =
       bestRows[
         Math.floor(
-          random() * bestRows.length
+          random() *
+          bestRows.length
         )
       ];
 
+
     grid[row][c] = true;
     rowCount[row]++;
+
   }
+
 
   while(
     rowCount[0] < 5 ||
@@ -862,6 +1543,7 @@ function generateTicketNumbers(ticketNo){
   ){
 
     let possible = [];
+
 
     for(let r=0;r<3;r++){
 
@@ -883,93 +1565,145 @@ function generateTicketNumbers(ticketNo){
 
     }
 
-    if(possible.length === 0){
+
+    if(
+      possible.length === 0
+    ){
+
       break;
+
     }
+
 
     let minRowCount =
       Math.min(...rowCount);
 
+
     let preferred =
       possible.filter(
-        x => rowCount[x.r] === minRowCount
+        x =>
+          rowCount[x.r] ===
+          minRowCount
       );
+
 
     let selected =
       preferred[
         Math.floor(
-          random() * preferred.length
+          random() *
+          preferred.length
         )
       ];
 
-    grid[selected.r][selected.c] = true;
-    rowCount[selected.r]++;
+
+    grid[
+      selected.r
+    ][
+      selected.c
+    ] = true;
+
+
+    rowCount[
+      selected.r
+    ]++;
+
   }
 
+
   let result = [
+
     Array(9).fill(""),
     Array(9).fill(""),
     Array(9).fill("")
+
   ];
+
 
   for(let c=0;c<9;c++){
 
     let min =
-      c === 0 ? 1 : c * 10;
+      c === 0
+      ? 1
+      : c * 10;
+
 
     let max =
       c === 0
-        ? 9
-        : c === 8
-          ? 90
-          : c * 10 + 9;
+      ? 9
+      : c === 8
+        ? 90
+        : c * 10 + 9;
+
 
     let needed = 0;
 
+
     for(let r=0;r<3;r++){
 
-      if(grid[r][c]){
+      if(
+        grid[r][c]
+      ){
+
         needed++;
+
       }
 
     }
+
 
     let numbers = [];
 
-    while(numbers.length < needed){
+
+    while(
+      numbers.length < needed
+    ){
 
       let n =
         Math.floor(
-          random() * (max-min+1)
+          random() *
+          (max-min+1)
         ) + min;
 
-      if(!numbers.includes(n)){
+
+      if(
+        !numbers.includes(n)
+      ){
+
         numbers.push(n);
+
       }
 
     }
+
 
     numbers.sort(
       (a,b) => a-b
     );
 
+
     let index = 0;
+
 
     for(let r=0;r<3;r++){
 
-      if(grid[r][c]){
+      if(
+        grid[r][c]
+      ){
 
         result[r][c] =
           numbers[index];
 
         index++;
+
       }
 
     }
 
   }
 
+
   return result;
+
 }
 
 
@@ -980,22 +1714,34 @@ function generateTicketNumbers(ticketNo){
 function renderTickets(){
 
   const box =
-    document.getElementById("tickets");
+    document.getElementById(
+      "tickets"
+    );
+
 
   box.innerHTML = "";
+
 
   let total =
     Math.min(
       600,
       Math.max(
         1,
-        Number(settings.visibleTickets)
+        Number(
+          settings.visibleTickets
+        )
       )
     );
 
+
   let bookedCount = 0;
 
-  for(let i=1;i<=total;i++){
+
+  for(
+    let i=1;
+    i<=total;
+    i++
+  ){
 
     if(
       bookings[i] &&
@@ -1003,32 +1749,41 @@ function renderTickets(){
     ){
 
       bookedCount++;
+
     }
 
   }
 
-  let availableCount =
-    total - bookedCount;
 
   document.getElementById(
     "visibleCount"
-  ).textContent = availableCount;
+  ).textContent =
+    total - bookedCount;
 
-  for(let i=1;i<=total;i++){
+
+  for(
+    let i=1;
+    i<=total;
+    i++
+  ){
 
     const booked =
       bookings[i] &&
       bookings[i].booked === true;
+
 
     const customerName =
       booked
       ? bookings[i].name
       : "UNSOLD";
 
+
     const numbers =
       generateTicketNumbers(i);
 
+
     let cells = "";
+
 
     for(let r=0;r<3;r++){
 
@@ -1037,16 +1792,21 @@ function renderTickets(){
         let value =
           numbers[r][c];
 
+
         cells += `
           <div class="cell ${
-            value === "" ? "empty" : ""
+            value === ""
+            ? "empty"
+            : ""
           }">
             ${value}
           </div>
         `;
+
       }
 
     }
+
 
     box.innerHTML += `
 
@@ -1071,11 +1831,11 @@ function renderTickets(){
       </div>
 
     `;
+
   }
-}
 
-
-/* =========================
+  }
+  /* =========================
    ADMIN LOGIN
 ========================= */
 
@@ -1083,9 +1843,11 @@ function openAdminLogin(){
 
   document.getElementById(
     "loginModal"
-  ).style.display = "block";
+  ).style.display =
+    "block";
 
 }
+
 
 function loginAdmin(){
 
@@ -1094,10 +1856,12 @@ function loginAdmin(){
       "username"
     ).value.trim();
 
+
   const pass =
     document.getElementById(
       "password"
     ).value;
+
 
   if(
     user === ADMIN_USERNAME &&
@@ -1108,11 +1872,16 @@ function loginAdmin(){
       "username"
     ).value = "";
 
+
     document.getElementById(
       "password"
     ).value = "";
 
-    closeModal("loginModal");
+
+    closeModal(
+      "loginModal"
+    );
+
 
     openAdminPanel();
 
@@ -1138,122 +1907,38 @@ function openAdminPanel(){
   ).value =
     settings.visibleTickets;
 
+
   document.getElementById(
     "gameDate"
   ).value =
     settings.gameDate;
+
 
   document.getElementById(
     "gameTime"
   ).value =
     settings.gameTime;
 
+
   document.getElementById(
     "adminTicketNumber"
   ).value = "";
+
 
   document.getElementById(
     "adminCustomerName"
   ).value = "";
 
+
   loadPrizeSettings();
 
   renderAdminBookings();
 
-  renderAdminTicketStatus();
 
   document.getElementById(
     "adminModal"
-  ).style.display = "block";
-}
-
-
-/* =========================
-   LOAD PRIZES
-========================= */
-
-function loadPrizeSettings(){
-
-  const names = [
-    "firstLine",
-    "secondLine",
-    "thirdLine",
-    "fourCorners",
-    "fullHouse",
-    "secondFullHouse",
-    "thirdFullHouse",
-    "early5",
-    "early7"
-  ];
-
-  names.forEach(name => {
-
-    const checkbox =
-      document.getElementById(
-        "prize_" + name
-      );
-
-    const status =
-      document.getElementById(
-        "status_" + name
-      );
-
-    checkbox.checked =
-      prizes[name] === true;
-
-    status.textContent =
-      checkbox.checked ? "ON" : "OFF";
-
-    checkbox.onchange = function(){
-
-      status.textContent =
-        checkbox.checked ? "ON" : "OFF";
-
-    };
-
-  });
-
-}
-
-
-/* =========================
-   SAVE PRIZES
-========================= */
-
-function savePrizes(){
-
-  const names = [
-    "firstLine",
-    "secondLine",
-    "thirdLine",
-    "fourCorners",
-    "fullHouse",
-    "secondFullHouse",
-    "thirdFullHouse",
-    "early5",
-    "early7"
-  ];
-
-  names.forEach(name => {
-
-    const checkbox =
-      document.getElementById(
-        "prize_" + name
-      );
-
-    prizes[name] =
-      checkbox.checked;
-
-  });
-
-  localStorage.setItem(
-    "tombolaPrizes",
-    JSON.stringify(prizes)
-  );
-
-  alert(
-    "Prize settings saved successfully!"
-  );
+  ).style.display =
+    "block";
 
 }
 
@@ -1271,19 +1956,24 @@ function adminBookTicket(){
       ).value
     );
 
+
   let name =
     document.getElementById(
       "adminCustomerName"
     ).value.trim();
+
 
   let total =
     Math.min(
       600,
       Math.max(
         1,
-        Number(settings.visibleTickets)
+        Number(
+          settings.visibleTickets
+        )
       )
     );
+
 
   if(
     isNaN(ticketNo) ||
@@ -1296,7 +1986,9 @@ function adminBookTicket(){
     );
 
     return;
+
   }
+
 
   if(!name){
 
@@ -1305,7 +1997,9 @@ function adminBookTicket(){
     );
 
     return;
+
   }
+
 
   if(
     bookings[ticketNo] &&
@@ -1317,30 +2011,40 @@ function adminBookTicket(){
     );
 
     return;
+
   }
 
+
   bookings[ticketNo] = {
+
     booked:true,
     name:name,
     time:new Date().toISOString()
+
   };
+
 
   localStorage.setItem(
     "tombolaBookings",
-    JSON.stringify(bookings)
+    JSON.stringify(
+      bookings
+    )
   );
+
 
   document.getElementById(
     "adminTicketNumber"
   ).value = "";
 
+
   document.getElementById(
     "adminCustomerName"
   ).value = "";
 
+
   renderTickets();
   renderAdminBookings();
-  renderAdminTicketStatus();
+
 
   alert(
     "Ticket " +
@@ -1348,77 +2052,6 @@ function adminBookTicket(){
     " booked for " +
     name
   );
-
-}
-  /* =========================
-   ADMIN TICKET STATUS GRID
-========================= */
-
-function renderAdminTicketStatus(){
-
-  const box =
-    document.getElementById(
-      "adminTicketStatusGrid"
-    );
-
-  if(!box){
-    return;
-  }
-
-  box.innerHTML = "";
-
-  let total =
-    Math.min(
-      600,
-      Math.max(
-        1,
-        Number(settings.visibleTickets)
-      )
-    );
-
-  for(let i=1;i<=total;i++){
-
-    const booked =
-      bookings[i] &&
-      bookings[i].booked === true;
-
-    const div =
-      document.createElement("div");
-
-    div.className =
-      "statusTicket " +
-      (booked ? "booked" : "unsold");
-
-    div.textContent = i;
-
-    div.title =
-      booked
-      ? "BOOKED - " + bookings[i].name
-      : "UNSOLD";
-
-    div.onclick = function(){
-
-      if(booked){
-
-        alert(
-          "🎟️ Ticket " + i +
-          "\n👤 Customer: " +
-          bookings[i].name
-        );
-
-      }else{
-
-        alert(
-          "🎟️ Ticket " + i +
-          "\n⬜ UNSOLD"
-        );
-
-      }
-
-    };
-
-    box.appendChild(div);
-  }
 
 }
 
@@ -1434,12 +2067,17 @@ function renderAdminBookings(){
       "adminBookings"
     );
 
+
   box.innerHTML = "";
+
 
   let keys =
     Object.keys(bookings)
       .map(Number)
-      .sort((a,b)=>a-b);
+      .sort(
+        (a,b) => a-b
+      );
+
 
   if(keys.length === 0){
 
@@ -1450,7 +2088,9 @@ function renderAdminBookings(){
     `;
 
     return;
+
   }
+
 
   keys.forEach(ticketNo => {
 
@@ -1458,23 +2098,27 @@ function renderAdminBookings(){
       !bookings[ticketNo] ||
       !bookings[ticketNo].booked
     ){
+
       return;
+
     }
+
 
     let name =
       bookings[ticketNo].name;
+
 
     box.innerHTML += `
 
       <div class="adminBooking">
 
         🎟️ Ticket:
-        <strong>${ticketNo}</strong>
+        <strong>${nameEsc(name)}</strong>
 
         <br>
 
         👤 Name:
-        <strong>${name}</strong>
+        <strong>${nameEsc(name)}</strong>
 
         <br>
 
@@ -1488,7 +2132,24 @@ function renderAdminBookings(){
       </div>
 
     `;
+
   });
+
+}
+
+
+/* =========================
+   SAFE TEXT
+========================= */
+
+function nameEsc(value){
+
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 
 }
 
@@ -1506,20 +2167,28 @@ function cancelBooking(ticketNo){
       "?"
     );
 
+
   if(!ok){
+
     return;
+
   }
+
 
   delete bookings[ticketNo];
 
+
   localStorage.setItem(
     "tombolaBookings",
-    JSON.stringify(bookings)
+    JSON.stringify(
+      bookings
+    )
   );
+
 
   renderTickets();
   renderAdminBookings();
-  renderAdminTicketStatus();
+
 
   alert(
     "Ticket " +
@@ -1543,6 +2212,7 @@ function saveSettings(){
       ).value
     );
 
+
   if(
     isNaN(visible) ||
     visible < 1 ||
@@ -1554,36 +2224,41 @@ function saveSettings(){
     );
 
     return;
+
   }
+
 
   settings.visibleTickets =
     visible;
+
 
   settings.gameDate =
     document.getElementById(
       "gameDate"
     ).value;
 
+
   settings.gameTime =
     document.getElementById(
       "gameTime"
     ).value;
 
+
   localStorage.setItem(
     "tombolaSettings",
-    JSON.stringify(settings)
+    JSON.stringify(
+      settings
+    )
   );
+
 
   renderTickets();
   updateGameDisplay();
-  renderAdminBookings();
-  renderAdminTicketStatus();
+
 
   alert(
     "Settings saved successfully!"
   );
-
-  closeModal("adminModal");
 
 }
 
@@ -1599,20 +2274,28 @@ function resetBookings(){
       "Are you sure you want to reset ALL bookings?"
     );
 
+
   if(!ok){
+
     return;
+
   }
+
 
   bookings = {};
 
+
   localStorage.setItem(
     "tombolaBookings",
-    JSON.stringify(bookings)
+    JSON.stringify(
+      bookings
+    )
   );
+
 
   renderTickets();
   renderAdminBookings();
-  renderAdminTicketStatus();
+
 
   alert(
     "All bookings reset."
@@ -1629,7 +2312,8 @@ function closeModal(id){
 
   document.getElementById(
     id
-  ).style.display = "none";
+  ).style.display =
+    "none";
 
 }
 
@@ -1638,18 +2322,29 @@ function closeModal(id){
    DATE FORMAT
 ========================= */
 
-function formatGameDate(dateString){
+function formatGameDate(
+  dateString
+){
 
   if(!dateString){
+
     return "--/--/----";
+
   }
+
 
   let parts =
     dateString.split("-");
 
-  if(parts.length !== 3){
+
+  if(
+    parts.length !== 3
+  ){
+
     return "--/--/----";
+
   }
+
 
   return (
     parts[2] +
@@ -1666,30 +2361,45 @@ function formatGameDate(dateString){
    TIME FORMAT
 ========================= */
 
-function formatGameTime(timeString){
+function formatGameTime(
+  timeString
+){
 
   if(!timeString){
+
     return "--:-- --";
+
   }
+
 
   let parts =
     timeString.split(":");
 
+
   let hour =
     parseInt(parts[0]);
+
 
   let minute =
     parts[1];
 
+
   let ampm =
-    hour >= 12 ? "PM" : "AM";
+    hour >= 12
+    ? "PM"
+    : "AM";
+
 
   hour =
     hour % 12;
 
+
   if(hour === 0){
+
     hour = 12;
+
   }
+
 
   return (
     String(hour).padStart(2,"0") +
@@ -1715,6 +2425,7 @@ function updateGameDisplay(){
       settings.gameDate
     );
 
+
   document.getElementById(
     "gameTimeDisplay"
   ).textContent =
@@ -1726,7 +2437,7 @@ function updateGameDisplay(){
 
 
 /* =========================
-   GAME COUNTDOWN
+   COUNTDOWN
 ========================= */
 
 function updateCountdown(){
@@ -1735,6 +2446,7 @@ function updateCountdown(){
     document.getElementById(
       "countdown"
     );
+
 
   if(
     !settings.gameDate ||
@@ -1745,7 +2457,9 @@ function updateCountdown(){
       "00:00:00";
 
     return;
+
   }
+
 
   const target =
     new Date(
@@ -1755,60 +2469,83 @@ function updateCountdown(){
       ":00"
     );
 
+
   const now =
     new Date();
+
 
   let diff =
     target.getTime() -
     now.getTime();
+
 
   if(diff <= 0){
 
     el.textContent =
       "00:00:00";
 
+
+    if(!gameStarted){
+
+      startGame();
+
+    }
+
+
     return;
+
   }
+
 
   let totalSeconds =
     Math.floor(
       diff / 1000
     );
 
+
   let hours =
     Math.floor(
       totalSeconds / 3600
     );
+
 
   let minutes =
     Math.floor(
       (totalSeconds % 3600) / 60
     );
 
+
   let seconds =
     totalSeconds % 60;
+
 
   let days =
     Math.floor(
       hours / 24
     );
 
+
   hours =
     hours % 24;
+
 
   if(days > 0){
 
     el.textContent =
       days + "d " +
-      String(hours).padStart(2,"0") + ":" +
-      String(minutes).padStart(2,"0") + ":" +
+      String(hours).padStart(2,"0") +
+      ":" +
+      String(minutes).padStart(2,"0") +
+      ":" +
       String(seconds).padStart(2,"0");
 
   }else{
 
     el.textContent =
-      String(hours).padStart(2,"0") + ":" +
-      String(minutes).padStart(2,"0") + ":" +
+      String(hours).padStart(2,"0") +
+      ":" +
+      String(minutes).padStart(2,"0") +
+      ":" +
       String(seconds).padStart(2,"0");
 
   }
@@ -1817,64 +2554,53 @@ function updateCountdown(){
 
 
 /* =========================
-   START GAME
+   PAGE START
 ========================= */
 
-function startGame(){
+function initialize(){
+
+  updateGameDisplay();
+
+  renderPlayerPrizes();
+
+  renderNumberGrid();
 
   renderTickets();
-  updateGameDisplay();
+
   updateCountdown();
 
-  setInterval(
-    updateCountdown,
-    1000
-  );
+  if(gameStarted){
+
+    document.getElementById(
+      "liveBox"
+    ).style.display =
+      "block";
+
+    if(calledNumbers.length >= 90){
+
+      document.getElementById(
+        "liveBox"
+      ).textContent =
+        "🏁 GAME OVER";
+
+    }
+
+  }
 
 }
 
 
 /* =========================
-   CLOSE MODAL OUTSIDE
+   AUTO UPDATE
 ========================= */
 
-window.addEventListener(
-  "click",
-  function(event){
-
-    const loginModal =
-      document.getElementById(
-        "loginModal"
-      );
-
-    const adminModal =
-      document.getElementById(
-        "adminModal"
-      );
-
-    if(event.target === loginModal){
-
-      loginModal.style.display =
-        "none";
-
-    }
-
-    if(event.target === adminModal){
-
-      adminModal.style.display =
-        "none";
-
-    }
-
-  }
+setInterval(
+  updateCountdown,
+  1000
 );
 
 
-/* =========================
-   START
-========================= */
-
-startGame();
+initialize();
 
 </script>
 
