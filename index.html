@@ -69,7 +69,7 @@ button,input{font-family:inherit}
 
 <div class="container">
 <div id="ticketPage"><div class="info">🎟️ Available Tickets: <span id="visibleCount">0</span></div><div id="tickets"></div></div>
-<div id="gameBoard" class="gameBoard"><div class="boardTitle">🎱 WIN TOMBOLA — NUMBERS</div><div class="lastNumber" id="lastNumber">Waiting for game... <span>--</span></div><div class="numberGrid" id="numberGrid"></div><div class="voiceNote">🎙️ Number announcement ON</div></div>
+<div id="gameBoard" class="gameBoard"><div class="boardTitle">🎱 WIN TOMBOLA — NUMBERS</div><div class="numberGrid" id="numberGrid"></div></div>
 </div>
 
 <div class="modal" id="loginModal">
@@ -206,7 +206,7 @@ function speak(text){if(!("speechSynthesis" in window))return;window.speechSynth
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 function drawNextNumber(){if(!gameRunning)return;if(drawnNumbers.length>=90){finishGame();return}const a=[];for(let i=1;i<=90;i++)if(!drawnNumbers.includes(i))a.push(i);const n=a[Math.floor(Math.random()*a.length)];drawnNumbers.push(n);saveDrawnNumbers();renderNumberBoard();speak((NUMBER_CALLS[n]||"Number")+" — Number "+n);if(drawnNumbers.length>=90)finishGame()}
-function finishGame(){clearInterval(drawTimer);drawTimer=null;gameRunning=false;localStorage.setItem("tombolaGameRunning","false");renderNumberBoard();updatePlayerGameStatus();document.getElementById("lastNumber").innerHTML='🏁 GAME OVER <span>90</span>';speak("Game over")}
+function finishGame(){clearInterval(drawTimer);drawTimer=null;gameRunning=false;localStorage.setItem("tombolaGameRunning","false");renderNumberBoard();updatePlayerGameStatus();speak("Game over")}
 function renderTickets(){
 const box=document.getElementById("tickets");box.innerHTML="";
 let total=Math.min(600,Math.max(1,Number(settings.visibleTickets))),bookedCount=0;
