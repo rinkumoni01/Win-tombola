@@ -129,6 +129,7 @@ button,input{
   font-size:19px;
   font-weight:bold;
   overflow:hidden;
+  text-align:center;
 }
 
 .ticketGrid{
@@ -156,20 +157,22 @@ button,input{
   color:transparent;
 }
 
-.bookBtn{
+.adminTicketBtn{
   display:block;
-  margin-left:auto;
+  width:100%;
+  margin-top:7px;
   background:#ff754c;
   color:white;
   border:0;
-  padding:12px 18px;
+  padding:12px;
   font-size:16px;
   font-weight:bold;
   cursor:pointer;
+  border-radius:8px;
 }
 
-.bookedBtn{
-  background:#e65b45;
+.cancelBtn{
+  background:#d90000;
 }
 
 .modal{
@@ -262,6 +265,34 @@ button,input{
   font-size:18px;
 }
 
+.adminList{
+  max-height:350px;
+  overflow:auto;
+  margin-top:10px;
+}
+
+.adminBooking{
+  background:white;
+  border:1px solid #ddd;
+  border-radius:8px;
+  padding:10px;
+  margin-bottom:8px;
+}
+
+.adminBooking strong{
+  color:#ed005f;
+}
+
+.bookingCancel{
+  background:#d00;
+  color:white;
+  border:0;
+  padding:7px 10px;
+  border-radius:6px;
+  margin-top:7px;
+  cursor:pointer;
+}
+
 @media(max-width:600px){
 
   .logo{
@@ -311,9 +342,9 @@ button,input{
     padding:12px 6px;
   }
 
-  .bookBtn{
-    padding:10px 11px;
-    font-size:13px;
+  .adminTicketBtn{
+    padding:10px;
+    font-size:14px;
   }
 }
 </style>
@@ -333,24 +364,15 @@ button,input{
 
   <div class="gameInfo">
 
-    <div
-      class="gameBox"
-      id="gameDateDisplay"
-    >
+    <div class="gameBox" id="gameDateDisplay">
       --/--/----
     </div>
 
-    <div
-      class="gameBox"
-      id="countdown"
-    >
+    <div class="gameBox" id="countdown">
       00:00:00
     </div>
 
-    <div
-      class="gameBox"
-      id="gameTimeDisplay"
-    >
+    <div class="gameBox" id="gameTimeDisplay">
       --:-- --
     </div>
 
@@ -376,8 +398,6 @@ button,input{
       0
     </span>
 
-    / 600
-
   </div>
 
   <div id="tickets"></div>
@@ -387,10 +407,7 @@ button,input{
 
 <!-- ADMIN LOGIN -->
 
-<div
-  class="modal"
-  id="loginModal"
->
+<div class="modal" id="loginModal">
 
   <div class="modalBox">
 
@@ -433,16 +450,14 @@ button,input{
 
 <!-- ADMIN PANEL -->
 
-<div
-  class="modal"
-  id="adminModal"
->
+<div class="modal" id="adminModal">
 
   <div class="modalBox">
 
     <h2>
       ⚙️ Game Settings
     </h2>
+
 
     <div class="adminCard">
 
@@ -499,12 +514,68 @@ button,input{
       💾 SAVE SETTINGS
     </button>
 
+
+    <div class="adminCard">
+
+      <h3>
+        🎟️ Ticket Booking
+      </h3>
+
+      <label>
+        Ticket Number
+      </label>
+
+      <input
+        class="input"
+        id="adminTicketNumber"
+        type="number"
+        min="1"
+        max="600"
+        placeholder="Example: 25"
+      >
+
+      <label>
+        👤 Customer Name
+      </label>
+
+      <input
+        class="input"
+        id="adminCustomerName"
+        type="text"
+        placeholder="Customer name"
+      >
+
+      <button
+        class="saveBtn"
+        onclick="adminBookTicket()"
+      >
+        🎟️ BOOK TICKET
+      </button>
+
+    </div>
+
+
+    <div class="adminCard">
+
+      <h3>
+        📋 Booked Tickets
+      </h3>
+
+      <div
+        id="adminBookings"
+        class="adminList"
+      ></div>
+
+    </div>
+
+
     <button
       class="resetBtn"
       onclick="resetBookings()"
     >
       🗑️ RESET ALL BOOKINGS
     </button>
+
 
     <button
       class="closeBtn"
@@ -556,6 +627,7 @@ function generateTicketNumbers(ticketNo){
       (seed * 9301 + 49297) % 233280;
 
     return seed / 233280;
+
   }
 
 
@@ -571,8 +643,6 @@ function generateTicketNumbers(ticketNo){
   let rowCount = [0,0,0];
 
 
-  /* Every column gets at least 1 number */
-
   for(let c=0;c<9;c++){
 
     let availableRows = [];
@@ -580,9 +650,7 @@ function generateTicketNumbers(ticketNo){
     for(let r=0;r<3;r++){
 
       if(rowCount[r] < 5){
-
         availableRows.push(r);
-
       }
 
     }
@@ -611,13 +679,10 @@ function generateTicketNumbers(ticketNo){
 
 
     grid[row][c] = true;
-
     rowCount[row]++;
 
   }
 
-
-  /* Add remaining 6 numbers */
 
   while(
     rowCount[0] < 5 ||
@@ -672,7 +737,6 @@ function generateTicketNumbers(ticketNo){
 
 
     grid[selected.r][selected.c] = true;
-
     rowCount[selected.r]++;
 
   }
@@ -686,8 +750,6 @@ function generateTicketNumbers(ticketNo){
 
   ];
 
-
-  /* Generate numbers for each column */
 
   for(let c=0;c<9;c++){
 
@@ -729,9 +791,7 @@ function generateTicketNumbers(ticketNo){
 
 
       if(!numbers.includes(n)){
-
         numbers.push(n);
-
       }
 
     }
@@ -788,9 +848,30 @@ function renderTickets(){
     );
 
 
+  let bookedCount = 0;
+
+
+  for(let i=1;i<=total;i++){
+
+    if(
+      bookings[i] &&
+      bookings[i].booked === true
+    ){
+
+      bookedCount++;
+
+    }
+
+  }
+
+
+  let availableCount =
+    total - bookedCount;
+
+
   document.getElementById(
     "visibleCount"
-  ).textContent = total;
+  ).textContent = availableCount;
 
 
   if(total <= 0){
@@ -811,6 +892,12 @@ function renderTickets(){
     const booked =
       bookings[i] &&
       bookings[i].booked === true;
+
+
+    const customerName =
+      booked
+      ? bookings[i].name
+      : "UNSOLD";
 
 
     const numbers =
@@ -854,38 +941,13 @@ function renderTickets(){
           </div>
 
           <div class="ticketName">
-            ${
-              booked
-              ? "BOOKED"
-              : "UNSOLD"
-            }
+            ${customerName}
           </div>
 
         </div>
 
         <div class="ticketGrid">
           ${cells}
-        </div>
-
-        <div style="padding:7px 0">
-
-          <button
-            class="bookBtn ${
-              booked ? "bookedBtn" : ""
-            }"
-            ${
-              booked
-              ? "disabled"
-              : `onclick="bookTicket(${i})"`
-            }
-          >
-            ${
-              booked
-              ? "BOOKED"
-              : "BOOK THIS"
-            }
-          </button>
-
         </div>
 
       </div>
@@ -895,76 +957,7 @@ function renderTickets(){
   }
 
 }
-
-
-/* =========================
-   BOOK TICKET
-========================= */
-
-function bookTicket(ticketNo){
-
-  if(bookings[ticketNo]?.booked){
-
-    alert(
-      "This ticket is already booked."
-    );
-
-    return;
-  }
-
-
-  let name =
-    prompt(
-      "Enter your name for Ticket " +
-      ticketNo
-    );
-
-
-  if(!name){
-    return;
-  }
-
-
-  let phone =
-    prompt(
-      "Enter your WhatsApp/mobile number"
-    );
-
-
-  if(!phone){
-    return;
-  }
-
-
-  bookings[ticketNo] = {
-
-    booked:true,
-    name:name,
-    phone:phone,
-    time:new Date().toISOString()
-
-  };
-
-
-  localStorage.setItem(
-    "tombolaBookings",
-    JSON.stringify(bookings)
-  );
-
-
-  renderTickets();
-
-
-  alert(
-    "Ticket " +
-    ticketNo +
-    " booked successfully!"
-  );
-
-}
-
-
-/* =========================
+  /* =========================
    ADMIN LOGIN
 ========================= */
 
@@ -995,6 +988,14 @@ function loginAdmin(){
     user === ADMIN_USERNAME &&
     pass === ADMIN_PASSWORD
   ){
+
+    document.getElementById(
+      "username"
+    ).value = "";
+
+    document.getElementById(
+      "password"
+    ).value = "";
 
     closeModal("loginModal");
 
@@ -1036,8 +1037,251 @@ function openAdminPanel(){
 
 
   document.getElementById(
+    "adminTicketNumber"
+  ).value = "";
+
+
+  document.getElementById(
+    "adminCustomerName"
+  ).value = "";
+
+
+  renderAdminBookings();
+
+
+  document.getElementById(
     "adminModal"
   ).style.display = "block";
+
+}
+
+
+/* =========================
+   ADMIN BOOK TICKET
+========================= */
+
+function adminBookTicket(){
+
+  let ticketNo =
+    parseInt(
+      document.getElementById(
+        "adminTicketNumber"
+      ).value
+    );
+
+
+  let name =
+    document.getElementById(
+      "adminCustomerName"
+    ).value.trim();
+
+
+  let total =
+    Math.min(
+      600,
+      Math.max(
+        1,
+        Number(settings.visibleTickets)
+      )
+    );
+
+
+  if(
+    isNaN(ticketNo) ||
+    ticketNo < 1 ||
+    ticketNo > total
+  ){
+
+    alert(
+      "Please enter a valid visible ticket number."
+    );
+
+    return;
+
+  }
+
+
+  if(!name){
+
+    alert(
+      "Please enter customer name."
+    );
+
+    return;
+
+  }
+
+
+  if(
+    bookings[ticketNo] &&
+    bookings[ticketNo].booked === true
+  ){
+
+    alert(
+      "This ticket is already booked."
+    );
+
+    return;
+
+  }
+
+
+  bookings[ticketNo] = {
+
+    booked:true,
+    name:name,
+    time:new Date().toISOString()
+
+  };
+
+
+  localStorage.setItem(
+    "tombolaBookings",
+    JSON.stringify(bookings)
+  );
+
+
+  document.getElementById(
+    "adminTicketNumber"
+  ).value = "";
+
+
+  document.getElementById(
+    "adminCustomerName"
+  ).value = "";
+
+
+  renderTickets();
+  renderAdminBookings();
+
+
+  alert(
+    "Ticket " +
+    ticketNo +
+    " booked for " +
+    name
+  );
+
+}
+
+
+/* =========================
+   ADMIN BOOKING LIST
+========================= */
+
+function renderAdminBookings(){
+
+  const box =
+    document.getElementById(
+      "adminBookings"
+    );
+
+
+  box.innerHTML = "";
+
+
+  let keys =
+    Object.keys(bookings)
+      .map(Number)
+      .sort((a,b)=>a-b);
+
+
+  if(keys.length === 0){
+
+    box.innerHTML = `
+      <div class="small">
+        No booked tickets.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  keys.forEach(ticketNo => {
+
+    if(
+      !bookings[ticketNo] ||
+      !bookings[ticketNo].booked
+    ){
+
+      return;
+
+    }
+
+
+    let name =
+      bookings[ticketNo].name;
+
+
+    box.innerHTML += `
+
+      <div class="adminBooking">
+
+        🎟️ Ticket:
+        <strong>${ticketNo}</strong>
+
+        <br>
+
+        👤 Name:
+        <strong>${name}</strong>
+
+        <br>
+
+        <button
+          class="bookingCancel"
+          onclick="cancelBooking(${ticketNo})"
+        >
+          CANCEL BOOKING
+        </button>
+
+      </div>
+
+    `;
+
+  });
+
+}
+
+
+/* =========================
+   CANCEL ONE BOOKING
+========================= */
+
+function cancelBooking(ticketNo){
+
+  let ok =
+    confirm(
+      "Cancel booking for Ticket " +
+      ticketNo +
+      "?"
+    );
+
+
+  if(!ok){
+    return;
+  }
+
+
+  delete bookings[ticketNo];
+
+
+  localStorage.setItem(
+    "tombolaBookings",
+    JSON.stringify(bookings)
+  );
+
+
+  renderTickets();
+  renderAdminBookings();
+
+
+  alert(
+    "Ticket " +
+    ticketNo +
+    " is now UNSOLD."
+  );
 
 }
 
@@ -1094,8 +1338,8 @@ function saveSettings(){
 
 
   renderTickets();
-
   updateGameDisplay();
+  renderAdminBookings();
 
 
   alert(
@@ -1135,6 +1379,7 @@ function resetBookings(){
 
 
   renderTickets();
+  renderAdminBookings();
 
 
   alert(
@@ -1232,7 +1477,9 @@ function formatGameTime(timeString){
   );
 
 }
-  /* =========================
+
+
+/* =========================
    GAME DISPLAY
 ========================= */
 
@@ -1259,7 +1506,9 @@ function updateGameDisplay(){
 function updateCountdown(){
 
   const el =
-    document.getElementById("countdown");
+    document.getElementById(
+      "countdown"
+    );
 
 
   if(
@@ -1267,9 +1516,11 @@ function updateCountdown(){
     !settings.gameTime
   ){
 
-    el.textContent = "00:00:00";
+    el.textContent =
+      "00:00:00";
 
     return;
+
   }
 
 
@@ -1297,11 +1548,14 @@ function updateCountdown(){
       "00:00:00";
 
     return;
+
   }
 
 
   let totalSeconds =
-    Math.floor(diff / 1000);
+    Math.floor(
+      diff / 1000
+    );
 
 
   let hours =
@@ -1320,13 +1574,10 @@ function updateCountdown(){
     totalSeconds % 60;
 
 
-  /*
-    Countdown ko 24 hours ke
-    andar bhi sahi dikhayega.
-  */
-
   let days =
-    Math.floor(hours / 24);
+    Math.floor(
+      hours / 24
+    );
 
 
   hours =
@@ -1394,14 +1645,16 @@ window.addEventListener(
 
     if(event.target === login){
 
-      login.style.display = "none";
+      login.style.display =
+        "none";
 
     }
 
 
     if(event.target === admin){
 
-      admin.style.display = "none";
+      admin.style.display =
+        "none";
 
     }
 
