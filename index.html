@@ -44,6 +44,7 @@ button,input{font-family:inherit}
 .legendBox{display:flex;align-items:center;gap:5px}.legendColor{width:22px;height:22px;border:2px solid #aaa;border-radius:4px}.legendUnsold{background:#fff}.legendBooked{background:#fff900}
 .runStopBox{display:flex;gap:10px}.runBtn,.stopBtn{flex:1;border:0;padding:14px;border-radius:8px;color:#fff;font-size:17px;font-weight:bold;cursor:pointer}
 .runBtn{background:#16b84e}.stopBtn{background:#d00}.currentGameStatus{text-align:center;padding:10px;border-radius:8px;background:#07145e;color:white;font-weight:bold;margin-top:10px}
+.gameBoard{display:none;background:#fff;border-radius:15px;padding:12px;margin-top:12px;box-shadow:0 2px 10px rgba(0,0,0,.18)}.gameBoard.active{display:block}.boardTitle{text-align:center;font-size:22px;font-weight:bold;color:#ed005f;margin:5px 0 12px}.numberGrid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}.drawNumber{aspect-ratio:1/1;border-radius:8px;border:2px solid #aaa;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:bold}.drawNumber.called{background:#18c957;color:#fff;border-color:#078b35}.lastNumber{text-align:center;background:#07145e;color:#fff;border-radius:10px;padding:10px;margin-bottom:10px;font-size:18px;font-weight:bold}.lastNumber span{font-size:30px;color:#e9f900}.voiceNote{text-align:center;font-size:12px;color:#666;margin-top:8px}
 @media(max-width:600px){
 .logo{font-size:23px}.sub{font-size:12px}.gameInfo{gap:4px}.gameBox{min-height:58px;padding:4px 2px;border-width:3px;font-size:14px}
 #gameDateDisplay{font-size:13px}#countdown{font-size:14px}#gameTimeDisplay{font-size:13px}.gameStatus{font-size:14px}
@@ -53,7 +54,7 @@ button,input{font-family:inherit}
 </style>
 </head>
 <body>
-  
+
 <div class="header">
 <div class="logo">🎟️ WIN TOMBOLA</div>
 <div class="sub">Choose your ticket and book it</div>
@@ -67,8 +68,8 @@ button,input{font-family:inherit}
 </div>
 
 <div class="container">
-<div class="info">🎟️ Available Tickets: <span id="visibleCount">0</span></div>
-<div id="tickets"></div>
+<div id="ticketPage"><div class="info">🎟️ Available Tickets: <span id="visibleCount">0</span></div><div id="tickets"></div></div>
+<div id="gameBoard" class="gameBoard"><div class="boardTitle">🎱 WIN TOMBOLA — NUMBERS</div><div class="lastNumber" id="lastNumber">Waiting for game... <span>--</span></div><div class="numberGrid" id="numberGrid"></div><div class="voiceNote">🎙️ Number announcement ON</div></div>
 </div>
 
 <div class="modal" id="loginModal">
@@ -159,12 +160,14 @@ button,input{font-family:inherit}
 <script>
 const ADMIN_USERNAME="gyandeep";
 const ADMIN_PASSWORD="785673";
-
-let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:50,gameDate:"",gameTime:""};
+  let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:50,gameDate:"",gameTime:""};
 let bookings=JSON.parse(localStorage.getItem("tombolaBookings"))||{};
 let prizes=JSON.parse(localStorage.getItem("tombolaPrizes"))||{firstLine:false,secondLine:false,thirdLine:false,fourCorners:false,fullHouse:false,secondFullHouse:false,thirdFullHouse:false,early5:false,early7:false};
 
 let gameRunning=localStorage.getItem("tombolaGameRunning")==="true";
+let drawnNumbers=JSON.parse(localStorage.getItem("tombolaDrawnNumbers")||"[]");
+let drawTimer=null;
+const NUMBER_CALLS={1:"Top of the house",2:"Little duck",3:"Dil wala",4:"Murgi chor",5:"High five",6:"Chhakka",7:"Lucky seven",8:"Gol gol",9:"Cloud nine",10:"Perfect ten",11:"Double one",12:"One dozen",13:"Unlucky thirteen",14:"Valentine",15:"Young fifteen",16:"Sweet sixteen",17:"Dancing seventeen",18:"Adult eighteen",19:"Last of the teens",20:"Score twenty",21:"Key of the door",22:"Two little ducks",23:"Cricket number",24:"Two dozen",25:"Silver jubilee",26:"Pick and mix",27:"Gateway to heaven",28:"Feeling great",29:"Rise and shine",30:"Dirty thirty",31:"Flirty thirty-one",32:"Birthday number",33:"All the threes",34:"Ask for more",35:"Jump and jive",36:"Three dozen",37:"More than thirty",38:"Dancing eight",39:"Feeling fine",40:"Naughty forty",41:"Time for fun",42:"Answer to everything",43:"More than forty",44:"Four by four",45:"Halfway to ninety",46:"Super fix",47:"Lucky forty-seven",48:"Four dozen",49:"Almost fifty",50:"Half century",51:"Lots of fun",52:"Pack of cards",53:"Look at me",54:"Ask for more",55:"Double five",56:"Five dozen minus four",57:"Heinz varieties",58:"Feeling great",59:"Just before sixty",60:"Six decades",61:"More fun",62:"Coming to you",63:"Lucky sixty-three",64:"Computer number",65:"Retirement number",66:"Clickety-click",67:"Lucky heaven",68:"Feeling great",69:"The funny number",70:"Seventy, plenty of fun",71:"Bang on seventy-one",72:"Six dozen",73:"Lucky seventy-three",74:"Knock at the door",75:"Diamond jubilee",76:"Tricks and kicks",77:"Double lucky seven",78:"Don't be late",79:"One before eighty",80:"Eighty, still naughty",81:"Game begun",82:"Coming to you",83:"Easy as can be",84:"Seven dozen",85:"Feeling alive",86:"Quick quick tricks",87:"Lucky heaven",88:"Two fat ladies",89:"One before ninety",90:"Top of the town"};
 
 function generateTicketNumbers(ticketNo){
 let seed=ticketNo*997;
@@ -198,6 +201,12 @@ for(let r=0;r<3;r++)if(grid[r][c])result[r][c]=numbers[index++];
 return result;
 }
 
+function renderNumberBoard(){const grid=document.getElementById("numberGrid");if(!grid)return;grid.innerHTML="";for(let i=1;i<=90;i++){const d=document.createElement("div");d.className="drawNumber"+(drawnNumbers.includes(i)?" called":"");d.textContent=i;grid.appendChild(d)}const last=drawnNumbers.length?drawnNumbers[drawnNumbers.length-1]:null;document.getElementById("lastNumber").innerHTML=last?`🎙️ ${NUMBER_CALLS[last]} — <span>${last}</span>`:`Waiting for game... <span>--</span>`}
+function speak(text){if(!("speechSynthesis" in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=.92;u.volume=1;window.speechSynthesis.speak(u)}
+function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
+function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
+function drawNextNumber(){if(!gameRunning)return;if(drawnNumbers.length>=90){finishGame();return}const a=[];for(let i=1;i<=90;i++)if(!drawnNumbers.includes(i))a.push(i);const n=a[Math.floor(Math.random()*a.length)];drawnNumbers.push(n);saveDrawnNumbers();renderNumberBoard();speak((NUMBER_CALLS[n]||"Number")+" — Number "+n);if(drawnNumbers.length>=90)finishGame()}
+function finishGame(){clearInterval(drawTimer);drawTimer=null;gameRunning=false;localStorage.setItem("tombolaGameRunning","false");renderNumberBoard();updatePlayerGameStatus();document.getElementById("lastNumber").innerHTML='🏁 GAME OVER <span>90</span>';speak("Game over")}
 function renderTickets(){
 const box=document.getElementById("tickets");box.innerHTML="";
 let total=Math.min(600,Math.max(1,Number(settings.visibleTickets))),bookedCount=0;
@@ -221,11 +230,7 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 }
 
 function setGameStatus(status){
-gameRunning=status;
-localStorage.setItem("tombolaGameRunning",String(gameRunning));
-updatePlayerGameStatus();
-alert(gameRunning?"🟢 Game is now RUNNING.":"🔴 Game is now STOPPED.");
-}
+if(status){if(gameRunning){alert("Game is already running.");return}if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak("GAME IS ON! Ladies and gentlemen, get ready! Eyes on your tickets, Let's play Win Tombola!");clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,6000);alert("🟢 Game is now RUNNING. First number 6 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
 function openAdminLogin(){document.getElementById("loginModal").style.display="block"}
 
@@ -347,7 +352,7 @@ el.textContent=days>0?days+"d "+String(hours).padStart(2,"0")+":"+String(minutes
 }
 
 function startGame(){
-renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();setInterval(updateCountdown,1000);
+renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();if(gameRunning){showGameBoard(true);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,6000)}else{showGameBoard(false)}setInterval(updateCountdown,1000);
 }
 
 window.addEventListener("click",function(event){
@@ -359,4 +364,4 @@ if(event.target===adminModal)adminModal.style.display="none";
 startGame();
 </script>
 </body>
-  </html>
+</html>
