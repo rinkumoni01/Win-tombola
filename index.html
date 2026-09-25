@@ -4,1879 +4,359 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
 <title>Win Tombola</title>
-
 <style>
 *{box-sizing:border-box}
-
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#ff0070;
-  color:#222;
-}
-
+body{margin:0;font-family:Arial,sans-serif;background:#ff0070;color:#222}
 button,input{font-family:inherit}
-
-.header{
-  background:#ff0068;
-  color:white;
-  padding:15px 10px;
-  text-align:center;
-  position:sticky;
-  top:0;
-  z-index:20;
-  box-shadow:0 2px 8px #a00045;
-}
-
-.logo{
-  font-size:28px;
-  font-weight:bold;
-}
-
-.sub{
-  font-size:13px;
-  margin-top:4px;
-}
-
-.gameInfo{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:5px;
-  margin-top:10px;
-}
-
-.gameBox{
-  background:#07145e;
-  color:white;
-  border:4px solid #e9f900;
-  border-radius:10px;
-  min-height:60px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  padding:5px;
-  font-size:20px;
-  font-weight:bold;
-  box-shadow:0 0 5px #fff;
-}
-
-#gameDateDisplay{font-size:17px}
-#countdown{font-size:18px}
-#gameTimeDisplay{font-size:17px}
-
-.adminBtn{
-  margin-top:10px;
-  border:0;
-  background:#fff;
-  color:#e90060;
-  padding:8px 14px;
-  border-radius:8px;
-  font-weight:bold;
-  font-size:15px;
-  cursor:pointer;
-}
-
-.container{
-  max-width:900px;
-  margin:auto;
-  padding:12px;
-}
-
-.info{
-  background:#fff;
-  padding:12px;
-  border-radius:12px;
-  margin-bottom:12px;
-  text-align:center;
-  font-weight:bold;
-  font-size:18px;
-}
-
-.ticket{
-  background:#ff005f;
-  margin:15px 0;
-}
-
-.ticketHead{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-bottom:7px;
-}
-
-.ticketNo{
-  width:58px;
-  height:58px;
-  border-radius:50%;
-  background:#ff6a48;
-  color:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:22px;
-  font-weight:bold;
-  flex-shrink:0;
-}
-
-.ticketName{
-  flex:1;
-  background:#ff6248;
-  color:white;
-  padding:14px 10px;
-  font-size:19px;
-  font-weight:bold;
-  overflow:hidden;
-  text-align:center;
-}
-
-.ticketGrid{
-  background:#fff;
-  border:6px solid #ff684e;
-  border-radius:12px;
-  overflow:hidden;
-  display:grid;
-  grid-template-columns:repeat(9,1fr);
-}
-
-.cell{
-  min-height:58px;
-  border:1px solid #ccc;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-family:Georgia,serif;
-  font-size:23px;
-  font-weight:bold;
-  background:#fff;
-}
-
-.empty{
-  color:transparent;
-}
-
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.65);
-  z-index:100;
-  padding:20px;
-  overflow:auto;
-}
-
-.modalBox{
-  max-width:500px;
-  margin:30px auto;
-  background:white;
-  border-radius:15px;
-  padding:20px;
-}
-
-.modalBox h2{
-  margin-top:0;
-  color:#ed005f;
-}
-
-.input{
-  width:100%;
-  padding:13px;
-  margin:7px 0 12px;
-  border:1px solid #ccc;
-  border-radius:8px;
-  font-size:16px;
-}
-
-.saveBtn{
-  width:100%;
-  background:#ed005f;
-  color:white;
-  border:0;
-  padding:14px;
-  border-radius:8px;
-  font-size:17px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-.closeBtn{
-  width:100%;
-  margin-top:8px;
-  background:#ddd;
-  border:0;
-  padding:12px;
-  border-radius:8px;
-  cursor:pointer;
-}
-
-.adminCard{
-  background:#f7f7f7;
-  padding:15px;
-  border-radius:10px;
-  margin-bottom:12px;
-}
-
-.adminCard label{
-  display:block;
-  font-weight:bold;
-  margin-bottom:5px;
-}
-
-.small{
-  font-size:13px;
-  color:#666;
-}
-
-.resetBtn{
-  background:#d00;
-  color:white;
-  border:0;
-  padding:12px;
-  border-radius:8px;
-  width:100%;
-  margin-top:10px;
-  cursor:pointer;
-}
-
-.adminList{
-  max-height:350px;
-  overflow:auto;
-  margin-top:10px;
-}
-
-.adminBooking{
-  background:white;
-  border:1px solid #ddd;
-  border-radius:8px;
-  padding:10px;
-  margin-bottom:8px;
-}
-
-.adminBooking strong{
-  color:#ed005f;
-}
-
-.bookingCancel{
-  background:#d00;
-  color:white;
-  border:0;
-  padding:7px 10px;
-  border-radius:6px;
-  margin-top:7px;
-  cursor:pointer;
-}
-
-/* PRIZE SETTINGS */
-
-.prizeList{
-  margin-top:10px;
-}
-
-.prizeRow{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  background:white;
-  border:1px solid #ddd;
-  border-radius:8px;
-  padding:10px;
-  margin-bottom:7px;
-  font-weight:bold;
-}
-
-.prizeName{
-  flex:1;
-}
-
-.prizeToggle{
-  width:58px;
-  height:30px;
-  position:relative;
-  flex-shrink:0;
-}
-
-.prizeToggle input{
-  display:none;
-}
-
-.slider{
-  position:absolute;
-  inset:0;
-  background:#bbb;
-  border-radius:30px;
-  cursor:pointer;
-  transition:.2s;
-}
-
-.slider:before{
-  content:"";
-  position:absolute;
-  width:24px;
-  height:24px;
-  left:3px;
-  top:3px;
-  background:white;
-  border-radius:50%;
-  transition:.2s;
-}
-
-.prizeToggle input:checked + .slider{
-  background:#16b84e;
-}
-
-.prizeToggle input:checked + .slider:before{
-  transform:translateX(28px);
-}
-
-.prizeStatus{
-  font-size:12px;
-  min-width:35px;
-  text-align:right;
-}
-
-/* TICKET STATUS */
-
-.ticketStatusGrid{
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
-  gap:6px;
-  margin-top:10px;
-  max-height:420px;
-  overflow-y:auto;
-  padding:4px;
-}
-
-.statusTicket{
-  min-height:55px;
-  border:3px solid #aaa;
-  border-radius:5px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:22px;
-  font-weight:bold;
-  cursor:pointer;
-  user-select:none;
-}
-
-.statusTicket.unsold{
-  background:#fff;
-  color:#111;
-}
-
-.statusTicket.booked{
-  background:#fff900;
-  color:#111;
-}
-
-.statusTitle{
-  text-align:center;
-  font-weight:bold;
-  margin-bottom:8px;
-}
-
-.statusLegend{
-  display:flex;
-  gap:15px;
-  justify-content:center;
-  flex-wrap:wrap;
-  margin-top:10px;
-  font-size:13px;
-  font-weight:bold;
-}
-
-.legendBox{
-  display:flex;
-  align-items:center;
-  gap:5px;
-}
-
-.legendColor{
-  width:22px;
-  height:22px;
-  border:2px solid #aaa;
-  border-radius:4px;
-}
-
-.legendUnsold{
-  background:#fff;
-}
-
-.legendBooked{
-  background:#fff900;
-}
-
+.header{background:#ff0068;color:white;padding:15px 10px;text-align:center;position:sticky;top:0;z-index:20;box-shadow:0 2px 8px #a00045}
+.logo{font-size:28px;font-weight:bold}.sub{font-size:13px;margin-top:4px}
+.gameInfo{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-top:10px}
+.gameBox{background:#07145e;color:white;border:4px solid #e9f900;border-radius:10px;min-height:60px;display:flex;justify-content:center;align-items:center;text-align:center;padding:5px;font-size:20px;font-weight:bold;box-shadow:0 0 5px #fff}
+#gameDateDisplay{font-size:17px}#countdown{font-size:18px}#gameTimeDisplay{font-size:17px}
+.gameStatus{margin-top:8px;background:#07145e;border:3px solid #e9f900;border-radius:10px;padding:8px;font-weight:bold;font-size:16px}
+.statusRunning{color:#39ff70}.statusStopped{color:#ff5555}
+.adminBtn{margin-top:10px;border:0;background:#fff;color:#e90060;padding:8px 14px;border-radius:8px;font-weight:bold;font-size:15px;cursor:pointer}
+.container{max-width:900px;margin:auto;padding:12px}
+.info{background:#fff;padding:12px;border-radius:12px;margin-bottom:12px;text-align:center;font-weight:bold;font-size:18px}
+.ticket{background:#ff005f;margin:15px 0}.ticketHead{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.ticketNo{width:58px;height:58px;border-radius:50%;background:#ff6a48;color:white;display:flex;justify-content:center;align-items:center;font-size:22px;font-weight:bold;flex-shrink:0}
+.ticketName{flex:1;background:#ff6248;color:white;padding:14px 10px;font-size:19px;font-weight:bold;overflow:hidden;text-align:center}
+.ticketGrid{background:#fff;border:6px solid #ff684e;border-radius:12px;overflow:hidden;display:grid;grid-template-columns:repeat(9,1fr)}
+.cell{min-height:58px;border:1px solid #ccc;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:23px;font-weight:bold;background:#fff}.empty{color:transparent}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100;padding:20px;overflow:auto}
+.modalBox{max-width:500px;margin:30px auto;background:white;border-radius:15px;padding:20px}.modalBox h2{margin-top:0;color:#ed005f}
+.input{width:100%;padding:13px;margin:7px 0 12px;border:1px solid #ccc;border-radius:8px;font-size:16px}
+.saveBtn{width:100%;background:#ed005f;color:white;border:0;padding:14px;border-radius:8px;font-size:17px;font-weight:bold;cursor:pointer}
+.closeBtn{width:100%;margin-top:8px;background:#ddd;border:0;padding:12px;border-radius:8px;cursor:pointer}
+.adminCard{background:#f7f7f7;padding:15px;border-radius:10px;margin-bottom:12px}.adminCard label{display:block;font-weight:bold;margin-bottom:5px}.small{font-size:13px;color:#666}
+.resetBtn{background:#d00;color:white;border:0;padding:12px;border-radius:8px;width:100%;margin-top:10px;cursor:pointer}
+.adminList{max-height:350px;overflow:auto;margin-top:10px}.adminBooking{background:white;border:1px solid #ddd;border-radius:8px;padding:10px;margin-bottom:8px}.adminBooking strong{color:#ed005f}
+.bookingCancel{background:#d00;color:white;border:0;padding:7px 10px;border-radius:6px;margin-top:7px;cursor:pointer}
+.prizeList{margin-top:10px}.prizeRow{display:flex;align-items:center;justify-content:space-between;gap:10px;background:white;border:1px solid #ddd;border-radius:8px;padding:10px;margin-bottom:7px;font-weight:bold}.prizeName{flex:1}
+.prizeToggle{width:58px;height:30px;position:relative;flex-shrink:0}.prizeToggle input{display:none}.slider{position:absolute;inset:0;background:#bbb;border-radius:30px;cursor:pointer;transition:.2s}
+.slider:before{content:"";position:absolute;width:24px;height:24px;left:3px;top:3px;background:white;border-radius:50%;transition:.2s}
+.prizeToggle input:checked+.slider{background:#16b84e}.prizeToggle input:checked+.slider:before{transform:translateX(28px)}
+.prizeStatus{font-size:12px;min-width:35px;text-align:right}
+.ticketStatusGrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:10px;max-height:420px;overflow-y:auto;padding:4px}
+.statusTicket{min-height:55px;border:3px solid #aaa;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:bold;cursor:pointer;user-select:none}
+.statusTicket.unsold{background:#fff;color:#111}.statusTicket.booked{background:#fff900;color:#111}
+.statusTitle{text-align:center;font-weight:bold;margin-bottom:8px}.statusLegend{display:flex;gap:15px;justify-content:center;flex-wrap:wrap;margin-top:10px;font-size:13px;font-weight:bold}
+.legendBox{display:flex;align-items:center;gap:5px}.legendColor{width:22px;height:22px;border:2px solid #aaa;border-radius:4px}.legendUnsold{background:#fff}.legendBooked{background:#fff900}
+.runStopBox{display:flex;gap:10px}.runBtn,.stopBtn{flex:1;border:0;padding:14px;border-radius:8px;color:#fff;font-size:17px;font-weight:bold;cursor:pointer}
+.runBtn{background:#16b84e}.stopBtn{background:#d00}.currentGameStatus{text-align:center;padding:10px;border-radius:8px;background:#07145e;color:white;font-weight:bold;margin-top:10px}
 @media(max-width:600px){
-
-  .logo{font-size:23px}
-  .sub{font-size:12px}
-
-  .gameInfo{gap:4px}
-
-  .gameBox{
-    min-height:58px;
-    padding:4px 2px;
-    border-width:3px;
-    font-size:14px;
-  }
-
-  #gameDateDisplay{font-size:13px}
-  #countdown{font-size:14px}
-  #gameTimeDisplay{font-size:13px}
-
-  .cell{
-    min-height:43px;
-    font-size:18px;
-  }
-
-  .ticketNo{
-    width:48px;
-    height:48px;
-    font-size:18px;
-  }
-
-  .ticketName{
-    font-size:16px;
-    padding:12px 6px;
-  }
-
-  .ticketStatusGrid{
-    grid-template-columns:repeat(5,1fr);
-    gap:5px;
-  }
-
-  .statusTicket{
-    min-height:48px;
-    font-size:17px;
-    border-width:2px;
-  }
+.logo{font-size:23px}.sub{font-size:12px}.gameInfo{gap:4px}.gameBox{min-height:58px;padding:4px 2px;border-width:3px;font-size:14px}
+#gameDateDisplay{font-size:13px}#countdown{font-size:14px}#gameTimeDisplay{font-size:13px}.gameStatus{font-size:14px}
+.cell{min-height:43px;font-size:18px}.ticketNo{width:48px;height:48px;font-size:18px}.ticketName{font-size:16px;padding:12px 6px}
+.ticketStatusGrid{grid-template-columns:repeat(5,1fr);gap:5px}.statusTicket{min-height:48px;font-size:17px;border-width:2px}
 }
 </style>
 </head>
-
 <body>
-
+  
 <div class="header">
-
-  <div class="logo">🎟️ WIN TOMBOLA</div>
-
-  <div class="sub">
-    Choose your ticket and book it
-  </div>
-
-  <div class="gameInfo">
-
-    <div class="gameBox" id="gameDateDisplay">
-      --/--/----
-    </div>
-
-    <div class="gameBox" id="countdown">
-      00:00:00
-    </div>
-
-    <div class="gameBox" id="gameTimeDisplay">
-      --:-- --
-    </div>
-
-  </div>
-
-  <button class="adminBtn" onclick="openAdminLogin()">
-    🔐 ADMIN
-  </button>
-
+<div class="logo">🎟️ WIN TOMBOLA</div>
+<div class="sub">Choose your ticket and book it</div>
+<div class="gameInfo">
+<div class="gameBox" id="gameDateDisplay">--/--/----</div>
+<div class="gameBox" id="countdown">00:00:00</div>
+<div class="gameBox" id="gameTimeDisplay">--:-- --</div>
+</div>
+<div class="gameStatus" id="playerGameStatus">🔴 GAME STOPPED</div>
+<button class="adminBtn" onclick="openAdminLogin()">🔐 ADMIN</button>
 </div>
 
 <div class="container">
-
-  <div class="info">
-    🎟️ Available Tickets:
-    <span id="visibleCount">0</span>
-  </div>
-
-  <div id="tickets"></div>
-
+<div class="info">🎟️ Available Tickets: <span id="visibleCount">0</span></div>
+<div id="tickets"></div>
 </div>
-
-<!-- ADMIN LOGIN -->
 
 <div class="modal" id="loginModal">
-
-  <div class="modalBox">
-
-    <h2>🔐 Admin Login</h2>
-
-    <input
-      class="input"
-      id="username"
-      placeholder="Username"
-      autocomplete="off"
-    >
-
-    <input
-      class="input"
-      id="password"
-      type="password"
-      placeholder="Password"
-    >
-
-    <button class="saveBtn" onclick="loginAdmin()">
-      LOGIN
-    </button>
-
-    <button class="closeBtn" onclick="closeModal('loginModal')">
-      CLOSE
-    </button>
-
-  </div>
-
+<div class="modalBox">
+<h2>🔐 Admin Login</h2>
+<input class="input" id="username" placeholder="Username" autocomplete="off">
+<input class="input" id="password" type="password" placeholder="Password">
+<button class="saveBtn" onclick="loginAdmin()">LOGIN</button>
+<button class="closeBtn" onclick="closeModal('loginModal')">CLOSE</button>
+</div>
 </div>
 
-<!-- ADMIN PANEL -->
-
 <div class="modal" id="adminModal">
+<div class="modalBox">
+<h2>⚙️ Game Settings</h2>
 
-  <div class="modalBox">
+<div class="adminCard">
+<h3>🎮 Game Control</h3>
+<div class="small">Game ko RUN ya STOP karne ke liye button use karein.</div>
+<div class="runStopBox">
+<button class="runBtn" onclick="setGameStatus(true)">🟢 GAME RUN</button>
+<button class="stopBtn" onclick="setGameStatus(false)">🔴 GAME STOP</button>
+</div>
+<div class="currentGameStatus" id="adminGameStatus">🔴 GAME STOPPED</div>
+</div>
 
-    <h2>⚙️ Game Settings</h2>
+<div class="adminCard">
+<label>🎟️ Visible Tickets</label>
+<input class="input" id="visibleTickets" type="number" min="1" max="600" placeholder="Example: 100">
+<div class="small">Player ko Ticket 1 se yahan tak dikhenge. Example: 100 = Ticket 1–100.</div>
+</div>
 
-    <div class="adminCard">
+<div class="adminCard">
+<label>📅 Game Date</label>
+<input class="input" id="gameDate" type="date">
+<label>⏰ Game Time</label>
+<input class="input" id="gameTime" type="time">
+</div>
 
-      <label>🎟️ Visible Tickets</label>
+<button class="saveBtn" onclick="saveSettings()">💾 SAVE SETTINGS</button>
 
-      <input
-        class="input"
-        id="visibleTickets"
-        type="number"
-        min="1"
-        max="600"
-        placeholder="Example: 100"
-      >
+<div class="adminCard">
+<h3>🏆 Prize Settings</h3>
+<div class="small">Prize ko ON/OFF karke SAVE PRIZES dabayein.</div>
+<div class="prizeList">
+<div class="prizeRow"><span class="prizeName">🥇 First Line</span><label class="prizeToggle"><input type="checkbox" id="prize_firstLine"><span class="slider"></span></label><span class="prizeStatus" id="status_firstLine">OFF</span></div>
+<div class="prizeRow"><span class="prizeName">🥈 Second Line</span><label class="prizeToggle"><input type="checkbox" id="prize_secondLine"><span class="slider"></span></label><span class="prizeStatus" id="status_secondLine">OFF</span></div>
+<div class="prizeRow"><span class="prizeName">🥉 Third Line</span><label class="prizeToggle"><input type="checkbox" id="prize_thirdLine"><span class="slider"></span></label><span class="prizeStatus" id="status_thirdLine">OFF</span></div>
+<div class="prizeRow"><span class="prizeName">🎯 Four Corners</span><label class="prizeToggle"><input type="checkbox" id="prize_fourCorners"><span class="slider"></span></label><span class="prizeStatus" id="status_fourCorners">OFF</span></div>
+<div class="prizeRow"><span class="prizeName">⭐ Full House</span><label class="prizeToggle"><input type="checkbox" id="prize_fullHouse"><span class="slider"></span></label><span class="prizeStatus" id="status_fullHouse">OFF</span></div>
+<div class="prizeRow"><span class="prizeName">👑 Second Full House</span><label class="prizeToggle"><input type="checkbox" id="prize_secondFullHouse"><span class="slider"></span></label><span class="prizeStatus" id="status_secondFullHouse">OFF</span></div>
+<div class="prizeRow"><span class="prizeName">💎 Third Full House</span><label class="prizeToggle"><input type="checkbox" id="prize_thirdFullHouse"><span class="slider"></span></label><span class="prizeStatus" id="status_thirdFullHouse">OFF</span></div>
+<div class="prizeRow"><span class="prizeName">🎯 Early 5</span><label class="prizeToggle"><input type="checkbox" id="prize_early5"><span class="slider"></span></label><span class="prizeStatus" id="status_early5">OFF</span></div>
+<div class="prizeRow"><span class="prizeName">🎯 Early 7</span><label class="prizeToggle"><input type="checkbox" id="prize_early7"><span class="slider"></span></label><span class="prizeStatus" id="status_early7">OFF</span></div>
+</div>
+<button class="saveBtn" style="margin-top:12px" onclick="savePrizes()">💾 SAVE PRIZES</button>
+</div>
 
-      <div class="small">
-        Player ko Ticket 1 se yahan tak dikhenge.
-        Example: 100 = Ticket 1–100.
-      </div>
+<div class="adminCard">
+<h3>🎟️ Ticket Status</h3>
+<div class="statusTitle">🟨 BOOKED &nbsp; | &nbsp; ⬜ UNSOLD</div>
+<div id="adminTicketStatusGrid" class="ticketStatusGrid"></div>
+<div class="statusLegend">
+<div class="legendBox"><span class="legendColor legendUnsold"></span>UNSOLD</div>
+<div class="legendBox"><span class="legendColor legendBooked"></span>BOOKED</div>
+</div>
+</div>
 
-    </div>
+<div class="adminCard">
+<h3>🎟️ Ticket Booking</h3>
+<label>Ticket Number</label>
+<input class="input" id="adminTicketNumber" type="number" min="1" max="600" placeholder="Example: 25">
+<label>👤 Customer Name</label>
+<input class="input" id="adminCustomerName" type="text" placeholder="Customer name">
+<button class="saveBtn" onclick="adminBookTicket()">🎟️ BOOK TICKET</button>
+</div>
 
-    <div class="adminCard">
+<div class="adminCard">
+<h3>📋 Booked Tickets</h3>
+<div id="adminBookings" class="adminList"></div>
+</div>
 
-      <label>📅 Game Date</label>
-
-      <input class="input" id="gameDate" type="date">
-
-      <label>⏰ Game Time</label>
-
-      <input class="input" id="gameTime" type="time">
-
-    </div>
-
-    <button class="saveBtn" onclick="saveSettings()">
-      💾 SAVE SETTINGS
-    </button>
-
-    <div class="adminCard">
-
-      <h3>🏆 Prize Settings</h3>
-
-      <div class="small">
-        Prize ko ON/OFF karke SAVE PRIZES dabayein.
-      </div>
-
-      <div class="prizeList">
-
-        <div class="prizeRow">
-          <span class="prizeName">🥇 First Line</span>
-          <label class="prizeToggle">
-            <input type="checkbox" id="prize_firstLine">
-            <span class="slider"></span>
-          </label>
-          <span class="prizeStatus" id="status_firstLine">OFF</span>
-        </div>
-
-        <div class="prizeRow">
-          <span class="prizeName">🥈 Second Line</span>
-          <label class="prizeToggle">
-            <input type="checkbox" id="prize_secondLine">
-            <span class="slider"></span>
-          </label>
-          <span class="prizeStatus" id="status_secondLine">OFF</span>
-        </div>
-
-        <div class="prizeRow">
-          <span class="prizeName">🥉 Third Line</span>
-          <label class="prizeToggle">
-            <input type="checkbox" id="prize_thirdLine">
-            <span class="slider"></span>
-          </label>
-          <span class="prizeStatus" id="status_thirdLine">OFF</span>
-        </div>
-
-        <div class="prizeRow">
-          <span class="prizeName">🎯 Four Corners</span>
-          <label class="prizeToggle">
-            <input type="checkbox" id="prize_fourCorners">
-            <span class="slider"></span>
-          </label>
-          <span class="prizeStatus" id="status_fourCorners">OFF</span>
-        </div>
-
-        <div class="prizeRow">
-          <span class="prizeName">⭐ Full House</span>
-          <label class="prizeToggle">
-            <input type="checkbox" id="prize_fullHouse">
-            <span class="slider"></span>
-          </label>
-          <span class="prizeStatus" id="status_fullHouse">OFF</span>
-        </div>
-
-        <div class="prizeRow">
-          <span class="prizeName">👑 Second Full House</span>
-          <label class="prizeToggle">
-            <input type="checkbox" id="prize_secondFullHouse">
-            <span class="slider"></span>
-          </label>
-          <span class="prizeStatus" id="status_secondFullHouse">OFF</span>
-        </div>
-
-        <div class="prizeRow">
-          <span class="prizeName">💎 Third Full House</span>
-          <label class="prizeToggle">
-            <input type="checkbox" id="prize_thirdFullHouse">
-            <span class="slider"></span>
-          </label>
-          <span class="prizeStatus" id="status_thirdFullHouse">OFF</span>
-        </div>
-
-        <div class="prizeRow">
-          <span class="prizeName">🎯 Early 5</span>
-          <label class="prizeToggle">
-            <input type="checkbox" id="prize_early5">
-            <span class="slider"></span>
-          </label>
-          <span class="prizeStatus" id="status_early5">OFF</span>
-        </div>
-
-        <div class="prizeRow">
-          <span class="prizeName">🎯 Early 7</span>
-          <label class="prizeToggle">
-            <input type="checkbox" id="prize_early7">
-            <span class="slider"></span>
-          </label>
-          <span class="prizeStatus" id="status_early7">OFF</span>
-        </div>
-
-      </div>
-
-      <button
-        class="saveBtn"
-        style="margin-top:12px"
-        onclick="savePrizes()"
-      >
-        💾 SAVE PRIZES
-      </button>
-
-    </div>
-        <!-- TICKET STATUS -->
-
-    <div class="adminCard">
-
-      <h3>🎟️ Ticket Status</h3>
-
-      <div class="statusTitle">
-        🟨 BOOKED &nbsp; | &nbsp; ⬜ UNSOLD
-      </div>
-
-      <div
-        id="adminTicketStatusGrid"
-        class="ticketStatusGrid"
-      ></div>
-
-      <div class="statusLegend">
-
-        <div class="legendBox">
-          <span class="legendColor legendUnsold"></span>
-          UNSOLD
-        </div>
-
-        <div class="legendBox">
-          <span class="legendColor legendBooked"></span>
-          BOOKED
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- TICKET BOOKING -->
-
-    <div class="adminCard">
-
-      <h3>🎟️ Ticket Booking</h3>
-
-      <label>Ticket Number</label>
-
-      <input
-        class="input"
-        id="adminTicketNumber"
-        type="number"
-        min="1"
-        max="600"
-        placeholder="Example: 25"
-      >
-
-      <label>👤 Customer Name</label>
-
-      <input
-        class="input"
-        id="adminCustomerName"
-        type="text"
-        placeholder="Customer name"
-      >
-
-      <button class="saveBtn" onclick="adminBookTicket()">
-        🎟️ BOOK TICKET
-      </button>
-
-    </div>
-
-    <div class="adminCard">
-
-      <h3>📋 Booked Tickets</h3>
-
-      <div id="adminBookings" class="adminList"></div>
-
-    </div>
-
-    <button class="resetBtn" onclick="resetBookings()">
-      🗑️ RESET ALL BOOKINGS
-    </button>
-
-    <button class="closeBtn" onclick="closeModal('adminModal')">
-      CLOSE
-    </button>
-
-  </div>
-
+<button class="resetBtn" onclick="resetBookings()">🗑️ RESET ALL BOOKINGS</button>
+<button class="closeBtn" onclick="closeModal('adminModal')">CLOSE</button>
+</div>
 </div>
 
 <script>
+const ADMIN_USERNAME="gyandeep";
+const ADMIN_PASSWORD="785673";
 
-const ADMIN_USERNAME = "gyandeep";
-const ADMIN_PASSWORD = "785673";
+let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:50,gameDate:"",gameTime:""};
+let bookings=JSON.parse(localStorage.getItem("tombolaBookings"))||{};
+let prizes=JSON.parse(localStorage.getItem("tombolaPrizes"))||{firstLine:false,secondLine:false,thirdLine:false,fourCorners:false,fullHouse:false,secondFullHouse:false,thirdFullHouse:false,early5:false,early7:false};
 
-let settings =
-  JSON.parse(
-    localStorage.getItem("tombolaSettings")
-  ) || {
-    visibleTickets:50,
-    gameDate:"",
-    gameTime:""
-  };
-
-let bookings =
-  JSON.parse(
-    localStorage.getItem("tombolaBookings")
-  ) || {};
-
-let prizes =
-  JSON.parse(
-    localStorage.getItem("tombolaPrizes")
-  ) || {
-    firstLine:false,
-    secondLine:false,
-    thirdLine:false,
-    fourCorners:false,
-    fullHouse:false,
-    secondFullHouse:false,
-    thirdFullHouse:false,
-    early5:false,
-    early7:false
-  };
-
-
-/* =========================
-   TICKET GENERATOR
-========================= */
+let gameRunning=localStorage.getItem("tombolaGameRunning")==="true";
 
 function generateTicketNumbers(ticketNo){
-
-  let seed = ticketNo * 997;
-
-  function random(){
-
-    seed =
-      (seed * 9301 + 49297) % 233280;
-
-    return seed / 233280;
-  }
-
-  let grid = [
-    Array(9).fill(false),
-    Array(9).fill(false),
-    Array(9).fill(false)
-  ];
-
-  let rowCount = [0,0,0];
-
-  for(let c=0;c<9;c++){
-
-    let availableRows = [];
-
-    for(let r=0;r<3;r++){
-
-      if(rowCount[r] < 5){
-        availableRows.push(r);
-      }
-
-    }
-
-    let minCount =
-      Math.min(
-        ...availableRows.map(
-          r => rowCount[r]
-        )
-      );
-
-    let bestRows =
-      availableRows.filter(
-        r => rowCount[r] === minCount
-      );
-
-    let row =
-      bestRows[
-        Math.floor(
-          random() * bestRows.length
-        )
-      ];
-
-    grid[row][c] = true;
-    rowCount[row]++;
-  }
-
-  while(
-    rowCount[0] < 5 ||
-    rowCount[1] < 5 ||
-    rowCount[2] < 5
-  ){
-
-    let possible = [];
-
-    for(let r=0;r<3;r++){
-
-      for(let c=0;c<9;c++){
-
-        if(
-          !grid[r][c] &&
-          rowCount[r] < 5
-        ){
-
-          possible.push({
-            r:r,
-            c:c
-          });
-
-        }
-
-      }
-
-    }
-
-    if(possible.length === 0){
-      break;
-    }
-
-    let minRowCount =
-      Math.min(...rowCount);
-
-    let preferred =
-      possible.filter(
-        x => rowCount[x.r] === minRowCount
-      );
-
-    let selected =
-      preferred[
-        Math.floor(
-          random() * preferred.length
-        )
-      ];
-
-    grid[selected.r][selected.c] = true;
-    rowCount[selected.r]++;
-  }
-
-  let result = [
-    Array(9).fill(""),
-    Array(9).fill(""),
-    Array(9).fill("")
-  ];
-
-  for(let c=0;c<9;c++){
-
-    let min =
-      c === 0 ? 1 : c * 10;
-
-    let max =
-      c === 0
-        ? 9
-        : c === 8
-          ? 90
-          : c * 10 + 9;
-
-    let needed = 0;
-
-    for(let r=0;r<3;r++){
-
-      if(grid[r][c]){
-        needed++;
-      }
-
-    }
-
-    let numbers = [];
-
-    while(numbers.length < needed){
-
-      let n =
-        Math.floor(
-          random() * (max-min+1)
-        ) + min;
-
-      if(!numbers.includes(n)){
-        numbers.push(n);
-      }
-
-    }
-
-    numbers.sort(
-      (a,b) => a-b
-    );
-
-    let index = 0;
-
-    for(let r=0;r<3;r++){
-
-      if(grid[r][c]){
-
-        result[r][c] =
-          numbers[index];
-
-        index++;
-      }
-
-    }
-
-  }
-
-  return result;
+let seed=ticketNo*997;
+function random(){seed=(seed*9301+49297)%233280;return seed/233280}
+let grid=[Array(9).fill(false),Array(9).fill(false),Array(9).fill(false)],rowCount=[0,0,0];
+for(let c=0;c<9;c++){
+let availableRows=[];for(let r=0;r<3;r++)if(rowCount[r]<5)availableRows.push(r);
+let minCount=Math.min(...availableRows.map(r=>rowCount[r]));
+let bestRows=availableRows.filter(r=>rowCount[r]===minCount);
+let row=bestRows[Math.floor(random()*bestRows.length)];
+grid[row][c]=true;rowCount[row]++;
 }
-
-
-/* =========================
-   RENDER TICKETS
-========================= */
+while(rowCount[0]<5||rowCount[1]<5||rowCount[2]<5){
+let possible=[];
+for(let r=0;r<3;r++)for(let c=0;c<9;c++)if(!grid[r][c]&&rowCount[r]<5)possible.push({r,c});
+if(!possible.length)break;
+let minRowCount=Math.min(...rowCount);
+let preferred=possible.filter(x=>rowCount[x.r]===minRowCount);
+let selected=preferred[Math.floor(random()*preferred.length)];
+grid[selected.r][selected.c]=true;rowCount[selected.r]++;
+}
+let result=[Array(9).fill(""),Array(9).fill(""),Array(9).fill("")];
+for(let c=0;c<9;c++){
+let min=c===0?1:c*10,max=c===0?9:c===8?90:c*10+9,needed=0;
+for(let r=0;r<3;r++)if(grid[r][c])needed++;
+let numbers=[];
+while(numbers.length<needed){let n=Math.floor(random()*(max-min+1))+min;if(!numbers.includes(n))numbers.push(n)}
+numbers.sort((a,b)=>a-b);let index=0;
+for(let r=0;r<3;r++)if(grid[r][c])result[r][c]=numbers[index++];
+}
+return result;
+}
 
 function renderTickets(){
-
-  const box =
-    document.getElementById("tickets");
-
-  box.innerHTML = "";
-
-  let total =
-    Math.min(
-      600,
-      Math.max(
-        1,
-        Number(settings.visibleTickets)
-      )
-    );
-
-  let bookedCount = 0;
-
-  for(let i=1;i<=total;i++){
-
-    if(
-      bookings[i] &&
-      bookings[i].booked === true
-    ){
-
-      bookedCount++;
-    }
-
-  }
-
-  let availableCount =
-    total - bookedCount;
-
-  document.getElementById(
-    "visibleCount"
-  ).textContent = availableCount;
-
-  for(let i=1;i<=total;i++){
-
-    const booked =
-      bookings[i] &&
-      bookings[i].booked === true;
-
-    const customerName =
-      booked
-      ? bookings[i].name
-      : "UNSOLD";
-
-    const numbers =
-      generateTicketNumbers(i);
-
-    let cells = "";
-
-    for(let r=0;r<3;r++){
-
-      for(let c=0;c<9;c++){
-
-        let value =
-          numbers[r][c];
-
-        cells += `
-          <div class="cell ${
-            value === "" ? "empty" : ""
-          }">
-            ${value}
-          </div>
-        `;
-      }
-
-    }
-
-    box.innerHTML += `
-
-      <div class="ticket">
-
-        <div class="ticketHead">
-
-          <div class="ticketNo">
-            ${i}
-          </div>
-
-          <div class="ticketName">
-            ${customerName}
-          </div>
-
-        </div>
-
-        <div class="ticketGrid">
-          ${cells}
-        </div>
-
-      </div>
-
-    `;
-  }
+const box=document.getElementById("tickets");box.innerHTML="";
+let total=Math.min(600,Math.max(1,Number(settings.visibleTickets))),bookedCount=0;
+for(let i=1;i<=total;i++)if(bookings[i]&&bookings[i].booked===true)bookedCount++;
+document.getElementById("visibleCount").textContent=total-bookedCount;
+for(let i=1;i<=total;i++){
+const booked=bookings[i]&&bookings[i].booked===true;
+const customerName=booked?bookings[i].name:"UNSOLD";
+const numbers=generateTicketNumbers(i);let cells="";
+for(let r=0;r<3;r++)for(let c=0;c<9;c++){let value=numbers[r][c];cells+=`<div class="cell ${value===""?"empty":""}">${value}</div>`}
+box.innerHTML+=`<div class="ticket"><div class="ticketHead"><div class="ticketNo">${i}</div><div class="ticketName">${customerName}</div></div><div class="ticketGrid">${cells}</div></div>`;
+}
 }
 
-
-/* =========================
-   ADMIN LOGIN
-========================= */
-
-function openAdminLogin(){
-
-  document.getElementById(
-    "loginModal"
-  ).style.display = "block";
-
+function updatePlayerGameStatus(){
+const el=document.getElementById("playerGameStatus");
+el.className="gameStatus "+(gameRunning?"statusRunning":"statusStopped");
+el.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPPED";
+const adminEl=document.getElementById("adminGameStatus");
+if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPPED";adminEl.style.color=gameRunning?"#39ff70":"#ff5555"}
 }
+
+function setGameStatus(status){
+gameRunning=status;
+localStorage.setItem("tombolaGameRunning",String(gameRunning));
+updatePlayerGameStatus();
+alert(gameRunning?"🟢 Game is now RUNNING.":"🔴 Game is now STOPPED.");
+}
+
+function openAdminLogin(){document.getElementById("loginModal").style.display="block"}
 
 function loginAdmin(){
-
-  const user =
-    document.getElementById(
-      "username"
-    ).value.trim();
-
-  const pass =
-    document.getElementById(
-      "password"
-    ).value;
-
-  if(
-    user === ADMIN_USERNAME &&
-    pass === ADMIN_PASSWORD
-  ){
-
-    document.getElementById(
-      "username"
-    ).value = "";
-
-    document.getElementById(
-      "password"
-    ).value = "";
-
-    closeModal("loginModal");
-
-    openAdminPanel();
-
-  }else{
-
-    alert(
-      "Wrong username or password."
-    );
-
-  }
-
+const user=document.getElementById("username").value.trim(),pass=document.getElementById("password").value;
+if(user===ADMIN_USERNAME&&pass===ADMIN_PASSWORD){
+document.getElementById("username").value="";document.getElementById("password").value="";
+closeModal("loginModal");openAdminPanel();
+}else alert("Wrong username or password.");
 }
-
-
-/* =========================
-   ADMIN PANEL
-========================= */
 
 function openAdminPanel(){
-
-  document.getElementById(
-    "visibleTickets"
-  ).value =
-    settings.visibleTickets;
-
-  document.getElementById(
-    "gameDate"
-  ).value =
-    settings.gameDate;
-
-  document.getElementById(
-    "gameTime"
-  ).value =
-    settings.gameTime;
-
-  document.getElementById(
-    "adminTicketNumber"
-  ).value = "";
-
-  document.getElementById(
-    "adminCustomerName"
-  ).value = "";
-
-  loadPrizeSettings();
-
-  renderAdminBookings();
-
-  renderAdminTicketStatus();
-
-  document.getElementById(
-    "adminModal"
-  ).style.display = "block";
+document.getElementById("visibleTickets").value=settings.visibleTickets;
+document.getElementById("gameDate").value=settings.gameDate;
+document.getElementById("gameTime").value=settings.gameTime;
+document.getElementById("adminTicketNumber").value="";
+document.getElementById("adminCustomerName").value="";
+loadPrizeSettings();renderAdminBookings();renderAdminTicketStatus();updatePlayerGameStatus();
+document.getElementById("adminModal").style.display="block";
 }
-
-
-/* =========================
-   LOAD PRIZES
-========================= */
 
 function loadPrizeSettings(){
-
-  const names = [
-    "firstLine",
-    "secondLine",
-    "thirdLine",
-    "fourCorners",
-    "fullHouse",
-    "secondFullHouse",
-    "thirdFullHouse",
-    "early5",
-    "early7"
-  ];
-
-  names.forEach(name => {
-
-    const checkbox =
-      document.getElementById(
-        "prize_" + name
-      );
-
-    const status =
-      document.getElementById(
-        "status_" + name
-      );
-
-    checkbox.checked =
-      prizes[name] === true;
-
-    status.textContent =
-      checkbox.checked ? "ON" : "OFF";
-
-    checkbox.onchange = function(){
-
-      status.textContent =
-        checkbox.checked ? "ON" : "OFF";
-
-    };
-
-  });
-
+const names=["firstLine","secondLine","thirdLine","fourCorners","fullHouse","secondFullHouse","thirdFullHouse","early5","early7"];
+names.forEach(name=>{
+const checkbox=document.getElementById("prize_"+name),status=document.getElementById("status_"+name);
+checkbox.checked=prizes[name]===true;status.textContent=checkbox.checked?"ON":"OFF";
+checkbox.onchange=function(){status.textContent=checkbox.checked?"ON":"OFF"};
+});
 }
-
-
-/* =========================
-   SAVE PRIZES
-========================= */
 
 function savePrizes(){
-
-  const names = [
-    "firstLine",
-    "secondLine",
-    "thirdLine",
-    "fourCorners",
-    "fullHouse",
-    "secondFullHouse",
-    "thirdFullHouse",
-    "early5",
-    "early7"
-  ];
-
-  names.forEach(name => {
-
-    const checkbox =
-      document.getElementById(
-        "prize_" + name
-      );
-
-    prizes[name] =
-      checkbox.checked;
-
-  });
-
-  localStorage.setItem(
-    "tombolaPrizes",
-    JSON.stringify(prizes)
-  );
-
-  alert(
-    "Prize settings saved successfully!"
-  );
-
+const names=["firstLine","secondLine","thirdLine","fourCorners","fullHouse","secondFullHouse","thirdFullHouse","early5","early7"];
+names.forEach(name=>prizes[name]=document.getElementById("prize_"+name).checked);
+localStorage.setItem("tombolaPrizes",JSON.stringify(prizes));alert("Prize settings saved successfully!");
 }
-
-
-/* =========================
-   ADMIN BOOK TICKET
-========================= */
 
 function adminBookTicket(){
-
-  let ticketNo =
-    parseInt(
-      document.getElementById(
-        "adminTicketNumber"
-      ).value
-    );
-
-  let name =
-    document.getElementById(
-      "adminCustomerName"
-    ).value.trim();
-
-  let total =
-    Math.min(
-      600,
-      Math.max(
-        1,
-        Number(settings.visibleTickets)
-      )
-    );
-
-  if(
-    isNaN(ticketNo) ||
-    ticketNo < 1 ||
-    ticketNo > total
-  ){
-
-    alert(
-      "Please enter a valid visible ticket number."
-    );
-
-    return;
-  }
-
-  if(!name){
-
-    alert(
-      "Please enter customer name."
-    );
-
-    return;
-  }
-
-  if(
-    bookings[ticketNo] &&
-    bookings[ticketNo].booked === true
-  ){
-
-    alert(
-      "This ticket is already booked."
-    );
-
-    return;
-  }
-
-  bookings[ticketNo] = {
-    booked:true,
-    name:name,
-    time:new Date().toISOString()
-  };
-
-  localStorage.setItem(
-    "tombolaBookings",
-    JSON.stringify(bookings)
-  );
-
-  document.getElementById(
-    "adminTicketNumber"
-  ).value = "";
-
-  document.getElementById(
-    "adminCustomerName"
-  ).value = "";
-
-  renderTickets();
-  renderAdminBookings();
-  renderAdminTicketStatus();
-
-  alert(
-    "Ticket " +
-    ticketNo +
-    " booked for " +
-    name
-  );
-
+let ticketNo=parseInt(document.getElementById("adminTicketNumber").value),name=document.getElementById("adminCustomerName").value.trim();
+let total=Math.min(600,Math.max(1,Number(settings.visibleTickets)));
+if(isNaN(ticketNo)||ticketNo<1||ticketNo>total){alert("Please enter a valid visible ticket number.");return}
+if(!name){alert("Please enter customer name.");return}
+if(bookings[ticketNo]&&bookings[ticketNo].booked===true){alert("This ticket is already booked.");return}
+bookings[ticketNo]={booked:true,name:name,time:new Date().toISOString()};
+localStorage.setItem("tombolaBookings",JSON.stringify(bookings));
+document.getElementById("adminTicketNumber").value="";document.getElementById("adminCustomerName").value="";
+renderTickets();renderAdminBookings();renderAdminTicketStatus();
+alert("Ticket "+ticketNo+" booked for "+name);
 }
-  /* =========================
-   ADMIN TICKET STATUS GRID
-========================= */
 
 function renderAdminTicketStatus(){
-
-  const box =
-    document.getElementById(
-      "adminTicketStatusGrid"
-    );
-
-  if(!box){
-    return;
-  }
-
-  box.innerHTML = "";
-
-  let total =
-    Math.min(
-      600,
-      Math.max(
-        1,
-        Number(settings.visibleTickets)
-      )
-    );
-
-  for(let i=1;i<=total;i++){
-
-    const booked =
-      bookings[i] &&
-      bookings[i].booked === true;
-
-    const div =
-      document.createElement("div");
-
-    div.className =
-      "statusTicket " +
-      (booked ? "booked" : "unsold");
-
-    div.textContent = i;
-
-    div.title =
-      booked
-      ? "BOOKED - " + bookings[i].name
-      : "UNSOLD";
-
-    div.onclick = function(){
-
-      if(booked){
-
-        alert(
-          "🎟️ Ticket " + i +
-          "\n👤 Customer: " +
-          bookings[i].name
-        );
-
-      }else{
-
-        alert(
-          "🎟️ Ticket " + i +
-          "\n⬜ UNSOLD"
-        );
-
-      }
-
-    };
-
-    box.appendChild(div);
-  }
-
+const box=document.getElementById("adminTicketStatusGrid");if(!box)return;box.innerHTML="";
+let total=Math.min(600,Math.max(1,Number(settings.visibleTickets)));
+for(let i=1;i<=total;i++){
+const booked=bookings[i]&&bookings[i].booked===true,div=document.createElement("div");
+div.className="statusTicket "+(booked?"booked":"unsold");div.textContent=i;
+div.title=booked?"BOOKED - "+bookings[i].name:"UNSOLD";
+div.onclick=function(){alert(booked?"🎟️ Ticket "+i+"\n👤 Customer: "+bookings[i].name:"🎟️ Ticket "+i+"\n⬜ UNSOLD")};
+box.appendChild(div);
 }
-
-
-/* =========================
-   ADMIN BOOKING LIST
-========================= */
+}
 
 function renderAdminBookings(){
-
-  const box =
-    document.getElementById(
-      "adminBookings"
-    );
-
-  box.innerHTML = "";
-
-  let keys =
-    Object.keys(bookings)
-      .map(Number)
-      .sort((a,b)=>a-b);
-
-  if(keys.length === 0){
-
-    box.innerHTML = `
-      <div class="small">
-        No booked tickets.
-      </div>
-    `;
-
-    return;
-  }
-
-  keys.forEach(ticketNo => {
-
-    if(
-      !bookings[ticketNo] ||
-      !bookings[ticketNo].booked
-    ){
-      return;
-    }
-
-    let name =
-      bookings[ticketNo].name;
-
-    box.innerHTML += `
-
-      <div class="adminBooking">
-
-        🎟️ Ticket:
-        <strong>${ticketNo}</strong>
-
-        <br>
-
-        👤 Name:
-        <strong>${name}</strong>
-
-        <br>
-
-        <button
-          class="bookingCancel"
-          onclick="cancelBooking(${ticketNo})"
-        >
-          CANCEL BOOKING
-        </button>
-
-      </div>
-
-    `;
-  });
-
+const box=document.getElementById("adminBookings");box.innerHTML="";
+let keys=Object.keys(bookings).map(Number).sort((a,b)=>a-b);
+if(!keys.length){box.innerHTML='<div class="small">No booked tickets.</div>';return}
+keys.forEach(ticketNo=>{
+if(!bookings[ticketNo]||!bookings[ticketNo].booked)return;
+let name=bookings[ticketNo].name;
+box.innerHTML+=`<div class="adminBooking">🎟️ Ticket: <strong>${ticketNo}</strong><br>👤 Name: <strong>${name}</strong><br><button class="bookingCancel" onclick="cancelBooking(${ticketNo})">CANCEL BOOKING</button></div>`;
+});
 }
-
-
-/* =========================
-   CANCEL BOOKING
-========================= */
 
 function cancelBooking(ticketNo){
-
-  let ok =
-    confirm(
-      "Cancel booking for Ticket " +
-      ticketNo +
-      "?"
-    );
-
-  if(!ok){
-    return;
-  }
-
-  delete bookings[ticketNo];
-
-  localStorage.setItem(
-    "tombolaBookings",
-    JSON.stringify(bookings)
-  );
-
-  renderTickets();
-  renderAdminBookings();
-  renderAdminTicketStatus();
-
-  alert(
-    "Ticket " +
-    ticketNo +
-    " is now UNSOLD."
-  );
-
+if(!confirm("Cancel booking for Ticket "+ticketNo+"?"))return;
+delete bookings[ticketNo];localStorage.setItem("tombolaBookings",JSON.stringify(bookings));
+renderTickets();renderAdminBookings();renderAdminTicketStatus();alert("Ticket "+ticketNo+" is now UNSOLD.");
 }
-
-
-/* =========================
-   SAVE SETTINGS
-========================= */
 
 function saveSettings(){
-
-  let visible =
-    parseInt(
-      document.getElementById(
-        "visibleTickets"
-      ).value
-    );
-
-  if(
-    isNaN(visible) ||
-    visible < 1 ||
-    visible > 600
-  ){
-
-    alert(
-      "Visible Tickets 1 se 600 ke beech hona chahiye."
-    );
-
-    return;
-  }
-
-  settings.visibleTickets =
-    visible;
-
-  settings.gameDate =
-    document.getElementById(
-      "gameDate"
-    ).value;
-
-  settings.gameTime =
-    document.getElementById(
-      "gameTime"
-    ).value;
-
-  localStorage.setItem(
-    "tombolaSettings",
-    JSON.stringify(settings)
-  );
-
-  renderTickets();
-  updateGameDisplay();
-  renderAdminBookings();
-  renderAdminTicketStatus();
-
-  alert(
-    "Settings saved successfully!"
-  );
-
-  closeModal("adminModal");
-
+let visible=parseInt(document.getElementById("visibleTickets").value);
+if(isNaN(visible)||visible<1||visible>600){alert("Visible Tickets 1 se 600 ke beech hona chahiye.");return}
+settings.visibleTickets=visible;settings.gameDate=document.getElementById("gameDate").value;settings.gameTime=document.getElementById("gameTime").value;
+localStorage.setItem("tombolaSettings",JSON.stringify(settings));
+renderTickets();updateGameDisplay();renderAdminBookings();renderAdminTicketStatus();alert("Settings saved successfully!");closeModal("adminModal");
 }
-
-
-/* =========================
-   RESET BOOKINGS
-========================= */
 
 function resetBookings(){
-
-  let ok =
-    confirm(
-      "Are you sure you want to reset ALL bookings?"
-    );
-
-  if(!ok){
-    return;
-  }
-
-  bookings = {};
-
-  localStorage.setItem(
-    "tombolaBookings",
-    JSON.stringify(bookings)
-  );
-
-  renderTickets();
-  renderAdminBookings();
-  renderAdminTicketStatus();
-
-  alert(
-    "All bookings reset."
-  );
-
+if(!confirm("Are you sure you want to reset ALL bookings?"))return;
+bookings={};localStorage.setItem("tombolaBookings",JSON.stringify(bookings));
+renderTickets();renderAdminBookings();renderAdminTicketStatus();alert("All bookings reset.");
 }
 
-
-/* =========================
-   CLOSE MODAL
-========================= */
-
-function closeModal(id){
-
-  document.getElementById(
-    id
-  ).style.display = "none";
-
-}
-
-
-/* =========================
-   DATE FORMAT
-========================= */
+function closeModal(id){document.getElementById(id).style.display="none"}
 
 function formatGameDate(dateString){
-
-  if(!dateString){
-    return "--/--/----";
-  }
-
-  let parts =
-    dateString.split("-");
-
-  if(parts.length !== 3){
-    return "--/--/----";
-  }
-
-  return (
-    parts[2] +
-    "/" +
-    parts[1] +
-    "/" +
-    parts[0]
-  );
-
+if(!dateString)return"--/--/----";let parts=dateString.split("-");if(parts.length!==3)return"--/--/----";
+return parts[2]+"/"+parts[1]+"/"+parts[0];
 }
-
-
-/* =========================
-   TIME FORMAT
-========================= */
 
 function formatGameTime(timeString){
-
-  if(!timeString){
-    return "--:-- --";
-  }
-
-  let parts =
-    timeString.split(":");
-
-  let hour =
-    parseInt(parts[0]);
-
-  let minute =
-    parts[1];
-
-  let ampm =
-    hour >= 12 ? "PM" : "AM";
-
-  hour =
-    hour % 12;
-
-  if(hour === 0){
-    hour = 12;
-  }
-
-  return (
-    String(hour).padStart(2,"0") +
-    ":" +
-    minute +
-    " " +
-    ampm
-  );
-
+if(!timeString)return"--:-- --";let parts=timeString.split(":"),hour=parseInt(parts[0]),minute=parts[1],ampm=hour>=12?"PM":"AM";
+hour=hour%12;if(hour===0)hour=12;return String(hour).padStart(2,"0")+":"+minute+" "+ampm;
 }
-
-
-/* =========================
-   GAME DISPLAY
-========================= */
 
 function updateGameDisplay(){
-
-  document.getElementById(
-    "gameDateDisplay"
-  ).textContent =
-    formatGameDate(
-      settings.gameDate
-    );
-
-  document.getElementById(
-    "gameTimeDisplay"
-  ).textContent =
-    formatGameTime(
-      settings.gameTime
-    );
-
+document.getElementById("gameDateDisplay").textContent=formatGameDate(settings.gameDate);
+document.getElementById("gameTimeDisplay").textContent=formatGameTime(settings.gameTime);
 }
-
-
-/* =========================
-   GAME COUNTDOWN
-========================= */
 
 function updateCountdown(){
-
-  const el =
-    document.getElementById(
-      "countdown"
-    );
-
-  if(
-    !settings.gameDate ||
-    !settings.gameTime
-  ){
-
-    el.textContent =
-      "00:00:00";
-
-    return;
-  }
-
-  const target =
-    new Date(
-      settings.gameDate +
-      "T" +
-      settings.gameTime +
-      ":00"
-    );
-
-  const now =
-    new Date();
-
-  let diff =
-    target.getTime() -
-    now.getTime();
-
-  if(diff <= 0){
-
-    el.textContent =
-      "00:00:00";
-
-    return;
-  }
-
-  let totalSeconds =
-    Math.floor(
-      diff / 1000
-    );
-
-  let hours =
-    Math.floor(
-      totalSeconds / 3600
-    );
-
-  let minutes =
-    Math.floor(
-      (totalSeconds % 3600) / 60
-    );
-
-  let seconds =
-    totalSeconds % 60;
-
-  let days =
-    Math.floor(
-      hours / 24
-    );
-
-  hours =
-    hours % 24;
-
-  if(days > 0){
-
-    el.textContent =
-      days + "d " +
-      String(hours).padStart(2,"0") + ":" +
-      String(minutes).padStart(2,"0") + ":" +
-      String(seconds).padStart(2,"0");
-
-  }else{
-
-    el.textContent =
-      String(hours).padStart(2,"0") + ":" +
-      String(minutes).padStart(2,"0") + ":" +
-      String(seconds).padStart(2,"0");
-
-  }
-
+const el=document.getElementById("countdown");
+if(!settings.gameDate||!settings.gameTime){el.textContent="00:00:00";return}
+const target=new Date(settings.gameDate+"T"+settings.gameTime+":00"),now=new Date();
+let diff=target.getTime()-now.getTime();
+if(diff<=0){el.textContent="00:00:00";return}
+let totalSeconds=Math.floor(diff/1000),hours=Math.floor(totalSeconds/3600),minutes=Math.floor((totalSeconds%3600)/60),seconds=totalSeconds%60,days=Math.floor(hours/24);
+hours=hours%24;
+el.textContent=days>0?days+"d "+String(hours).padStart(2,"0")+":"+String(minutes).padStart(2,"0")+":"+String(seconds).padStart(2,"0"):String(hours).padStart(2,"0")+":"+String(minutes).padStart(2,"0")+":"+String(seconds).padStart(2,"0");
 }
-
-
-/* =========================
-   START GAME
-========================= */
 
 function startGame(){
-
-  renderTickets();
-  updateGameDisplay();
-  updateCountdown();
-
-  setInterval(
-    updateCountdown,
-    1000
-  );
-
+renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();setInterval(updateCountdown,1000);
 }
 
-
-/* =========================
-   CLOSE MODAL OUTSIDE
-========================= */
-
-window.addEventListener(
-  "click",
-  function(event){
-
-    const loginModal =
-      document.getElementById(
-        "loginModal"
-      );
-
-    const adminModal =
-      document.getElementById(
-        "adminModal"
-      );
-
-    if(event.target === loginModal){
-
-      loginModal.style.display =
-        "none";
-
-    }
-
-    if(event.target === adminModal){
-
-      adminModal.style.display =
-        "none";
-
-    }
-
-  }
-);
-
-
-/* =========================
-   START
-========================= */
+window.addEventListener("click",function(event){
+const loginModal=document.getElementById("loginModal"),adminModal=document.getElementById("adminModal");
+if(event.target===loginModal)loginModal.style.display="none";
+if(event.target===adminModal)adminModal.style.display="none";
+});
 
 startGame();
-
 </script>
-
 </body>
-</html>
+  </html>
