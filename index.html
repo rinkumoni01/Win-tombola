@@ -214,6 +214,10 @@ function regenerateVisibleTicketNumbers(){
   const count=Math.min(600,Math.max(1,Number(settings.visibleTickets)||1));
   visibleTicketNumbers=Array.from({length:count},(_,i)=>i+1);
   localStorage.setItem("tombolaVisibleTicketNumbers",JSON.stringify(visibleTicketNumbers));
+
+  // Whenever the admin saves the ticket count, generate a completely new
+  // random 15-number combination for every visible ticket.
+  localStorage.removeItem("tombolaTicketNumbers");
 }
 function isVisibleTicket(n){return getVisibleTicketNumbers().includes(Number(n));}
 let bookings=JSON.parse(localStorage.getItem("tombolaBookings"))||{};
@@ -432,8 +436,8 @@ function finishPrizeGame(){
   renderPlayerPrizes();
   renderAdminPrizeWinners();
   speak("All selected prizes are complete. Game over.");
-}
-function drawNextNumber(){if(!gameRunning)return;if(drawnNumbers.length>=90){finishGame();return}const a=[];for(let i=1;i<=90;i++)if(!drawnNumbers.includes(i))a.push(i);const n=a[Math.floor(Math.random()*a.length)];drawnNumbers.push(n);saveDrawnNumbers();renderNumberBoard();speak((NUMBER_CALLS[n]||"Number")+" — Number "+n);checkPrizeWinners();if(gameRunning&&drawnNumbers.length>=90)finishGame()}
+    }
+  function drawNextNumber(){if(!gameRunning)return;if(drawnNumbers.length>=90){finishGame();return}const a=[];for(let i=1;i<=90;i++)if(!drawnNumbers.includes(i))a.push(i);const n=a[Math.floor(Math.random()*a.length)];drawnNumbers.push(n);saveDrawnNumbers();renderNumberBoard();speak((NUMBER_CALLS[n]||"Number")+" — Number "+n);checkPrizeWinners();if(gameRunning&&drawnNumbers.length>=90)finishGame()}
 function finishGame(){clearInterval(drawTimer);drawTimer=null;gameRunning=false;localStorage.setItem("tombolaGameRunning","false");renderNumberBoard();updatePlayerGameStatus();document.getElementById("lastNumber").innerHTML='<span>90</span>';speak("Game over")}
 function renderTickets(){
 const box=document.getElementById("tickets");box.innerHTML="";
@@ -654,9 +658,9 @@ renderTickets();renderAdminBookings();renderAdminTicketStatus();renderPlayerPriz
 function saveSettings(){
 let visible=parseInt(document.getElementById("visibleTickets").value);
 if(isNaN(visible)||visible<1||visible>600){alert("Visible Tickets 1 se 600 ke beech hona chahiye.");return}
-const oldVisibleCount=Number(settings.visibleTickets)||0;
 settings.visibleTickets=visible;
-if(visible!==oldVisibleCount) regenerateVisibleTicketNumbers();
+// Saving ticket settings starts a fresh random set of ticket numbers.
+regenerateVisibleTicketNumbers();
 settings.gameDate=document.getElementById("gameDate").value;settings.gameTime=document.getElementById("gameTime").value;
 localStorage.setItem("tombolaSettings",JSON.stringify(settings));
 renderTickets();updateGameDisplay();renderAdminBookings();renderAdminTicketStatus();alert("Settings saved successfully!");closeModal("adminModal");
