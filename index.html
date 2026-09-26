@@ -332,8 +332,7 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 
 function setGameStatus(status){
 if(status){if(gameRunning){alert("Game is already running.");return}if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak("GAME IS ON! Ladies and gentlemen, get ready! Eyes on your tickets, Let's play Win Tombola!");clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,6000);alert("🟢 Game is now RUNNING. First number 6 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
-
-function cancelGame(){
+  function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
 gameRunning=false;
 clearInterval(drawTimer);
