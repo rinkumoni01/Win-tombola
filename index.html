@@ -197,7 +197,8 @@ button,input{font-family:inherit}
 const ADMIN_USERNAME="gyandeep";
 const ADMIN_PASSWORD="785673";
 
-let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:50,gameDate:"",gameTime:""};
+let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
+if(!Number.isInteger(Number(settings.visibleTickets))||Number(settings.visibleTickets)<1||Number(settings.visibleTickets)>600){settings.visibleTickets=15;}
 let visibleTicketNumbers=JSON.parse(localStorage.getItem("tombolaVisibleTicketNumbers")||"null");
 function getVisibleTicketNumbers(){
   let count=Math.min(600,Math.max(1,Number(settings.visibleTickets)||1));
@@ -205,15 +206,7 @@ function getVisibleTicketNumbers(){
     const pool=Array.from({length:600},(_,i)=>i+1);
     for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
     visibleTicketNumbers=pool.slice(0,count);
-    localStorage.setItem("tombolaVisibleTicketNumbers",JSON.stringify(visibleTicketNumbers));
-  }
-  return visibleTicketNumbers;
-}
-function regenerateVisibleTicketNumbers(){
-  const count=Math.min(600,Math.max(1,Number(settings.visibleTickets)||1));
-  const pool=Array.from({length:600},(_,i)=>i+1);
-  for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
-  visibleTicketNumbers=pool.slice(0,count);
+
   localStorage.setItem("tombolaVisibleTicketNumbers",JSON.stringify(visibleTicketNumbers));
   }
   return visibleTicketNumbers;
@@ -418,7 +411,8 @@ function renderPlayerPrizes(){
     over.style.display=done?"block":"none";
   }
 }
-  function renderAdminPrizeWinners(){
+
+function renderAdminPrizeWinners(){
   const box=document.getElementById("adminPrizeWinners");
   if(!box)return;
   const selected=selectedPrizeKeys();
@@ -707,6 +701,8 @@ el.textContent=days>0?days+"d "+String(hours).padStart(2,"0")+":"+String(minutes
 }
 
 function startGame(){
+// Ensure a valid random ticket set exists before rendering.
+getVisibleTicketNumbers();
 renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();if(gameRunning){showGameBoard(true);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,6000)}else{showGameBoard(false)}setInterval(updateCountdown,1000);
 }
 
