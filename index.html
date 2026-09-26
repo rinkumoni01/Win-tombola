@@ -197,7 +197,7 @@ button,input{font-family:inherit}
 const ADMIN_USERNAME="gyandeep";
 const ADMIN_PASSWORD="785673";
 
-let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
+  let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
 if(!Number.isInteger(Number(settings.visibleTickets))||Number(settings.visibleTickets)<1||Number(settings.visibleTickets)>600){settings.visibleTickets=15;}
 let visibleTicketNumbers=JSON.parse(localStorage.getItem("tombolaVisibleTicketNumbers")||"null");
 function getVisibleTicketNumbers(){
@@ -227,7 +227,12 @@ let prizeWinners=JSON.parse(localStorage.getItem("tombolaPrizeWinners")||"{}");
 let gameRunning=localStorage.getItem("tombolaGameRunning")==="true";
 let drawnNumbers=JSON.parse(localStorage.getItem("tombolaDrawnNumbers")||"[]");
 let drawTimer=null;
-const NUMBER_CALLS={1:"Top of the house",2:"Little duck",3:"Dil wala",4:"Murgi chor",5:"High five",6:"Chhakka",7:"Lucky seven",8:"Gol gol",9:"Cloud nine",10:"Perfect ten",11:"Double one",12:"One dozen",13:"Unlucky thirteen",14:"Valentine",15:"Young fifteen",16:"Sweet sixteen",17:"Dancing seventeen",18:"Adult eighteen",19:"Last of the teens",20:"Score twenty",21:"Key of the door",22:"Two little ducks",23:"Cricket number",24:"Two dozen",25:"Silver jubilee",26:"Pick and mix",27:"Gateway to heaven",28:"Feeling great",29:"Rise and shine",30:"Dirty thirty",31:"Flirty thirty-one",32:"Birthday number",33:"All the threes",34:"Ask for more",35:"Jump and jive",36:"Three dozen",37:"More than thirty",38:"Dancing eight",39:"Feeling fine",40:"Naughty forty",41:"Time for fun",42:"Answer to everything",43:"More than forty",44:"Four by four",45:"Halfway to ninety",46:"Super fix",47:"Lucky forty-seven",48:"Four dozen",49:"Almost fifty",50:"Half century",51:"Lots of fun",52:"Pack of cards",53:"Look at me",54:"Ask for more",55:"Double five",56:"Five dozen minus four",57:"Heinz varieties",58:"Feeling great",59:"Just before sixty",60:"Six decades",61:"More fun",62:"Coming to you",63:"Lucky sixty-three",64:"Computer number",65:"Retirement number",66:"Clickety-click",67:"Lucky heaven",68:"Feeling great",69:"The funny number",70:"Seventy, plenty of fun",71:"Bang on seventy-one",72:"Six dozen",73:"Lucky seventy-three",74:"Knock at the door",75:"Diamond jubilee",76:"Tricks and kicks",77:"Double lucky seven",78:"Don't be late",79:"One before eighty",80:"Eighty, still naughty",81:"Game begun",82:"Coming to you",83:"Easy as can be",84:"Seven dozen",85:"Feeling alive",86:"Quick quick tricks",87:"Lucky heaven",88:"Two fat ladies",89:"One before ninety",90:"Top of the town"};
+const NUMBER_CALLS={
+1:"Ek number ka hero — Number 1!",2:"Do aankhein — Number 2!",3:"Teen tigada — Number 3!",4:"Murgi chor — Number 4!",5:"High five, bhai! — Number 5!",6:"Chhakka laga — Number 6!",7:"Saat samundar paar — Number 7!",8:"Golmaal number — Number 8!",9:"Cloud nine — Number 9!",10:"Das ka dum — Number 10!",11:"Gyarah ka chakkar — Number 11!",12:"Baarah baj gaye — Number 12!",13:"Tera number aa gaya — Number 13!",14:"Chaudah ki chaabi — Number 14!",15:"Pandrah ka punch — Number 15!",16:"Sweet sixteen — Number 16!",17:"Satra ka tadka — Number 17!",18:"Adult ho gaya bhai — Number 18!",19:"Unnis-bees ka farak — Number 19!",20:"Bees ka tees — Number 20!",21:"Ikkees, full-on tease — Number 21!",22:"Do battakh tair rahi — Number 22!",23:"Teis ka twist — Number 23!",24:"Chaubees ghante ready — Number 24!",25:"Pachees ka patakha — Number 25!",26:"Chhabbees ka jhatka — Number 26!",27:"Sattais, jackpot wali vibe — Number 27!",28:"Atthais, late but nice — Number 28!",29:"Untees ka attitude — Number 29!",30:"Tees maar khan — Number 30!",31:"Ikattis ka dhamaal — Number 31!",32:"Battis daant, smile kamaal — Number 32!",33:"Teintis ka teesra gear — Number 33!",34:"Chautis ka chakkar — Number 34!",35:"Paintees, full masti please — Number 35!",36:"Chhattis ka chhota dhamaka — Number 36!",37:"Saintees, lucky wali fees — Number 37!",38:"Adtees ka attitude — Number 38!",39:"Untalis se pehle teesra alarm — Number 39!",40:"Chalis ka jhatka — Number 40!",41:"Iktalis, game mein twist — Number 41!",42:"Bayaalis, answer to everything — Number 42!",43:"Taintalis, tension mat le — Number 43!",44:"Double four, double dhamaka — Number 44!",45:"Paitalis, ab toh serious ho jao — Number 45!",46:"Chhiyaalis, number full stylish — Number 46!",47:"Saintalis, seedha dil pe vaar — Number 47!",48:"Adtalis, late nahi great — Number 48!",49:"Unchaas, ekdum khaas — Number 49!",50:"Pachaas, aadha game paas — Number 50!",51:"Ikyaavan, game ka tufaan — Number 51!",52:"Baavan, ticket sambhal ke rakhna — Number 52!",53:"Tirpan, kiska niklega dhan? — Number 53!",54:"Chauvan, chance pakad lo — Number 54!",55:"Double five, full high-five — Number 55!",56:"Chhappan, ab kya plan? — Number 56!",57:"Sattavan, lucky ka button — Number 57!",58:"Atthavan, game garam hai — Number 58!",59:"Unsath, bas ek kadam aur — Number 59!",60:"Saath, full power — Number 60!",61:"Iksath, ticket pe nazar rakh — Number 61!",62:"Baasath, kiski nikli baat? — Number 62!",63:"Tirsath, tension ko karo laat — Number 63!",64:"Chaunsath, number ekdum khaas — Number 64!",65:"Painsath, prize ke paas — Number 65!",66:"Double six, lucky fix — Number 66!",67:"Sadsath, game ka badshah — Number 67!",68:"Arsath, kya baat hai! — Number 68!",69:"Unhattar, sabki nazar idhar — Number 69!",70:"Sattar, winner ka meter — Number 70!",71:"Ikhattar, ticket pakad kar — Number 71!",72:"Bahattar, winner banne ka vaar — Number 72!",73:"Tihattar, kiska lagega chhakka? — Number 73!",74:"Chauhattar, game mein full speed — Number 74!",75:"Pachhattar, prize ki taraf — Number 75!",76:"Chhihattar, ab toh dil dhadak raha — Number 76!",77:"Double seven, lucky heaven — Number 77!",78:"Athhattar, kismat ka patta — Number 78!",79:"Unasi, ab kaun hasega? — Number 79!",80:"Assi, game ekdum classy — Number 80!",81:"Ikyasi, winner ki aas — Number 81!",82:"Bayaasi, kiska number khaas? — Number 82!",83:"Tiraasi, ticket wali pyaasi — Number 83!",84:"Chaurasi, kismat zara jaga lo — Number 84!",85:"Pachasi, prize ke bilkul paas — Number 85!",86:"Chhiyaasi, ab toh maza aayega — Number 86!",87:"Sattasi, kiska nikla lucky? — Number 87!",88:"Double eight, winner ka gate — Number 88!",89:"Nawasi, bas ek baaki! — Number 89!",90:"Nabbe! Game ka king number — Number 90!"
+};
+const GAME_START_VOICE="Ladies and gentlemen, game is on! Get ready… your lucky number is coming!";
+const GAME_OVER_VOICE="Ladies and gentlemen, all selected prizes are complete. Every prize is done and correct! Game over! Thank you, everyone!";
+
 
 function generateTicketNumbers(ticketNo){
 const key="tombolaTicketNumbers";
@@ -241,7 +246,7 @@ for(let c=0;c<9;c++){
   let row=availableRows[randomInt(0,availableRows.length-1)];
   grid[row][c]=true; rowCount[row]++;
 }
-  while(rowCount[0]<5||rowCount[1]<5||rowCount[2]<5){
+while(rowCount[0]<5||rowCount[1]<5||rowCount[2]<5){
   let possible=[];
   for(let r=0;r<3;r++)for(let c=0;c<9;c++)if(!grid[r][c]&&rowCount[r]<5)possible.push({r,c});
   let minRow=Math.min(...rowCount);
@@ -271,7 +276,49 @@ const last=drawnNumbers.length?drawnNumbers[drawnNumbers.length-1]:null;document
 const list=document.getElementById("calledList");if(list){list.innerHTML="";drawnNumbers.forEach(n=>{const chip=document.createElement("div");chip.className="calledChip";chip.textContent=n;list.appendChild(chip)})}
 const input=document.getElementById("myTicketNumber");if(input&&input.value)searchMyTicket();
 }
-function speak(text){if(!("speechSynthesis" in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=.92;u.volume=1;window.speechSynthesis.speak(u)}
+let femaleVoice=null;
+let voiceQueue=[];
+let voicePlaying=false;
+function pickFemaleVoice(){
+  if(!("speechSynthesis" in window))return null;
+  const voices=window.speechSynthesis.getVoices();
+  const hi=voices.filter(v=>/^hi(-|_)/i.test(v.lang));
+  const candidates=hi.length?hi:voices.filter(v=>/^en(-|_)/i.test(v.lang));
+  return candidates.find(v=>/female|woman|girl|lady/i.test(v.name)) || candidates.find(v=>/Google/i.test(v.name)) || candidates[0] || voices[0] || null;
+}
+function makeUtterance(text){
+  femaleVoice=femaleVoice||pickFemaleVoice();
+  const clean=String(text).replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,"");
+  const u=new SpeechSynthesisUtterance(clean);
+  u.voice=femaleVoice||null;
+  u.lang=(femaleVoice&&femaleVoice.lang)||"hi-IN";
+  u.rate=.88;u.pitch=1.12;u.volume=1;
+  return u;
+}
+function speak(text){
+  if(!("speechSynthesis" in window))return;
+  voiceQueue=[];voicePlaying=false;window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(makeUtterance(text));
+}
+function queueSpeak(text){
+  if(!("speechSynthesis" in window))return;
+  voiceQueue.push(String(text));
+  if(voicePlaying)return;
+  playVoiceQueue();
+}
+function playVoiceQueue(){
+  if(!voiceQueue.length){voicePlaying=false;return;}
+  voicePlaying=true;
+  const u=makeUtterance(voiceQueue.shift());
+  u.onend=()=>playVoiceQueue();
+  u.onerror=()=>playVoiceQueue();
+  window.speechSynthesis.speak(u);
+}
+function clearVoiceQueue(){
+  voiceQueue=[];voicePlaying=false;
+  if("speechSynthesis" in window)window.speechSynthesis.cancel();
+}
+if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged=()=>{femaleVoice=pickFemaleVoice()};
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 
@@ -289,7 +336,7 @@ const PRIZE_NAMES={
   early7:"🎯 Early 7"
 };
 
-function getTicketData(ticketNo){
+  function getTicketData(ticketNo){
   return generateTicketNumbers(ticketNo);
 }
 function markedCount(ticket){
@@ -355,7 +402,7 @@ function checkPrizeWinners(){
     if(no!==null){
       prizeWinners[key]={ticketNo:no,name:String(bookings[no].name||"Unknown")};
       changed=true;
-      speak(PRIZE_NAMES[key].replace(/^[^\s]+\s/,"")+" winner "+prizeWinners[key].name+" ticket number "+no);
+      
     }
   }
 
@@ -367,7 +414,7 @@ function checkPrizeWinners(){
     if(no!==null){
       prizeWinners.secondFullHouse={ticketNo:no,name:String(bookings[no].name||"Unknown")};
       changed=true;
-      speak("Second Full House winner "+prizeWinners.secondFullHouse.name+" ticket number "+no);
+      
     }
   }
   if(selected.includes("thirdFullHouse") && !prizeWinners.thirdFullHouse){
@@ -378,11 +425,23 @@ function checkPrizeWinners(){
     if(no!==null){
       prizeWinners.thirdFullHouse={ticketNo:no,name:String(bookings[no].name||"Unknown")};
       changed=true;
-      speak("Third Full House winner "+prizeWinners.thirdFullHouse.name+" ticket number "+no);
+      
     }
   }
 
-  if(changed) savePrizeWinners();
+  if(changed){
+    savePrizeWinners();
+    const announcements=[];
+    for(const key of selected){
+      const w=prizeWinners[key];
+      if(w && !prizeWinners[key]._announced){
+        announcements.push(`${PRIZE_NAMES[key].replace(/^[^\s]+\s/,"")} is full correct and done!`);
+        w._announced=true;
+      }
+    }
+    savePrizeWinners();
+    if(announcements.length) announcements.forEach(a=>queueSpeak(a));
+  }
   renderPlayerPrizes();
   renderAdminPrizeWinners();
 
@@ -435,9 +494,9 @@ function finishPrizeGame(){
   updatePlayerGameStatus();
   renderPlayerPrizes();
   renderAdminPrizeWinners();
-  speak("All selected prizes are complete. Game over.");
-    }
-  function drawNextNumber(){if(!gameRunning)return;if(drawnNumbers.length>=90){finishGame();return}const a=[];for(let i=1;i<=90;i++)if(!drawnNumbers.includes(i))a.push(i);const n=a[Math.floor(Math.random()*a.length)];drawnNumbers.push(n);saveDrawnNumbers();renderNumberBoard();speak((NUMBER_CALLS[n]||"Number")+" — Number "+n);checkPrizeWinners();if(gameRunning&&drawnNumbers.length>=90)finishGame()}
+  queueSpeak(GAME_OVER_VOICE);
+}
+function drawNextNumber(){if(!gameRunning)return;if(drawnNumbers.length>=90){finishGame();return}const a=[];for(let i=1;i<=90;i++)if(!drawnNumbers.includes(i))a.push(i);const n=a[Math.floor(Math.random()*a.length)];drawnNumbers.push(n);saveDrawnNumbers();renderNumberBoard();queueSpeak(NUMBER_CALLS[n]||(`Number ${n}`));checkPrizeWinners();if(gameRunning&&drawnNumbers.length>=90)finishGame()}
 function finishGame(){clearInterval(drawTimer);drawTimer=null;gameRunning=false;localStorage.setItem("tombolaGameRunning","false");renderNumberBoard();updatePlayerGameStatus();document.getElementById("lastNumber").innerHTML='<span>90</span>';speak("Game over")}
 function renderTickets(){
 const box=document.getElementById("tickets");box.innerHTML="";
@@ -464,7 +523,7 @@ function searchMyTicket(){
   if(!raw){
     result.innerHTML='<div class="noTicket">Please enter at least one ticket number.</div>';
     return;
-  }
+    }
 
   const requested=[...new Set(raw.split(/[\s,]+/).map(x=>parseInt(x,10)).filter(n=>!isNaN(n)))];
 
@@ -553,11 +612,12 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 }
 
 function setGameStatus(status){
-if(status){if(gameRunning){alert("Game is already running.");return}if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak("GAME IS ON! Ladies and gentlemen, get ready! Eyes on your tickets, Let's play Win Tombola!");clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,6000);alert("🟢 Game is now RUNNING. First number 6 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
+if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,6000);alert("🟢 Game is now RUNNING. First number 6 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
 function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
 gameRunning=false;
+clearVoiceQueue();
 clearInterval(drawTimer);
 drawTimer=null;
 drawnNumbers=[];
@@ -717,3 +777,4 @@ startGame();
 </script>
 </body>
 </html>
+                                                                                                                                                                                                    }
