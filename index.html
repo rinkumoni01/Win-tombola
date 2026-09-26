@@ -77,9 +77,9 @@ button,input{font-family:inherit}
 <div class="calledListTitle">Called Numbers</div>
 <div class="calledList" id="calledList"></div>
 <div class="myTicketBox">
-<div class="myTicketTitle">🎟️ Search Customer Tickets</div>
-<div class="myTicketRow"><input class="myTicketInput" id="myTicketNumber" type="number" min="1" max="600" placeholder="Enter any booked ticket number"><button class="myTicketBtn" onclick="searchMyTicket()">SEARCH</button></div>
-<div class="voiceNote">Enter any one booked ticket number to see all tickets booked under that customer name.</div>
+<div class="myTicketTitle">🎟️ Search Multiple Customers</div>
+<div class="myTicketRow"><input class="myTicketInput" id="myTicketNumber" type="text" inputmode="numeric" placeholder="Example: 25, 80, 145"><button class="myTicketBtn" onclick="searchMyTicket()">SEARCH</button></div>
+<div class="voiceNote">Enter one or more booked ticket numbers separated by comma. Each customer's tickets will be shown together.</div>
 <div class="myTicketResult" id="myTicketResult"></div>
 </div>
 </div>
@@ -215,14 +215,15 @@ for(let r=0;r<3;r++)if(grid[r][c])result[r][c]=numbers[index++];
 }
 return result;
 }
-  function renderNumberBoard(){
+
+function renderNumberBoard(){
 const grid=document.getElementById("numberGrid");if(!grid)return;grid.innerHTML="";
 for(let i=1;i<=90;i++){const d=document.createElement("div");d.className="drawNumber"+(drawnNumbers.includes(i)?" called":"");d.textContent=i;grid.appendChild(d)}
 const last=drawnNumbers.length?drawnNumbers[drawnNumbers.length-1]:null;document.getElementById("lastNumber").innerHTML=last?`<span>${last}</span>`:`<span>--</span>`;
 const list=document.getElementById("calledList");if(list){list.innerHTML="";drawnNumbers.forEach(n=>{const chip=document.createElement("div");chip.className="calledChip";chip.textContent=n;list.appendChild(chip)})}
 const input=document.getElementById("myTicketNumber");if(input&&input.value)searchMyTicket();
 }
-function speak(text){if(!("speechSynthesis" in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=.92;u.volume=1;window.speechSynthesis.speak(u)}
+  function speak(text){if(!("speechSynthesis" in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=.92;u.volume=1;window.speechSynthesis.speak(u)}
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 function drawNextNumber(){if(!gameRunning)return;if(drawnNumbers.length>=90){finishGame();return}const a=[];for(let i=1;i<=90;i++)if(!drawnNumbers.includes(i))a.push(i);const n=a[Math.floor(Math.random()*a.length)];drawnNumbers.push(n);saveDrawnNumbers();renderNumberBoard();speak((NUMBER_CALLS[n]||"Number")+" — Number "+n);if(drawnNumbers.length>=90)finishGame()}
@@ -246,65 +247,107 @@ function searchMyTicket(){
   const result=document.getElementById("myTicketResult");
   if(!input||!result)return;
 
-  const ticketNo=parseInt(input.value);
   const total=Math.min(600,Math.max(1,Number(settings.visibleTickets)));
+  const raw=String(input.value||"").trim();
 
-  if(isNaN(ticketNo)||ticketNo<1||ticketNo>total){
-    result.innerHTML='<div class="noTicket">Please enter a valid ticket number.</div>';
+  if(!raw){
+    result.innerHTML='<div class="noTicket">Please enter at least one ticket number.</div>';
     return;
   }
 
-  const selected=bookings[ticketNo];
+  const requested=[...new Set(
+    raw.split(/[\s,]+/).map(x=>parseInt(x,10)).filter(n=>!isNaN(n))
+  )];
 
-  if(!selected||selected.booked!==true){
-    result.innerHTML='<div class="noTicket">Ticket '+ticketNo+' is not booked. Please enter any booked ticket number.</div>';
+  if(!requested.length){
+    result.innerHTML='<div class="noTicket">Please enter valid ticket numbers.</div>';
     return;
   }
 
-  const customerName=String(selected.name||"").trim();
+  const invalid=requested.filter(n=>n<1||n>total);
+  if(invalid.length){
+    result.innerHTML='<div class="noTicket">Invalid ticket number: '+invalid.join(", ")+'. Visible tickets are 1–'+total+'.</div>';
+    return;
+  }
 
-  const sameNameTickets=[];
-  for(let i=1;i<=total;i++){
-    if(
-      bookings[i] &&
-      bookings[i].booked===true &&
-      String(bookings[i].name||"").trim().toLowerCase()===customerName.toLowerCase()
-    ){
-      sameNameTickets.push(i);
+  const customerGroups={};
+  const notBooked=[];
+
+  requested.forEach(ticketNo=>{
+    const booking=bookings[ticketNo];
+
+    if(!booking||booking.booked!==true){
+      notBooked.push(ticketNo);
+      return;
     }
+
+    const name=String(booking.name||"").trim()||"Unknown";
+    const key=name.toLowerCase();
+
+    if(!customerGroups[key]){
+      customerGroups[key]={name:name,tickets:[]};
+    }
+    customerGroups[key].tickets.push(ticketNo);
+  });
+
+  const groups=Object.values(customerGroups);
+
+  if(!groups.length){
+    result.innerHTML='<div class="noTicket">None of the entered tickets are booked.</div>';
+    return;
   }
 
-  sameNameTickets.sort((a,b)=>a-b);
+  let html="";
 
-  let cards="";
-  sameNameTickets.forEach(no=>{
-    const numbers=generateTicketNumbers(no);
-    let cells="";
+  groups.forEach(group=>{
+    const allCustomerTickets=[];
 
-    for(let r=0;r<3;r++){
-      for(let c=0;c<9;c++){
-        const value=numbers[r][c];
-        const marked=value!==""&&drawnNumbers.includes(Number(value));
-        cells+=`<div class="cell ${value===""?"empty":""} ${marked?"markedCell":""}">${value}</div>`;
+    for(let i=1;i<=total;i++){
+      if(
+        bookings[i] &&
+        bookings[i].booked===true &&
+        String(bookings[i].name||"").trim().toLowerCase()===group.name.toLowerCase()
+      ){
+        allCustomerTickets.push(i);
       }
     }
 
-    cards+=`<div class="ticket">
-      <div class="ticketHead">
-        <div class="ticketNo">${no}</div>
-        <div class="ticketName">${customerName}</div>
-      </div>
-      <div class="ticketGrid">${cells}</div>
+    allCustomerTickets.sort((a,b)=>a-b);
+
+    html+=`<div class="myTicketFound" style="margin-bottom:12px">
+      <b>👤 ${group.name}</b><br>
+      🎟️ Total Tickets: ${allCustomerTickets.length}<br>
+      🔎 Searched: ${group.tickets.sort((a,b)=>a-b).join(", ")}<br>
+      🎟️ All Tickets: ${allCustomerTickets.join(", ")}
     </div>`;
+
+    allCustomerTickets.forEach(no=>{
+      const numbers=generateTicketNumbers(no);
+      let cells="";
+
+      for(let r=0;r<3;r++){
+        for(let c=0;c<9;c++){
+          const value=numbers[r][c];
+          const marked=value!==""&&drawnNumbers.includes(Number(value));
+          cells+=`<div class="cell ${value===""?"empty":""} ${marked?"markedCell":""}">${value}</div>`;
+        }
+      }
+
+      html+=`<div class="ticket">
+        <div class="ticketHead">
+          <div class="ticketNo">${no}</div>
+          <div class="ticketName">${group.name}</div>
+        </div>
+        <div class="ticketGrid">${cells}</div>
+      </div>`;
+    });
   });
 
-  result.innerHTML=
-    `<div class="myTicketFound">
-      <b>👤 ${customerName}</b><br>
-      🎟️ Total Tickets: ${sameNameTickets.length}<br>
-      🔎 Searched Ticket: ${ticketNo}<br>
-      🎟️ Ticket Numbers: ${sameNameTickets.join(", ")}
-    </div>${cards}`;
+  if(notBooked.length){
+    html=`<div class="noTicket" style="margin-bottom:10px">⚠️ Not booked: ${notBooked.join(", ")}</div>`+html;
+  }
+
+  result.innerHTML=html;
 }
 }
 
