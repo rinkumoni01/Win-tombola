@@ -43,7 +43,9 @@ button,input{font-family:inherit}
 .statusTitle{text-align:center;font-weight:bold;margin-bottom:8px}.statusLegend{display:flex;gap:15px;justify-content:center;flex-wrap:wrap;margin-top:10px;font-size:13px;font-weight:bold}
 .legendBox{display:flex;align-items:center;gap:5px}.legendColor{width:22px;height:22px;border:2px solid #aaa;border-radius:4px}.legendUnsold{background:#fff}.legendBooked{background:#fff900}
 .runStopBox{display:flex;gap:10px}.runBtn,.stopBtn{flex:1;border:0;padding:14px;border-radius:8px;color:#fff;font-size:17px;font-weight:bold;cursor:pointer}
-.runBtn{background:#16b84e}.stopBtn{background:#d00}.currentGameStatus{text-align:center;padding:10px;border-radius:8px;background:#07145e;color:white;font-weight:bold;margin-top:10px}
+.runBtn{background:#16b84e}.stopBtn{background:#d00}
+.cancelGameBtn{width:100%;margin-top:10px;background:#ff8c00;color:#fff;border:0;padding:14px;border-radius:8px;font-size:17px;font-weight:bold;cursor:pointer}
+.currentGameStatus{text-align:center;padding:10px;border-radius:8px;background:#07145e;color:white;font-weight:bold;margin-top:10px}
 .gameBoard{display:none;background:#fff;border-radius:15px;padding:12px;margin-top:12px;box-shadow:0 2px 10px rgba(0,0,0,.18)}.gameBoard.active{display:block}.boardTitle{text-align:center;font-size:22px;font-weight:bold;color:#ed005f;margin:5px 0 12px}.numberGrid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}.drawNumber{aspect-ratio:1/1;border-radius:8px;border:2px solid #aaa;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:bold}.drawNumber.called{background:#18c957;color:#fff;border-color:#078b35}.lastNumber{text-align:center;background:#07145e;color:#fff;border-radius:10px;padding:10px;margin-bottom:10px;font-size:18px;font-weight:bold}.lastNumber span{font-size:30px;color:#e9f900}.calledListTitle{text-align:center;font-weight:bold;color:#ed005f;margin:12px 0 7px}.calledList{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:4px}.calledChip{background:#18c957;color:#fff;border:2px solid #078b35;border-radius:7px;min-width:38px;padding:6px 8px;text-align:center;font-size:17px;font-weight:bold}.myTicketBox{margin-top:14px;background:#f7f7f7;border-radius:10px;padding:12px;border:2px solid #ddd}.myTicketTitle{text-align:center;font-size:19px;font-weight:bold;color:#ed005f;margin-bottom:8px}.myTicketRow{display:flex;gap:7px}.myTicketInput{flex:1;min-width:0;padding:12px;border:2px solid #aaa;border-radius:8px;font-size:17px}.myTicketBtn{background:#ed005f;color:#fff;border:0;border-radius:8px;padding:12px 15px;font-size:16px;font-weight:bold}.myTicketResult{margin-top:10px}.myTicketResult .ticket{margin:0}.markedCell{background:#18c957!important;color:#fff!important;border-color:#078b35!important}.noTicket{text-align:center;background:#fff0f0;color:#d00;padding:10px;border-radius:8px;font-weight:bold}.voiceNote{text-align:center;font-size:12px;color:#666;margin-top:8px}
 @media(max-width:600px){
 .logo{font-size:23px}.sub{font-size:12px}.gameInfo{gap:4px}.gameBox{min-height:58px;padding:4px 2px;border-width:3px;font-size:14px}
@@ -103,6 +105,7 @@ button,input{font-family:inherit}
 <button class="runBtn" onclick="setGameStatus(true)">🟢 GAME RUN</button>
 <button class="stopBtn" onclick="setGameStatus(false)">🔴 GAME STOP</button>
 </div>
+<button class="cancelGameBtn" onclick="cancelGame()">❌ CANCEL GAME</button>
 <div class="currentGameStatus" id="adminGameStatus">🔴 GAME STOPPED</div>
 </div>
 
@@ -258,6 +261,20 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 
 function setGameStatus(status){
 if(status){if(gameRunning){alert("Game is already running.");return}if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak("GAME IS ON! Ladies and gentlemen, get ready! Eyes on your tickets, Let's play Win Tombola!");clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,6000);alert("🟢 Game is now RUNNING. First number 6 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
+
+function cancelGame(){
+if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
+gameRunning=false;
+clearInterval(drawTimer);
+drawTimer=null;
+drawnNumbers=[];
+saveDrawnNumbers();
+localStorage.setItem("tombolaGameRunning","false");
+updatePlayerGameStatus();
+renderNumberBoard();
+showGameBoard(false);
+alert("❌ Game cancelled. Ticket bookings are unchanged.");
+}
 
 function openAdminLogin(){document.getElementById("loginModal").style.display="block"}
 
