@@ -46,7 +46,7 @@ button,input{font-family:inherit}
 .runBtn{background:#16b84e}.stopBtn{background:#d00}
 .cancelGameBtn{width:100%;margin-top:10px;background:#ff8c00;color:#fff;border:0;padding:14px;border-radius:8px;font-size:17px;font-weight:bold;cursor:pointer}
 .currentGameStatus{text-align:center;padding:10px;border-radius:8px;background:#07145e;color:white;font-weight:bold;margin-top:10px}
-.gameBoard{display:none;background:#fff;border-radius:15px;padding:12px;margin-top:12px;box-shadow:0 2px 10px rgba(0,0,0,.18)}.gameBoard.active{display:block}.boardTitle{text-align:center;font-size:22px;font-weight:bold;color:#ed005f;margin:5px 0 12px}.numberGrid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}.drawNumber{aspect-ratio:1/1;border-radius:8px;border:2px solid #aaa;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:bold}.drawNumber.called{background:#18c957;color:#fff;border-color:#078b35}.lastNumber{text-align:center;background:#07145e;color:#fff;border-radius:10px;padding:10px;margin-bottom:10px;font-size:18px;font-weight:bold}.lastNumber span{font-size:30px;color:#e9f900}.calledListTitle{text-align:center;font-weight:bold;color:#ed005f;margin:12px 0 7px}.calledList{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:4px}.calledChip{background:#18c957;color:#fff;border:2px solid #078b35;border-radius:7px;min-width:38px;padding:6px 8px;text-align:center;font-size:17px;font-weight:bold}.myTicketBox{margin-top:14px;background:#f7f7f7;border-radius:10px;padding:12px;border:2px solid #ddd}.myTicketTitle{text-align:center;font-size:19px;font-weight:bold;color:#ed005f;margin-bottom:8px}.myTicketRow{display:flex;gap:7px}.myTicketInput{flex:1;min-width:0;padding:12px;border:2px solid #aaa;border-radius:8px;font-size:17px}.myTicketBtn{background:#ed005f;color:#fff;border:0;border-radius:8px;padding:12px 15px;font-size:16px;font-weight:bold}.myTicketResult{margin-top:10px}.myTicketResult .ticket{margin:0}.markedCell{background:#18c957!important;color:#fff!important;border-color:#078b35!important}.noTicket{text-align:center;background:#fff0f0;color:#d00;padding:10px;border-radius:8px;font-weight:bold}.voiceNote{text-align:center;font-size:12px;color:#666;margin-top:8px}
+.gameBoard{display:none;background:#fff;border-radius:15px;padding:12px;margin-top:12px;box-shadow:0 2px 10px rgba(0,0,0,.18)}.gameBoard.active{display:block}.boardTitle{text-align:center;font-size:22px;font-weight:bold;color:#ed005f;margin:5px 0 12px}.numberGrid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}.drawNumber{aspect-ratio:1/1;border-radius:8px;border:2px solid #aaa;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:bold}.drawNumber.called{background:#18c957;color:#fff;border-color:#078b35}.lastNumber{text-align:center;background:#07145e;color:#fff;border-radius:10px;padding:10px;margin-bottom:10px;font-size:18px;font-weight:bold}.lastNumber span{font-size:30px;color:#e9f900}.calledListTitle{text-align:center;font-weight:bold;color:#ed005f;margin:12px 0 7px}.calledList{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:4px}.calledChip{background:#18c957;color:#fff;border:2px solid #078b35;border-radius:7px;min-width:38px;padding:6px 8px;text-align:center;font-size:17px;font-weight:bold}.myTicketBox{margin-top:14px;background:#f7f7f7;border-radius:10px;padding:12px;border:2px solid #ddd}.myTicketTitle{text-align:center;font-size:19px;font-weight:bold;color:#ed005f;margin-bottom:8px}.myTicketRow{display:flex;gap:7px}.myTicketInput{flex:1;min-width:0;padding:12px;border:2px solid #aaa;border-radius:8px;font-size:17px}.myTicketBtn{background:#ed005f;color:#fff;border:0;border-radius:8px;padding:12px 15px;font-size:16px;font-weight:bold}.myTicketFound{background:#fff;border:3px solid #ff684e;border-radius:10px;padding:10px;margin:10px 0;text-align:center;font-size:17px;color:#07145e}\n.myTicketResult{margin-top:10px}.myTicketResult .ticket{margin:0}.markedCell{background:#18c957!important;color:#fff!important;border-color:#078b35!important}.noTicket{text-align:center;background:#fff0f0;color:#d00;padding:10px;border-radius:8px;font-weight:bold}.voiceNote{text-align:center;font-size:12px;color:#666;margin-top:8px}
 @media(max-width:600px){
 .logo{font-size:23px}.sub{font-size:12px}.gameInfo{gap:4px}.gameBox{min-height:58px;padding:4px 2px;border-width:3px;font-size:14px}
 #gameDateDisplay{font-size:13px}#countdown{font-size:14px}#gameTimeDisplay{font-size:13px}.gameStatus{font-size:14px}
@@ -214,14 +214,15 @@ for(let r=0;r<3;r++)if(grid[r][c])result[r][c]=numbers[index++];
 }
 return result;
 }
-  function renderNumberBoard(){
+
+function renderNumberBoard(){
 const grid=document.getElementById("numberGrid");if(!grid)return;grid.innerHTML="";
 for(let i=1;i<=90;i++){const d=document.createElement("div");d.className="drawNumber"+(drawnNumbers.includes(i)?" called":"");d.textContent=i;grid.appendChild(d)}
 const last=drawnNumbers.length?drawnNumbers[drawnNumbers.length-1]:null;document.getElementById("lastNumber").innerHTML=last?`<span>${last}</span>`:`<span>--</span>`;
 const list=document.getElementById("calledList");if(list){list.innerHTML="";drawnNumbers.forEach(n=>{const chip=document.createElement("div");chip.className="calledChip";chip.textContent=n;list.appendChild(chip)})}
 const input=document.getElementById("myTicketNumber");if(input&&input.value)searchMyTicket();
 }
-function speak(text){if(!("speechSynthesis" in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=.92;u.volume=1;window.speechSynthesis.speak(u)}
+  function speak(text){if(!("speechSynthesis" in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=.92;u.volume=1;window.speechSynthesis.speak(u)}
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 function drawNextNumber(){if(!gameRunning)return;if(drawnNumbers.length>=90){finishGame();return}const a=[];for(let i=1;i<=90;i++)if(!drawnNumbers.includes(i))a.push(i);const n=a[Math.floor(Math.random()*a.length)];drawnNumbers.push(n);saveDrawnNumbers();renderNumberBoard();speak((NUMBER_CALLS[n]||"Number")+" — Number "+n);if(drawnNumbers.length>=90)finishGame()}
@@ -244,11 +245,41 @@ function searchMyTicket(){
 const input=document.getElementById("myTicketNumber"),result=document.getElementById("myTicketResult");
 if(!input||!result)return;
 const ticketNo=parseInt(input.value),total=Math.min(600,Math.max(1,Number(settings.visibleTickets)));
-if(isNaN(ticketNo)||ticketNo<1||ticketNo>total){result.innerHTML='<div class="noTicket">Please enter a valid ticket number.</div>';return}
-if(!bookings[ticketNo]||bookings[ticketNo].booked!==true){result.innerHTML='<div class="noTicket">This ticket is not booked.</div>';return}
-const numbers=generateTicketNumbers(ticketNo);let cells="";
-for(let r=0;r<3;r++)for(let c=0;c<9;c++){const value=numbers[r][c];const marked=value!==""&&drawnNumbers.includes(Number(value));cells+=`<div class="cell ${value===""?"empty":""} ${marked?"markedCell":""}">${value}</div>`}
-result.innerHTML=`<div class="ticket"><div class="ticketHead"><div class="ticketNo">${ticketNo}</div><div class="ticketName">${bookings[ticketNo].name}</div></div><div class="ticketGrid">${cells}</div></div>`;
+
+if(isNaN(ticketNo)||ticketNo<1||ticketNo>total){
+result.innerHTML='<div class="noTicket">Please enter a valid ticket number.</div>';
+return;
+}
+
+if(!bookings[ticketNo]||bookings[ticketNo].booked!==true){
+result.innerHTML='<div class="noTicket">This ticket is not booked.</div>';
+return;
+}
+
+const customerName=String(bookings[ticketNo].name||"").trim();
+const sameNameTickets=[];
+
+for(let i=1;i<=total;i++){
+if(bookings[i]&&bookings[i].booked===true&&String(bookings[i].name||"").trim().toLowerCase()===customerName.toLowerCase()){
+sameNameTickets.push(i);
+}
+}
+
+let cards="";
+sameNameTickets.forEach(no=>{
+const numbers=generateTicketNumbers(no);
+let cells="";
+for(let r=0;r<3;r++){
+for(let c=0;c<9;c++){
+const value=numbers[r][c];
+const marked=value!==""&&drawnNumbers.includes(Number(value));
+cells+=`<div class="cell ${value===""?"empty":""} ${marked?"markedCell":""}">${value}</div>`;
+}
+}
+cards+=`<div class="ticket"><div class="ticketHead"><div class="ticketNo">${no}</div><div class="ticketName">${customerName}</div></div><div class="ticketGrid">${cells}</div></div>`;
+});
+
+result.innerHTML=`<div class="myTicketFound"><b>👤 ${customerName}</b><br>🎟️ Total Tickets: ${sameNameTickets.length}</div>${cards}`;
 }
 
 function updatePlayerGameStatus(){
