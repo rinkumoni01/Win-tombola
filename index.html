@@ -254,12 +254,7 @@ function searchMyTicket(){
     return;
   }
 
-  // Accept comma, space, or newline separated ticket numbers.
-  const requested=[...new Set(
-    raw.split(/[\s,]+/)
-      .map(x=>parseInt(x,10))
-      .filter(n=>!isNaN(n))
-  )];
+  const requested=[...new Set(raw.split(/[\s,]+/).map(x=>parseInt(x,10)).filter(n=>!isNaN(n)))];
 
   if(!requested.length){
     result.innerHTML='<div class="noTicket">Please enter valid ticket numbers.</div>';
@@ -272,25 +267,16 @@ function searchMyTicket(){
     return;
   }
 
-  // Find the customer name for every searched booked ticket.
-  // Then collect ALL booked tickets belonging to each found customer.
   const customerGroups={};
   const notBooked=[];
 
   requested.forEach(ticketNo=>{
     const booking=bookings[ticketNo];
-
-    if(!booking||booking.booked!==true){
-      notBooked.push(ticketNo);
-      return;
-    }
+    if(!booking||booking.booked!==true){notBooked.push(ticketNo);return;}
 
     const name=String(booking.name||"").trim()||"Unknown";
     const key=name.toLowerCase();
-
-    if(!customerGroups[key]){
-      customerGroups[key]={name:name,sourceTickets:[],allTickets:[]};
-    }
+    if(!customerGroups[key]) customerGroups[key]={name:name,sourceTickets:[],allTickets:[]};
     customerGroups[key].sourceTickets.push(ticketNo);
   });
 
@@ -305,11 +291,7 @@ function searchMyTicket(){
 
   groups.forEach(group=>{
     for(let i=1;i<=total;i++){
-      if(
-        bookings[i] &&
-        bookings[i].booked===true &&
-        String(bookings[i].name||"").trim().toLowerCase()===group.name.toLowerCase()
-      ){
+      if(bookings[i]&&bookings[i].booked===true&&String(bookings[i].name||"").trim().toLowerCase()===group.name.toLowerCase()){
         group.allTickets.push(i);
       }
     }
@@ -335,6 +317,7 @@ function searchMyTicket(){
           cells+=`<div class="cell ${value===""?"empty":""} ${marked?"markedCell":""}">${value}</div>`;
         }
       }
+
       html+=`<div class="ticket">
         <div class="ticketHead">
           <div class="ticketNo">${no}</div>
@@ -351,21 +334,6 @@ function searchMyTicket(){
 
   result.innerHTML=html;
 }
-}
-
-let cards="";
-sameNameTickets.forEach(no=>{
-const numbers=generateTicketNumbers(no);let cells="";
-for(let r=0;r<3;r++)for(let c=0;c<9;c++){
-const value=numbers[r][c];
-const marked=value!==""&&drawnNumbers.includes(Number(value));
-cells+=`<div class="cell ${value===""?"empty":""} ${marked?"markedCell":""}">${value}</div>`;
-}
-cards+=`<div class="ticket"><div class="ticketHead"><div class="ticketNo">${no}</div><div class="ticketName">${customerName}</div></div><div class="ticketGrid">${cells}</div></div>`;
-});
-
-result.innerHTML=`<div class="myTicketFound"><b>👤 ${customerName}</b><br>🎟️ Total Tickets: ${sameNameTickets.length}</div>${cards}`;
-}
 
 function updatePlayerGameStatus(){
 const el=document.getElementById("playerGameStatus");
@@ -377,8 +345,7 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 
 function setGameStatus(status){
 if(status){if(gameRunning){alert("Game is already running.");return}if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak("GAME IS ON! Ladies and gentlemen, get ready! Eyes on your tickets, Let's play Win Tombola!");clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,6000);alert("🟢 Game is now RUNNING. First number 6 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
-
-function cancelGame(){
+  function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
 gameRunning=false;
 clearInterval(drawTimer);
