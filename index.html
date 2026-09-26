@@ -174,8 +174,7 @@ button,input{font-family:inherit}
 <script>
 const ADMIN_USERNAME="gyandeep";
 const ADMIN_PASSWORD="785673";
-
-let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:50,gameDate:"",gameTime:""};
+  let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:50,gameDate:"",gameTime:""};
 let bookings=JSON.parse(localStorage.getItem("tombolaBookings"))||{};
 let prizes=JSON.parse(localStorage.getItem("tombolaPrizes"))||{firstLine:false,secondLine:false,thirdLine:false,fourCorners:false,fullHouse:false,secondFullHouse:false,thirdFullHouse:false,early5:false,early7:false};
 
@@ -215,7 +214,8 @@ for(let r=0;r<3;r++)if(grid[r][c])result[r][c]=numbers[index++];
 }
 return result;
 }
-  function renderNumberBoard(){
+
+function renderNumberBoard(){
 const grid=document.getElementById("numberGrid");if(!grid)return;grid.innerHTML="";
 for(let i=1;i<=90;i++){const d=document.createElement("div");d.className="drawNumber"+(drawnNumbers.includes(i)?" called":"");d.textContent=i;grid.appendChild(d)}
 const last=drawnNumbers.length?drawnNumbers[drawnNumbers.length-1]:null;document.getElementById("lastNumber").innerHTML=last?`<span>${last}</span>`:`<span>--</span>`;
@@ -271,7 +271,6 @@ function searchMyTicket(){
 
   const customerGroups={};
   const notBooked=[];
-
   requested.forEach(ticketNo=>{
     const booking=bookings[ticketNo];
 
