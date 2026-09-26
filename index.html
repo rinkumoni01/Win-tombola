@@ -129,7 +129,7 @@ button,input{font-family:inherit}
 <div class="adminCard">
 <label>🎟️ Visible Tickets</label>
 <input class="input" id="visibleTickets" type="number" min="1" max="600" placeholder="Example: 100">
-<div class="small">Player ko Ticket 1 se yahan tak dikhenge. Example: 100 = Ticket 1–100.</div>
+<div class="small">Player ko yahan jitne tickets set karenge, utne random tickets 1–600 me se dikhenge. Example: 100 = 100 random tickets.</div>
 </div>
 
 <div class="adminCard">
@@ -196,7 +196,27 @@ button,input{font-family:inherit}
 <script>
 const ADMIN_USERNAME="gyandeep";
 const ADMIN_PASSWORD="785673";
-  let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:50,gameDate:"",gameTime:""};
+
+let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:50,gameDate:"",gameTime:""};
+let visibleTicketNumbers=JSON.parse(localStorage.getItem("tombolaVisibleTicketNumbers")||"null");
+function getVisibleTicketNumbers(){
+  let count=Math.min(600,Math.max(1,Number(settings.visibleTickets)||1));
+  if(!Array.isArray(visibleTicketNumbers)||visibleTicketNumbers.length!==count||visibleTicketNumbers.some(n=>!Number.isInteger(n)||n<1||n>600)){
+    const pool=Array.from({length:600},(_,i)=>i+1);
+    for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+    visibleTicketNumbers=pool.slice(0,count).sort((a,b)=>a-b);
+    localStorage.setItem("tombolaVisibleTicketNumbers",JSON.stringify(visibleTicketNumbers));
+  }
+  return visibleTicketNumbers;
+}
+function regenerateVisibleTicketNumbers(){
+  const count=Math.min(600,Math.max(1,Number(settings.visibleTickets)||1));
+  const pool=Array.from({length:600},(_,i)=>i+1);
+  for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+  visibleTicketNumbers=pool.slice(0,count).sort((a,b)=>a-b);
+  localStorage.setItem("tombolaVisibleTicketNumbers",JSON.stringify(visibleTicketNumbers));
+}
+  function isVisibleTicket(n){return getVisibleTicketNumbers().includes(Number(n));}
 let bookings=JSON.parse(localStorage.getItem("tombolaBookings"))||{};
 let prizes=JSON.parse(localStorage.getItem("tombolaPrizes"))||{firstLine:false,secondLine:false,thirdLine:false,fourCorners:false,fullHouse:false,secondFullHouse:false,thirdFullHouse:false,early5:false,early7:false};
 let prizeWinners=JSON.parse(localStorage.getItem("tombolaPrizeWinners")||"{}");
@@ -400,9 +420,8 @@ function renderAdminPrizeWinners(){
 
 function escapeHtml(value){
   return String(value).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
-}
-
-function finishPrizeGame(){
+                                  }
+  function finishPrizeGame(){
   clearInterval(drawTimer);drawTimer=null;
   gameRunning=false;
   localStorage.setItem("tombolaGameRunning","false");
@@ -415,23 +434,24 @@ function drawNextNumber(){if(!gameRunning)return;if(drawnNumbers.length>=90){fin
 function finishGame(){clearInterval(drawTimer);drawTimer=null;gameRunning=false;localStorage.setItem("tombolaGameRunning","false");renderNumberBoard();updatePlayerGameStatus();document.getElementById("lastNumber").innerHTML='<span>90</span>';speak("Game over")}
 function renderTickets(){
 const box=document.getElementById("tickets");box.innerHTML="";
-let total=Math.min(600,Math.max(1,Number(settings.visibleTickets))),bookedCount=0;
-for(let i=1;i<=total;i++)if(bookings[i]&&bookings[i].booked===true)bookedCount++;
-document.getElementById("visibleCount").textContent=total-bookedCount;
-for(let i=1;i<=total;i++){
+const ticketNumbers=getVisibleTicketNumbers();
+let bookedCount=0;
+ticketNumbers.forEach(i=>{if(bookings[i]&&bookings[i].booked===true)bookedCount++;});
+document.getElementById("visibleCount").textContent=ticketNumbers.length-bookedCount;
+ticketNumbers.forEach(i=>{
 const booked=bookings[i]&&bookings[i].booked===true;
 const customerName=booked?bookings[i].name:"UNSOLD";
 const numbers=generateTicketNumbers(i);let cells="";
 for(let r=0;r<3;r++)for(let c=0;c<9;c++){let value=numbers[r][c];cells+=`<div class="cell ${value===""?"empty":""}">${value}</div>`}
 box.innerHTML+=`<div class="ticket"><div class="ticketHead"><div class="ticketNo">${i}</div><div class="ticketName">${customerName}</div></div><div class="ticketGrid">${cells}</div></div>`;
+});
 }
-        }
-  function searchMyTicket(){
+function searchMyTicket(){
   const input=document.getElementById("myTicketNumber");
   const result=document.getElementById("myTicketResult");
   if(!input||!result)return;
 
-  const total=Math.min(600,Math.max(1,Number(settings.visibleTickets)));
+  const visibleSet=getVisibleTicketNumbers();
   const raw=String(input.value||"").trim();
 
   if(!raw){
@@ -446,9 +466,9 @@ box.innerHTML+=`<div class="ticket"><div class="ticketHead"><div class="ticketNo
     return;
   }
 
-  const invalid=requested.filter(n=>n<1||n>total);
+  const invalid=requested.filter(n=>!visibleSet.includes(n));
   if(invalid.length){
-    result.innerHTML='<div class="noTicket">Invalid ticket number: '+invalid.join(", ")+'<br>Visible tickets are 1–'+total+'.</div>';
+    result.innerHTML='<div class="noTicket">Invalid ticket number: '+invalid.join(", ")+'<br>Visible ticket numbers are: '+visibleSet.join(', ')+'.</div>';
     return;
   }
 
@@ -475,11 +495,11 @@ box.innerHTML+=`<div class="ticket"><div class="ticketHead"><div class="ticketNo
   let html="";
 
   groups.forEach(group=>{
-    for(let i=1;i<=total;i++){
+    visibleSet.forEach(i=>{
       if(bookings[i]&&bookings[i].booked===true&&String(bookings[i].name||"").trim().toLowerCase()===group.name.toLowerCase()){
         group.allTickets.push(i);
       }
-    }
+    });
 
     group.allTickets.sort((a,b)=>a-b);
     group.sourceTickets.sort((a,b)=>a-b);
@@ -586,8 +606,8 @@ alert("Prize settings saved successfully!");
 
 function adminBookTicket(){
 let ticketNo=parseInt(document.getElementById("adminTicketNumber").value),name=document.getElementById("adminCustomerName").value.trim();
-let total=Math.min(600,Math.max(1,Number(settings.visibleTickets)));
-if(isNaN(ticketNo)||ticketNo<1||ticketNo>total){alert("Please enter a valid visible ticket number.");return}
+const visibleSet=getVisibleTicketNumbers();
+if(isNaN(ticketNo)||!visibleSet.includes(ticketNo)){alert("Please enter one of the currently visible random ticket numbers: "+visibleSet.join(", "));return}
 if(!name){alert("Please enter customer name.");return}
 if(bookings[ticketNo]&&bookings[ticketNo].booked===true){alert("This ticket is already booked.");return}
 bookings[ticketNo]={booked:true,name:name,time:new Date().toISOString()};
@@ -599,8 +619,8 @@ alert("Ticket "+ticketNo+" booked for "+name);
 
 function renderAdminTicketStatus(){
 const box=document.getElementById("adminTicketStatusGrid");if(!box)return;box.innerHTML="";
-let total=Math.min(600,Math.max(1,Number(settings.visibleTickets)));
-for(let i=1;i<=total;i++){
+const visibleSet=getVisibleTicketNumbers();
+for(const i of visibleSet){
 const booked=bookings[i]&&bookings[i].booked===true,div=document.createElement("div");
 div.className="statusTicket "+(booked?"booked":"unsold");div.textContent=i;
 div.title=booked?"BOOKED - "+bookings[i].name:"UNSOLD";
@@ -631,7 +651,10 @@ renderTickets();renderAdminBookings();renderAdminTicketStatus();renderPlayerPriz
 function saveSettings(){
 let visible=parseInt(document.getElementById("visibleTickets").value);
 if(isNaN(visible)||visible<1||visible>600){alert("Visible Tickets 1 se 600 ke beech hona chahiye.");return}
-settings.visibleTickets=visible;settings.gameDate=document.getElementById("gameDate").value;settings.gameTime=document.getElementById("gameTime").value;
+const oldVisibleCount=Number(settings.visibleTickets)||0;
+settings.visibleTickets=visible;
+if(visible!==oldVisibleCount) regenerateVisibleTicketNumbers();
+settings.gameDate=document.getElementById("gameDate").value;settings.gameTime=document.getElementById("gameTime").value;
 localStorage.setItem("tombolaSettings",JSON.stringify(settings));
 renderTickets();updateGameDisplay();renderAdminBookings();renderAdminTicketStatus();alert("Settings saved successfully!");closeModal("adminModal");
 }
