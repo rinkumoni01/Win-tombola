@@ -23,11 +23,11 @@ button,input{font-family:inherit}
 .ticketName{flex:1;background:#ff6248;color:white;padding:14px 10px;font-size:19px;font-weight:bold;overflow:hidden;text-align:center}
 .ticketGrid{background:#fff;border:6px solid #ff684e;border-radius:12px;overflow:hidden;display:grid;grid-template-columns:repeat(9,1fr)}
 .cell{min-height:58px;border:1px solid #ccc;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:23px;font-weight:bold;background:#fff}.empty{color:transparent}
- .announcementModal{display:flex;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;padding:12px;align-items:center;justify-content:center;overflow:auto}
-.announcementBox{width:94%;max-width:520px;background:#ff8a00;border:4px solid #143cff;border-radius:16px;padding:28px 18px 24px;box-shadow:0 4px 18px rgba(0,0,0,.35);text-align:center;color:#000}
-.announcementTitle{font-size:30px;font-weight:900;margin:0 0 22px;text-transform:uppercase;color:#000;line-height:1.05}
-.announcementText{background:transparent;color:#000;border-radius:0;padding:0;text-align:center;font-size:17px;line-height:1.42;font-weight:800}
-.acceptBtn{display:block;width:170px;margin:24px auto 0;background:#ff1010;color:#fff;border:0;border-radius:12px;padding:12px 14px;font-size:18px;font-weight:900;cursor:pointer;box-shadow:none}
+ .announcementModal{display:flex;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;padding:10px;align-items:center;justify-content:center;overflow:auto}
+.announcementBox{width:94%;max-width:520px;aspect-ratio:1119/1340;background:#ff8a00;border:4px solid #143cff;border-radius:16px;padding:5.5% 4.5% 4%;box-shadow:0 4px 18px rgba(0,0,0,.35);text-align:center;color:#000;display:flex;flex-direction:column;justify-content:flex-start}
+.announcementTitle{font-size:clamp(24px,6vw,34px);font-weight:900;margin:7% 0 6%;text-transform:uppercase;color:#000;line-height:1.05}
+.announcementText{background:transparent;color:#000;border-radius:0;padding:0;text-align:center;font-size:clamp(14px,3.6vw,19px);line-height:1.45;font-weight:800}
+.acceptBtn{display:block;width:150px;margin:7% auto 0;background:#ff1010;color:#fff;border:0;border-radius:12px;padding:11px 10px;font-size:18px;font-weight:900;cursor:pointer;box-shadow:none}
 .acceptBtn:active{transform:scale(.98)}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100;padding:20px;overflow:auto}
 .modalBox{max-width:500px;margin:30px auto;background:white;border-radius:15px;padding:20px}.modalBox h2{margin-top:0;color:#ed005f}
@@ -67,10 +67,10 @@ button,input{font-family:inherit}
 .announcementText{font-size:19px;line-height:1.42}
 .acceptBtn{width:230px;margin-top:30px;padding:14px 12px;font-size:22px;border-radius:14px}
 @media(max-width:600px){
-.announcementBox{width:94%;padding:24px 14px 20px}
-.announcementTitle{font-size:26px;margin-bottom:18px}
-.announcementText{font-size:15px;line-height:1.38}
-.acceptBtn{width:155px;padding:11px 12px;font-size:17px;margin-top:20px}
+.announcementBox{width:94%;padding:5.5% 4.5% 4%}
+.announcementTitle{font-size:26px;margin:7% 0 6%}
+.announcementText{font-size:15px;line-height:1.4}
+.acceptBtn{width:150px;padding:11px 12px;font-size:17px;margin-top:7%}
 
 .logo{font-size:23px}.sub{font-size:12px}.gameInfo{gap:4px}.gameBox{min-height:58px;padding:4px 2px;border-width:3px;font-size:14px}
 #gameDateDisplay{font-size:13px}#countdown{font-size:14px}#gameTimeDisplay{font-size:13px}.gameStatus{font-size:14px}
@@ -365,7 +365,7 @@ const PRIZE_NAMES={
   early7:"🎯 Early 7"
 };
 
- function getTicketData(ticketNo){
+function getTicketData(ticketNo){
   return generateTicketNumbers(ticketNo);
 }
 function markedCount(ticket){
@@ -441,7 +441,8 @@ function checkPrizeWinners(){
     if(prizeWinners.fullHouse) excluded.push(prizeWinners.fullHouse.ticketNo);
     const no=winnerTicketForPrize("secondFullHouse",excluded);
     if(no!==null){
-      prizeWinners.secondFullHouse={ticketNo:no,name:String(bookings[no].name||"Unknown")};
+
+   prizeWinners.secondFullHouse={ticketNo:no,name:String(bookings[no].name||"Unknown")};
       changed=true;
       
     }
@@ -660,10 +661,10 @@ showGameBoard(false);
 alert("❌ Game cancelled. Ticket bookings are unchanged.");
 }
 
-function openAdminLogin(){document.getElementById("loginModal").style.display="block"}
+ function openAdminLogin(){document.getElementById("loginModal").style.display="block"}
 
 function loginAdmin(){
- const user=document.getElementById("username").value.trim(),pass=document.getElementById("password").value;
+const user=document.getElementById("username").value.trim(),pass=document.getElementById("password").value;
 if(user===ADMIN_USERNAME&&pass===ADMIN_PASSWORD){
 document.getElementById("username").value="";document.getElementById("password").value="";
 closeModal("loginModal");openAdminPanel();
