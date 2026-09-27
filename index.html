@@ -8,7 +8,36 @@
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,sans-serif;background:#ff0070;color:#222}
 button,input{font-family:inherit}
-.header{background:#ff0068;color:white;padding:15px 10px;text-align:center;position:sticky;top:0;z-index:20;box-shadow:0 2px 8px #a00045}
+
+.header{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 12% 28%, rgba(255,255,255,.20) 0 3px, transparent 4px),
+    radial-gradient(circle at 88% 22%, rgba(255,255,255,.18) 0 4px, transparent 5px),
+    radial-gradient(circle at 76% 72%, rgba(255,255,255,.16) 0 3px, transparent 4px),
+    linear-gradient(135deg,#07145e 0%,#182a9a 42%,#35106f 72%,#07145e 100%);
+  border:3px solid #e9f900;
+  border-radius:20px;
+  box-shadow:0 0 0 2px rgba(0,0,0,.12), inset 0 0 35px rgba(255,0,190,.20);
+}
+.header::before{
+  content:"";
+  position:absolute;
+  inset:-30%;
+  background:
+    repeating-linear-gradient(115deg,
+      transparent 0 70px,
+      rgba(255,255,255,.07) 71px 73px,
+      transparent 74px 130px);
+  transform:rotate(-8deg);
+  pointer-events:none;
+}
+.header>*{
+  position:relative;
+  z-index:1;
+}
+
 .logo{font-size:28px;font-weight:bold}.sub{font-size:13px;margin-top:4px}
 .gameInfo{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-top:10px}
 .gameBox{background:#07145e;color:white;border:4px solid #e9f900;border-radius:10px;min-height:60px;display:flex;justify-content:center;align-items:center;text-align:center;padding:5px;font-size:20px;font-weight:bold;box-shadow:0 0 5px #fff}
@@ -441,8 +470,7 @@ function checkPrizeWinners(){
     if(prizeWinners.fullHouse) excluded.push(prizeWinners.fullHouse.ticketNo);
     const no=winnerTicketForPrize("secondFullHouse",excluded);
     if(no!==null){
-
-   prizeWinners.secondFullHouse={ticketNo:no,name:String(bookings[no].name||"Unknown")};
+      prizeWinners.secondFullHouse={ticketNo:no,name:String(bookings[no].name||"Unknown")};
       changed=true;
       
     }
@@ -500,9 +528,9 @@ function renderPlayerPrizes(){
     const done=selected.length>0 && selected.every(k=>!!prizeWinners[k]);
     over.style.display=done?"block":"none";
   }
-}
+ }
 
-function renderAdminPrizeWinners(){
+ function renderAdminPrizeWinners(){
   const box=document.getElementById("adminPrizeWinners");
   if(!box)return;
   const selected=selectedPrizeKeys();
@@ -661,7 +689,7 @@ showGameBoard(false);
 alert("❌ Game cancelled. Ticket bookings are unchanged.");
 }
 
- function openAdminLogin(){document.getElementById("loginModal").style.display="block"}
+function openAdminLogin(){document.getElementById("loginModal").style.display="block"}
 
 function loginAdmin(){
 const user=document.getElementById("username").value.trim(),pass=document.getElementById("password").value;
@@ -690,7 +718,7 @@ checkbox.onchange=function(){status.textContent=checkbox.checked?"ON":"OFF"};
 });
 }
 
-function savePrizes(){
+ function savePrizes(){
 const names=["firstLine","secondLine","thirdLine","fourCorners","fullHouse","secondFullHouse","thirdFullHouse","early5","early7"];
 names.forEach(name=>prizes[name]=document.getElementById("prize_"+name).checked);
 localStorage.setItem("tombolaPrizes",JSON.stringify(prizes));
