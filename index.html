@@ -23,6 +23,12 @@ button,input{font-family:inherit}
 .ticketName{flex:1;background:#ff6248;color:white;padding:14px 10px;font-size:19px;font-weight:bold;overflow:hidden;text-align:center}
 .ticketGrid{background:#fff;border:6px solid #ff684e;border-radius:12px;overflow:hidden;display:grid;grid-template-columns:repeat(9,1fr)}
 .cell{min-height:58px;border:1px solid #ccc;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:23px;font-weight:bold;background:#fff}.empty{color:transparent}
+.announcementModal{display:flex;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:300;padding:18px;align-items:center;justify-content:center}
+.announcementBox{width:100%;max-width:520px;background:#ff8c00;border:4px solid #fff;border-radius:18px;padding:22px 18px;box-shadow:0 5px 25px rgba(0,0,0,.45);text-align:center;color:#fff}
+.announcementTitle{font-size:26px;font-weight:900;margin-bottom:16px;text-transform:uppercase}
+.announcementText{background:#fff;color:#222;border-radius:12px;padding:16px 13px;text-align:left;font-size:16px;line-height:1.55;font-weight:bold}
+.acceptBtn{width:100%;margin-top:16px;background:#d90000;color:#fff;border:0;border-radius:10px;padding:15px;font-size:19px;font-weight:900;cursor:pointer;box-shadow:0 3px 0 #9b0000}
+.acceptBtn:active{transform:translateY(2px);box-shadow:0 1px 0 #9b0000}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100;padding:20px;overflow:auto}
 .modalBox{max-width:500px;margin:30px auto;background:white;border-radius:15px;padding:20px}.modalBox h2{margin-top:0;color:#ed005f}
 .input{width:100%;padding:13px;margin:7px 0 12px;border:1px solid #ccc;border-radius:8px;font-size:16px}
@@ -65,6 +71,20 @@ button,input{font-family:inherit}
 </style>
 </head>
 <body>
+
+<div class="announcementModal" id="announcementModal">
+  <div class="announcementBox">
+    <div class="announcementTitle">!! ANNOUNCEMENT !!</div>
+    <div class="announcementText">
+      Tambola is a legal game in India and falls under a skill-based game.<br><br>
+      In case of any system failure during the game, a re-game will be conducted.<br><br>
+      In case of a re-game, the ticket cannot be cancelled.<br><br>
+      All results will be determined based on the numbers announced during the game.
+    </div>
+    <button class="acceptBtn" onclick="acceptAnnouncement()">🔴 I ACCEPT</button>
+  </div>
+</div>
+
 
 <div class="header">
 <div class="logo">🎟️ WIN TOMBOLA</div>
@@ -196,7 +216,6 @@ button,input{font-family:inherit}
 <script>
 const ADMIN_USERNAME="gyandeep";
 const ADMIN_PASSWORD="785673";
-
   let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
 if(!Number.isInteger(Number(settings.visibleTickets))||Number(settings.visibleTickets)<1||Number(settings.visibleTickets)>600){settings.visibleTickets=15;}
 let visibleTicketNumbers=JSON.parse(localStorage.getItem("tombolaVisibleTicketNumbers")||"null");
@@ -336,7 +355,7 @@ const PRIZE_NAMES={
   early7:"🎯 Early 7"
 };
 
-  function getTicketData(ticketNo){
+function getTicketData(ticketNo){
   return generateTicketNumbers(ticketNo);
 }
 function markedCount(ticket){
@@ -404,8 +423,7 @@ function checkPrizeWinners(){
       changed=true;
       
     }
-  }
-
+    }
   // Second/third full house must be different winning tickets from earlier full houses.
   if(selected.includes("secondFullHouse") && !prizeWinners.secondFullHouse){
     const excluded=[];
@@ -523,7 +541,7 @@ function searchMyTicket(){
   if(!raw){
     result.innerHTML='<div class="noTicket">Please enter at least one ticket number.</div>';
     return;
-    }
+  }
 
   const requested=[...new Set(raw.split(/[\s,]+/).map(x=>parseInt(x,10)).filter(n=>!isNaN(n)))];
 
@@ -573,8 +591,7 @@ function searchMyTicket(){
     html+=`<div class="myTicketFound">
       <b>👤 ${group.name}</b>
     </div>`;
-
-    group.allTickets.forEach(no=>{
+  group.allTickets.forEach(no=>{
       const numbers=generateTicketNumbers(no);
       let cells="";
 
@@ -761,6 +778,20 @@ hours=hours%24;
 el.textContent=days>0?days+"d "+String(hours).padStart(2,"0")+":"+String(minutes).padStart(2,"0")+":"+String(seconds).padStart(2,"0"):String(hours).padStart(2,"0")+":"+String(minutes).padStart(2,"0")+":"+String(seconds).padStart(2,"0");
 }
 
+
+function acceptAnnouncement(){
+  localStorage.setItem("tombolaAnnouncementAccepted","true");
+  const modal=document.getElementById("announcementModal");
+  if(modal) modal.style.display="none";
+}
+
+function showAnnouncement(){
+  const modal=document.getElementById("announcementModal");
+  if(!modal)return;
+  // Show the announcement to players until they press I ACCEPT.
+  modal.style.display="flex";
+}
+
 function startGame(){
 // Ensure a valid random ticket set exists before rendering.
 getVisibleTicketNumbers();
@@ -774,7 +805,7 @@ if(event.target===adminModal)adminModal.style.display="none";
 });
 
 startGame();
+showAnnouncement();
 </script>
 </body>
 </html>
-                                                                                                                                                                                                    }
