@@ -8,36 +8,7 @@
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,sans-serif;background:#ff0070;color:#222}
 button,input{font-family:inherit}
-
-.header{
-  position:relative;
-  overflow:hidden;
-  background:
-    radial-gradient(circle at 12% 28%, rgba(255,255,255,.20) 0 3px, transparent 4px),
-    radial-gradient(circle at 88% 22%, rgba(255,255,255,.18) 0 4px, transparent 5px),
-    radial-gradient(circle at 76% 72%, rgba(255,255,255,.16) 0 3px, transparent 4px),
-    linear-gradient(135deg,#07145e 0%,#182a9a 42%,#35106f 72%,#07145e 100%);
-  border:3px solid #e9f900;
-  border-radius:20px;
-  box-shadow:0 0 0 2px rgba(0,0,0,.12), inset 0 0 35px rgba(255,0,190,.20);
-}
-.header::before{
-  content:"";
-  position:absolute;
-  inset:-30%;
-  background:
-    repeating-linear-gradient(115deg,
-      transparent 0 70px,
-      rgba(255,255,255,.07) 71px 73px,
-      transparent 74px 130px);
-  transform:rotate(-8deg);
-  pointer-events:none;
-}
-.header>*{
-  position:relative;
-  z-index:1;
-}
-
+.header{background:#ff0068;color:white;padding:15px 10px;text-align:center;position:sticky;top:0;z-index:20;box-shadow:0 2px 8px #a00045}
 .logo{font-size:28px;font-weight:bold}.sub{font-size:13px;margin-top:4px}
 .gameInfo{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-top:10px}
 .gameBox{background:#07145e;color:white;border:4px solid #e9f900;border-radius:10px;min-height:60px;display:flex;justify-content:center;align-items:center;text-align:center;padding:5px;font-size:20px;font-weight:bold;box-shadow:0 0 5px #fff}
@@ -255,7 +226,7 @@ button,input{font-family:inherit}
 const ADMIN_USERNAME="gyandeep";
 const ADMIN_PASSWORD="785673";
 
- let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
+  let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
 if(!Number.isInteger(Number(settings.visibleTickets))||Number(settings.visibleTickets)<1||Number(settings.visibleTickets)>600){settings.visibleTickets=15;}
 let visibleTicketNumbers=JSON.parse(localStorage.getItem("tombolaVisibleTicketNumbers")||"null");
 function getVisibleTicketNumbers(){
@@ -485,8 +456,7 @@ function checkPrizeWinners(){
       changed=true;
       
     }
-  }
-
+}
   if(changed){
     savePrizeWinners();
     const announcements=[];
@@ -528,9 +498,9 @@ function renderPlayerPrizes(){
     const done=selected.length>0 && selected.every(k=>!!prizeWinners[k]);
     over.style.display=done?"block":"none";
   }
- }
+}
 
- function renderAdminPrizeWinners(){
+function renderAdminPrizeWinners(){
   const box=document.getElementById("adminPrizeWinners");
   if(!box)return;
   const selected=selectedPrizeKeys();
@@ -667,9 +637,8 @@ el.className="gameStatus "+(gameRunning?"statusRunning":"statusStopped");
 el.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPPED";
 const adminEl=document.getElementById("adminGameStatus");
 if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPPED";adminEl.style.color=gameRunning?"#39ff70":"#ff5555"}
-}
-
-function setGameStatus(status){
+                                                           }
+  function setGameStatus(status){
 if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,6000);alert("🟢 Game is now RUNNING. First number 6 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
 function cancelGame(){
@@ -718,7 +687,7 @@ checkbox.onchange=function(){status.textContent=checkbox.checked?"ON":"OFF"};
 });
 }
 
- function savePrizes(){
+function savePrizes(){
 const names=["firstLine","secondLine","thirdLine","fourCorners","fullHouse","secondFullHouse","thirdFullHouse","early5","early7"];
 names.forEach(name=>prizes[name]=document.getElementById("prize_"+name).checked);
 localStorage.setItem("tombolaPrizes",JSON.stringify(prizes));
