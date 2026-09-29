@@ -6,7 +6,7 @@
 <title>Win Tombola</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#ff0070;color:#222}
+body{margin:0;font-family:Arial,sans-serif;background:#ff0070 url("https://raw.githubusercontent.com/rinkumoni01/Win-tombola/main/file_000000000330820895bdf8b5a9114a1e.png") center top/cover fixed no-repeat;color:#222}
 button,input{font-family:inherit}
 .header{background:#ff0068;color:white;padding:15px 10px;text-align:center;position:sticky;top:0;z-index:20;box-shadow:0 2px 8px #a00045}
 .logo{font-size:28px;font-weight:bold}.sub{font-size:13px;margin-top:4px}
@@ -156,7 +156,7 @@ button,input{font-family:inherit}
 <div class="currentGameStatus" id="adminGameStatus">🔴 GAME STOPPED</div>
 </div>
 
-<div class="adminCard">
+ <div class="adminCard">
 <label>🎟️ Visible Tickets</label>
 <input class="input" id="visibleTickets" type="number" min="1" max="600" placeholder="Example: 100">
 <div class="small">Player ko yahan jitne tickets set karenge, utne random tickets 1–600 me se dikhenge. Example: 100 = 100 random tickets.</div>
@@ -227,7 +227,7 @@ button,input{font-family:inherit}
 const ADMIN_USERNAME="gyandeep";
 const ADMIN_PASSWORD="785673";
 
- let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
+let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
 if(!Number.isInteger(Number(settings.visibleTickets))||Number(settings.visibleTickets)<1||Number(settings.visibleTickets)>600){settings.visibleTickets=15;}
 let visibleTicketNumbers=JSON.parse(localStorage.getItem("tombolaVisibleTicketNumbers")||"null");
 function getVisibleTicketNumbers(){
@@ -299,7 +299,7 @@ localStorage.setItem(key,JSON.stringify(saved));
 return result;
 }
 
-function renderNumberBoard(){
+ function renderNumberBoard(){
 const grid=document.getElementById("numberGrid");if(!grid)return;grid.innerHTML="";
 for(let i=1;i<=90;i++){const d=document.createElement("div");d.className="drawNumber"+(drawnNumbers.includes(i)?" called":"");d.textContent=i;grid.appendChild(d)}
 
@@ -487,7 +487,6 @@ function renderPlayerPrizes(){
     box.innerHTML='<div class="small" style="text-align:center">No prizes selected yet.</div>';
     return;
   }
-
   box.innerHTML=selected.map(key=>{
     const w=prizeWinners[key];
     return `<div class="playerPrize ${w?"done":"on"}">
@@ -588,9 +587,9 @@ function searchMyTicket(){
   if(!groups.length){
     result.innerHTML='<div class="noTicket">None of the entered tickets are booked.</div>';
     return;
-  }
+ }
 
-  let html="";
+ let html="";
 
   groups.forEach(group=>{
     visibleSet.forEach(i=>{
@@ -726,9 +725,9 @@ div.title=booked?"BOOKED - "+bookings[i].name:"UNSOLD";
 div.onclick=function(){alert(booked?"🎟️ Ticket "+i+"\n👤 Customer: "+bookings[i].name:"🎟️ Ticket "+i+"\n⬜ UNSOLD")};
 box.appendChild(div);
 }
- }
+}
 
- function renderAdminBookings(){
+function renderAdminBookings(){
 const box=document.getElementById("adminBookings");box.innerHTML="";
 let keys=Object.keys(bookings).map(Number).sort((a,b)=>a-b);
 if(!keys.length){box.innerHTML='<div class="small">No booked tickets.</div>';return}
@@ -756,9 +755,9 @@ regenerateVisibleTicketNumbers();
 settings.gameDate=document.getElementById("gameDate").value;settings.gameTime=document.getElementById("gameTime").value;
 localStorage.setItem("tombolaSettings",JSON.stringify(settings));
 renderTickets();updateGameDisplay();renderAdminBookings();renderAdminTicketStatus();alert("Settings saved successfully!");closeModal("adminModal");
-}
+ }
 
-function resetBookings(){
+ function resetBookings(){
 if(!confirm("Are you sure you want to reset ALL bookings?"))return;
 bookings={};localStorage.setItem("tombolaBookings",JSON.stringify(bookings));
 prizeWinners={};savePrizeWinners();
