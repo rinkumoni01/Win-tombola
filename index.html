@@ -227,7 +227,7 @@ button,input{font-family:inherit}
 const ADMIN_USERNAME="gyandeep";
 const ADMIN_PASSWORD="785673";
 
- let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
+let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
 if(!Number.isInteger(Number(settings.visibleTickets))||Number(settings.visibleTickets)<1||Number(settings.visibleTickets)>600){settings.visibleTickets=15;}
 let visibleTicketNumbers=JSON.parse(localStorage.getItem("tombolaVisibleTicketNumbers")||"null");
 function getVisibleTicketNumbers(){
@@ -249,7 +249,7 @@ function regenerateVisibleTicketNumbers(){
   // random 15-number combination for every visible ticket.
   localStorage.removeItem("tombolaTicketNumbers");
 }
-function isVisibleTicket(n){return getVisibleTicketNumbers().includes(Number(n));}
+ function isVisibleTicket(n){return getVisibleTicketNumbers().includes(Number(n));}
 let bookings=JSON.parse(localStorage.getItem("tombolaBookings"))||{};
 let prizes=JSON.parse(localStorage.getItem("tombolaPrizes"))||{firstLine:false,secondLine:false,thirdLine:false,fourCorners:false,fullHouse:false,secondFullHouse:false,thirdFullHouse:false,early5:false,early7:false};
 let prizeWinners=JSON.parse(localStorage.getItem("tombolaPrizeWinners")||"{}");
@@ -393,9 +393,9 @@ function fullHouseComplete(ticket){return markedCount(ticket)===15}
 
 function bookedTickets(){
   return Object.keys(bookings).map(Number).filter(n=>bookings[n]&&bookings[n].booked===true).sort((a,b)=>a-b);
- }
+}
 
- function prizeCompleteForTicket(key,ticketNo){
+function prizeCompleteForTicket(key,ticketNo){
   const t=getTicketData(ticketNo);
   if(key==="firstLine") return rowMarked(t,0);
   if(key==="secondLine") return rowMarked(t,1);
@@ -609,7 +609,7 @@ function searchMyTicket(){
       const numbers=generateTicketNumbers(no);
       let cells="";
 
-      for(let r=0;r<3;r++){
+          for(let r=0;r<3;r++){
         for(let c=0;c<9;c++){
           const value=numbers[r][c];
           const marked=value!==""&&drawnNumbers.includes(Number(value));
@@ -645,7 +645,7 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 function setGameStatus(status){
 if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,6000);alert("🟢 Game is now RUNNING. First number 6 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
- function cancelGame(){
+function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
 gameRunning=false;
 clearVoiceQueue();
@@ -747,14 +747,23 @@ renderTickets();renderAdminBookings();renderAdminTicketStatus();renderPlayerPriz
 }
 
 function saveSettings(){
-let visible=parseInt(document.getElementById("visibleTickets").value);
-if(isNaN(visible)||visible<1||visible>600){alert("Visible Tickets 1 se 600 ke beech hona chahiye.");return}
-settings.visibleTickets=visible;
-// Saving ticket settings starts a fresh random set of ticket numbers.
-regenerateVisibleTicketNumbers();
-settings.gameDate=document.getElementById("gameDate").value;settings.gameTime=document.getElementById("gameTime").value;
-localStorage.setItem("tombolaSettings",JSON.stringify(settings));
-renderTickets();updateGameDisplay();renderAdminBookings();renderAdminTicketStatus();alert("Settings saved successfully!");closeModal("adminModal");
+ let visible=parseInt(document.getElementById("visibleTickets").value);
+ if(isNaN(visible)||visible<1||visible>600){alert("Visible Tickets 1 se 600 ke beech hona chahiye.");return}
+
+ // Date/Time save karne par existing ticket set ko change nahi karna.
+ // Sirf Visible Tickets ki quantity change hone par naya ticket set generate hoga.
+ const oldVisible=Number(settings.visibleTickets)||0;
+ settings.visibleTickets=visible;
+ if(visible!==oldVisible){
+   regenerateVisibleTicketNumbers();
+ }
+
+ settings.gameDate=document.getElementById("gameDate").value;
+ settings.gameTime=document.getElementById("gameTime").value;
+ localStorage.setItem("tombolaSettings",JSON.stringify(settings));
+ renderTickets();updateGameDisplay();renderAdminBookings();renderAdminTicketStatus();
+ alert("Settings saved successfully!");
+ closeModal("adminModal");
 }
 
 function resetBookings(){
@@ -822,4 +831,4 @@ startGame();
 showAnnouncement();
 </script>
 </body>
-</html>
+</html>                         
