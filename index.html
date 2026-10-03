@@ -6,7 +6,7 @@
 <title>Win Tombola</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#07145e url("https://raw.githubusercontent.com/rinkumoni01/Win-tombola/main/file_000000000330820895bdf8b5a9114a1e.png") center top/100% auto fixed no-repeat;color:#222}
+body{margin:0;font-family:Arial,sans-serif;background:#07145e url("https://raw.githubusercontent.com/rinkumoni01/Win-tombola/main/file_000000000330820895bdf8b5a9114a1e.png") center top/cover fixed no-repeat;color:#222}
 button,input{font-family:inherit}
 .header{background:rgba(255,0,104,.78);color:white;padding:15px 10px;text-align:center;position:sticky;top:0;z-index:20;box-shadow:0 2px 8px #a00045}
 .logo{font-size:28px;font-weight:bold}.sub{font-size:13px;margin-top:4px}
@@ -17,7 +17,7 @@ button,input{font-family:inherit}
 .statusRunning{color:#39ff70}.statusStopped{color:#ff5555}
 .adminBtn{margin-top:10px;border:0;background:#fff;color:#e90060;padding:8px 14px;border-radius:8px;font-weight:bold;font-size:15px;cursor:pointer}
 .container{max-width:900px;margin:auto;padding:12px;background:transparent}
-.info{background:#fff;padding:12px;border-radius:12px;margin-bottom:12px;text-align:center;font-weight:bold;font-size:18px}
+.info{background:rgba(255,255,255,.14);padding:12px;border-radius:12px;margin-bottom:12px;text-align:center;font-weight:bold;font-size:18px}
 .ticket{background:transparent;margin:15px 0}.ticketHead{display:flex;align-items:center;gap:8px;margin-bottom:7px}
 .ticketNo{width:58px;height:58px;border-radius:50%;background:#ff6a48;color:white;display:flex;justify-content:center;align-items:center;font-size:22px;font-weight:bold;flex-shrink:0}
 .ticketName{flex:1;background:#ff6248;color:white;padding:14px 10px;font-size:19px;font-weight:bold;overflow:hidden;text-align:center}
@@ -59,10 +59,10 @@ button,input{font-family:inherit}
 .runBtn{background:#16b84e}.stopBtn{background:#d00}
 .cancelGameBtn{width:100%;margin-top:10px;background:#ff8c00;color:#fff;border:0;padding:14px;border-radius:8px;font-size:17px;font-weight:bold;cursor:pointer}
 .currentGameStatus{text-align:center;padding:10px;border-radius:8px;background:#07145e;color:white;font-weight:bold;margin-top:10px}
-.gameBoard{display:none;position:relative;background:#fff;border-radius:15px;padding:12px;margin-top:12px;box-shadow:0 2px 10px rgba(0,0,0,.18)}.gameBoard.active{display:block}.boardTitle{text-align:center;font-size:22px;font-weight:bold;color:#ed005f;margin:5px 0 12px}.numberGrid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}.drawNumber{aspect-ratio:1/1;border-radius:8px;border:2px solid #aaa;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:bold}.drawNumber.called{background:#18c957;color:#fff;border-color:#078b35}
+.gameBoard{display:none;position:relative;background:rgba(255,255,255,.10);border-radius:15px;padding:12px;margin-top:12px;box-shadow:0 2px 10px rgba(0,0,0,.18)}.gameBoard.active{display:block}.boardTitle{text-align:center;font-size:22px;font-weight:bold;color:#ed005f;margin:5px 0 12px}.numberGrid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}.drawNumber{aspect-ratio:1/1;border-radius:8px;border:2px solid #aaa;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:bold}.drawNumber.called{background:#18c957;color:#fff;border-color:#078b35}
 .numberGridWrap{position:relative}.centerNumberPopup{position:absolute;left:50%;top:0;transform:translate(-50%,0) scale(.72);width:82px;height:82px;border-radius:50%;background:#ffe900;color:#111;display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:900;border:4px solid #07145e;box-shadow:0 0 0 3px #e9f900,0 4px 12px rgba(0,0,0,.28);z-index:20;opacity:0;pointer-events:none;transition:top .45s ease,transform .45s ease,opacity .2s ease}
-.centerNumberPopup.show{opacity:1;top:50%;transform:translate(-50%,-50%) scale(1)}.calledListTitle{text-align:center;font-weight:bold;color:#ed005f;margin:12px 0 7px}.calledList{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:4px}.calledChip{background:#000;color:#fff;border:3px solid #e9f900;border-radius:50%;width:44px;height:44px;min-width:44px;padding:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:17px;font-weight:bold;box-shadow:0 2px 5px rgba(0,0,0,.25)}.myTicketBox{margin-top:14px;background:#f7f7f7;border-radius:10px;padding:12px;border:2px solid #ddd}.myTicketTitle{text-align:center;font-size:19px;font-weight:bold;color:#ed005f;margin-bottom:8px}.myTicketRow{display:flex;gap:7px}.myTicketInput{flex:1;min-width:0;padding:12px;border:2px solid #aaa;border-radius:8px;font-size:17px}.myTicketBtn{background:#ed005f;color:#fff;border:0;border-radius:8px;padding:12px 15px;font-size:16px;font-weight:bold}.myTicketFound{background:#fff;border:3px solid #ff684e;border-radius:10px;padding:10px;margin:10px 0;text-align:center;font-size:17px;color:#07145e}\n.myTicketResult{margin-top:10px}.myTicketResult .ticket{margin:0}.markedCell{background:#18c957!important;color:#fff!important;border-color:#078b35!important}.noTicket{text-align:center;background:#fff0f0;color:#d00;padding:10px;border-radius:8px;font-weight:bold}.voiceNote{text-align:center;font-size:12px;color:#666;margin-top:8px}
-.prizeBoard{margin-top:14px;background:#f7f7f7;border:2px solid #ddd;border-radius:12px;padding:12px}
+.centerNumberPopup.show{opacity:1;top:50%;transform:translate(-50%,-50%) scale(1)}.calledListTitle{text-align:center;font-weight:bold;color:#ed005f;margin:12px 0 7px}.calledList{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:4px}.calledChip{background:#000;color:#fff;border:3px solid #e9f900;border-radius:50%;width:44px;height:44px;min-width:44px;padding:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:17px;font-weight:bold;box-shadow:0 2px 5px rgba(0,0,0,.25)}.myTicketBox{margin-top:14px;background:rgba(247,247,247,.14);border-radius:10px;padding:12px;border:2px solid #ddd}.myTicketTitle{text-align:center;font-size:19px;font-weight:bold;color:#ed005f;margin-bottom:8px}.myTicketRow{display:flex;gap:7px}.myTicketInput{flex:1;min-width:0;padding:12px;border:2px solid #aaa;border-radius:8px;font-size:17px}.myTicketBtn{background:#ed005f;color:#fff;border:0;border-radius:8px;padding:12px 15px;font-size:16px;font-weight:bold}.myTicketFound{background:#fff;border:3px solid #ff684e;border-radius:10px;padding:10px;margin:10px 0;text-align:center;font-size:17px;color:#07145e}\n.myTicketResult{margin-top:10px}.myTicketResult .ticket{margin:0}.markedCell{background:#18c957!important;color:#fff!important;border-color:#078b35!important}.noTicket{text-align:center;background:#fff0f0;color:#d00;padding:10px;border-radius:8px;font-weight:bold}.voiceNote{text-align:center;font-size:12px;color:#666;margin-top:8px}
+.prizeBoard{margin-top:14px;background:rgba(255,255,255,.14);border:2px solid #ddd;border-radius:12px;padding:12px}
 .prizeBoardTitle{text-align:center;color:#ed005f;font-size:20px;font-weight:bold;margin-bottom:10px}
 .playerPrize{background:#fff;border:2px solid #ddd;border-radius:9px;padding:9px 10px;margin-bottom:7px;font-weight:bold}
 .playerPrize.on{border-color:#16b84e}
@@ -484,9 +484,9 @@ function checkPrizeWinners(){
 
   const allDone=selected.length>0 && selected.every(k=>!!prizeWinners[k]);
   if(allDone) finishPrizeGame();
- }
+}
 
- function renderPlayerPrizes(){
+function renderPlayerPrizes(){
   const box=document.getElementById("playerPrizeList");
   if(!box)return;
   const selected=selectedPrizeKeys();
@@ -579,7 +579,7 @@ function searchMyTicket(){
   const customerGroups={};
   const notBooked=[];
 
-  requested.forEach(ticketNo=>{
+ requested.forEach(ticketNo=>{
     const booking=bookings[ticketNo];
     if(!booking||booking.booked!==true){notBooked.push(ticketNo);return;}
 
@@ -707,9 +707,9 @@ savePrizeWinners();
 renderPlayerPrizes();
 renderAdminPrizeWinners();
 alert("Prize settings saved successfully!");
- }
+}
 
- function adminBookTicket(){
+function adminBookTicket(){
 let ticketNo=parseInt(document.getElementById("adminTicketNumber").value),name=document.getElementById("adminCustomerName").value.trim();
 const visibleSet=getVisibleTicketNumbers();
 if(isNaN(ticketNo)||!visibleSet.includes(ticketNo)){alert("Please enter one of the currently visible random ticket numbers: "+visibleSet.join(", "));return}
