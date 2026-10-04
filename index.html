@@ -6,7 +6,7 @@
 <title>Win Tombola</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#07145e url("https://raw.githubusercontent.com/rinkumoni01/Win-tombola/main/file_000000000330820895bdf8b5a9114a1e.png") center top/cover fixed no-repeat;color:#222}
+body{margin:0;font-family:Arial,sans-serif;background:#07145e url("https://raw.githubusercontent.com/rinkumoni01/Win-tombola/81002449b3df62f4b3fa94a1ea9de69470f312fb/file_00000000a2b88208b329f959db54ea80.png") center top/cover fixed no-repeat;color:#222}
 button,input{font-family:inherit}
 .header{background:rgba(255,0,104,.78);color:white;padding:15px 10px;text-align:center;position:sticky;top:0;z-index:20;box-shadow:0 2px 8px #a00045}
 .logo{font-size:28px;font-weight:bold}.sub{font-size:13px;margin-top:4px}
@@ -234,7 +234,7 @@ button,input{font-family:inherit}
 const ADMIN_USERNAME="gyandeep";
 const ADMIN_PASSWORD="785673";
 
- let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
+let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
 if(!Number.isInteger(Number(settings.visibleTickets))||Number(settings.visibleTickets)<1||Number(settings.visibleTickets)>600){settings.visibleTickets=15;}
 let visibleTicketNumbers=JSON.parse(localStorage.getItem("tombolaVisibleTicketNumbers")||"null");
 function getVisibleTicketNumbers(){
@@ -243,7 +243,8 @@ function getVisibleTicketNumbers(){
   const expected=Array.from({length:count},(_,i)=>i+1);
   if(JSON.stringify(visibleTicketNumbers)!==JSON.stringify(expected)){
     visibleTicketNumbers=expected;
-    localStorage.setItem("tombolaVisibleTicketNumbers",JSON.stringify(visibleTicketNumbers));
+
+ localStorage.setItem("tombolaVisibleTicketNumbers",JSON.stringify(visibleTicketNumbers));
   }
   return visibleTicketNumbers;
 }
@@ -558,7 +559,7 @@ function searchMyTicket(){
   const visibleSet=getVisibleTicketNumbers();
   const raw=String(input.value||"").trim();
 
-  if(!raw){
+ if(!raw){
     result.innerHTML='<div class="noTicket">Please enter at least one ticket number.</div>';
     return;
   }
@@ -579,7 +580,7 @@ function searchMyTicket(){
   const customerGroups={};
   const notBooked=[];
 
- requested.forEach(ticketNo=>{
+  requested.forEach(ticketNo=>{
     const booking=bookings[ticketNo];
     if(!booking||booking.booked!==true){notBooked.push(ticketNo);return;}
 
@@ -742,7 +743,7 @@ if(!keys.length){box.innerHTML='<div class="small">No booked tickets.</div>';ret
 let html=`<table class="adminBookingTable">
 <thead><tr><th>No.</th><th>Customer Name</th><th>S</th><th>EDT</th></tr></thead><tbody>`;
 
-keys.forEach(ticketNo=>{
+ keys.forEach(ticketNo=>{
 let name=escapeHtml(bookings[ticketNo].name||"");
 html+=`<tr><td>${ticketNo}</td><td>${name}</td><td>S</td><td><button class="adminEditBtn" onclick="editBooking(${ticketNo})">EDT</button></td></tr>`;
 });
