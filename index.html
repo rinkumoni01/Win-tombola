@@ -194,7 +194,7 @@ button,input{font-family:inherit}
 
 <button class="saveBtn" onclick="saveSettings()">💾 SAVE SETTINGS</button>
 
-<div class="adminCard">
+ <div class="adminCard">
 <h3>🏆 Prize Settings</h3>
 <div class="small">Prize ko ON/OFF karke SAVE PRIZES dabayein.</div>
 <div class="prizeList">
@@ -211,7 +211,7 @@ button,input{font-family:inherit}
 <button class="saveBtn" style="margin-top:12px" onclick="savePrizes()">💾 SAVE PRIZES</button>
 </div>
 
- <div class="adminCard">
+<div class="adminCard">
 <h3>🎟️ Ticket Status</h3>
 <div class="statusTitle">🟨 BOOKED &nbsp; | &nbsp; ⬜ UNSOLD</div>
 <div id="adminTicketStatusGrid" class="ticketStatusGrid"></div>
@@ -418,49 +418,14 @@ for(let i=1;i<=90;i++){const d=document.createElement("div");d.className="drawNu
 const list=document.getElementById("calledList");if(list){list.innerHTML="";drawnNumbers.forEach(n=>{const chip=document.createElement("div");chip.className="calledChip";chip.textContent=n;list.appendChild(chip)})}
 const input=document.getElementById("myTicketNumber");if(input&&input.value)searchMyTicket();
 }
-let femaleVoice=null;
-let voiceQueue=[];
-let voicePlaying=false;
-function pickFemaleVoice(){
-  if(!("speechSynthesis" in window))return null;
-  const voices=window.speechSynthesis.getVoices();
-  const hi=voices.filter(v=>/^hi(-|_)/i.test(v.lang));
-  const candidates=hi.length?hi:voices.filter(v=>/^en(-|_)/i.test(v.lang));
-  return candidates.find(v=>/female|woman|girl|lady/i.test(v.name)) || candidates.find(v=>/Google/i.test(v.name)) || candidates[0] || voices[0] || null;
-}
-function makeUtterance(text){
-  femaleVoice=femaleVoice||pickFemaleVoice();
-  const clean=String(text).replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,"");
-  const u=new SpeechSynthesisUtterance(clean);
-  u.voice=femaleVoice||null;
-  u.lang=(femaleVoice&&femaleVoice.lang)||"hi-IN";
-  u.rate=.88;u.pitch=1.12;u.volume=1;
-  return u;
-}
-function speak(text){
-  if(!("speechSynthesis" in window))return;
-  voiceQueue=[];voicePlaying=false;window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(makeUtterance(text));
-}
-function queueSpeak(text){
-  if(!("speechSynthesis" in window))return;
-  voiceQueue.push(String(text));
-  if(voicePlaying)return;
-  playVoiceQueue();
-}
-function playVoiceQueue(){
-  if(!voiceQueue.length){voicePlaying=false;return;}
-  voicePlaying=true;
-  const u=makeUtterance(voiceQueue.shift());
-  u.onend=()=>playVoiceQueue();
-  u.onerror=()=>playVoiceQueue();
-  window.speechSynthesis.speak(u);
-}
-function clearVoiceQueue(){
-  voiceQueue=[];voicePlaying=false;
-  if("speechSynthesis" in window)window.speechSynthesis.cancel();
-}
-if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged=()=>{femaleVoice=pickFemaleVoice()};
+let femaleVoice=null,voiceQueue=[],voicePlaying=false;
+function pickFemaleVoice(){if(!('speechSynthesis' in window))return null;const v=speechSynthesis.getVoices();const f=v.filter(x=>/female|woman|girl|lady|zira|samantha/i.test(x.name));return f.find(x=>/^en-IN/i.test(x.lang))||f.find(x=>/^hi-IN/i.test(x.lang))||f.find(x=>/^en/i.test(x.lang))||f[0]||v[0]||null}
+function makeUtterance(text){femaleVoice=pickFemaleVoice()||femaleVoice;const u=new SpeechSynthesisUtterance(String(text).replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,''));u.voice=femaleVoice;u.lang=femaleVoice?.lang||'en-IN';u.rate=1.05;u.pitch=1.22;u.volume=1;return u}
+function speak(text){if(!('speechSynthesis'in window))return;voiceQueue=[];voicePlaying=false;speechSynthesis.cancel();speechSynthesis.speak(makeUtterance(text))}
+function queueSpeak(text){if(!('speechSynthesis'in window))return;voiceQueue.push(String(text));if(!voicePlaying)playVoiceQueue()}
+function playVoiceQueue(){if(!voiceQueue.length){voicePlaying=false;return}voicePlaying=true;const u=makeUtterance(voiceQueue.shift());u.onend=playVoiceQueue;u.onerror=playVoiceQueue;speechSynthesis.speak(u)}
+function clearVoiceQueue(){voiceQueue=[];voicePlaying=false;if('speechSynthesis'in window)speechSynthesis.cancel()}
+if('speechSynthesis'in window)speechSynthesis.onvoiceschanged=()=>{femaleVoice=pickFemaleVoice()};
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 
@@ -548,7 +513,7 @@ function checkPrizeWinners(){
     }
   }
 
-  // Second/third full house must be different winning tickets from earlier full houses.
+ // Second/third full house must be different winning tickets from earlier full houses.
   if(selected.includes("secondFullHouse") && !prizeWinners.secondFullHouse){
     const excluded=[];
     if(prizeWinners.fullHouse) excluded.push(prizeWinners.fullHouse.ticketNo);
@@ -581,7 +546,7 @@ function checkPrizeWinners(){
         w._announced=true;
       }
     }
-       savePrizeWinners();
+    savePrizeWinners();
     if(announcements.length) announcements.forEach(a=>queueSpeak(a));
   }
   renderPlayerPrizes();
@@ -813,6 +778,7 @@ renderPlayerPrizes();
 renderAdminPrizeWinners();
 alert("Prize settings saved successfully!");
 }
+
 function adminBookTicket(){
 let ticketNo=parseInt(document.getElementById("adminTicketNumber").value),name=document.getElementById("adminCustomerName").value.trim();
 const visibleSet=getVisibleTicketNumbers();
@@ -836,9 +802,9 @@ div.title=booked?"BOOKED - "+bookings[i].name:"UNSOLD";
 div.onclick=function(){alert(booked?"🎟️ Ticket "+i+"\n👤 Customer: "+bookings[i].name:"🎟️ Ticket "+i+"\n⬜ UNSOLD")};
 box.appendChild(div);
 }
-}
+ }
 
-function renderAdminBookings(){
+ function renderAdminBookings(){
 const box=document.getElementById("adminBookings");box.innerHTML="";
 let keys=Object.keys(bookings).map(Number).filter(n=>bookings[n]&&bookings[n].booked).sort((a,b)=>a-b);
 if(!keys.length){box.innerHTML='<div class="small">No booked tickets.</div>';return}
