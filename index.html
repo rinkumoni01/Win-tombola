@@ -184,10 +184,10 @@ button,input{font-family:inherit}
 <label>⏰ Game Time</label>
 <input class="input" id="gameTime" type="time">
 </div>
- 
+
 <button class="saveBtn" onclick="saveSettings()">💾 SAVE SETTINGS</button>
 
- <div class="adminCard">
+<div class="adminCard">
 <h3>🏆 Prize Settings</h3>
 <div class="small">Prize ko ON/OFF karke SAVE PRIZES dabayein.</div>
 <div class="prizeList">
@@ -214,7 +214,7 @@ button,input{font-family:inherit}
 </div>
 </div>
 
-<div class="adminCard">
+ <div class="adminCard">
 <h3>🎟️ Ticket Booking</h3>
 <label>Ticket Number</label>
 <input class="input" id="adminTicketNumber" type="number" min="1" max="600" placeholder="Example: 25">
@@ -423,7 +423,19 @@ function prizeCompleteForTicket(key,ticketNo){
   return false;
 }
 
- function winnerTicketForPrize(key,excludeTickets=[]){
+function getWinningMarkedNumbers(key,ticketNo){
+  const t=getTicketData(ticketNo);
+  const nums=[];
+  for(let r=0;r<3;r++){
+    for(let c=0;c<9;c++){
+      const v=t[r][c];
+      if(v!=="" && drawnNumbers.includes(Number(v))) nums.push(Number(v));
+    }
+  }
+  return nums;
+}
+
+function winnerTicketForPrize(key,excludeTickets=[]){
   const tickets=bookedTickets();
   for(const no of tickets){
     if(excludeTickets.includes(no)) continue;
@@ -446,7 +458,7 @@ function checkPrizeWinners(){
     if(prizeWinners[key]) continue;
     const no=winnerTicketForPrize(key);
     if(no!==null){
-      prizeWinners[key]={ticketNo:no,name:String(bookings[no].name||"Unknown")};
+      prizeWinners[key]={ticketNo:no,name:String(bookings[no].name||"Unknown"),markedNumbers:getWinningMarkedNumbers(key,no)};
       changed=true;
       
     }
@@ -458,7 +470,7 @@ function checkPrizeWinners(){
     if(prizeWinners.fullHouse) excluded.push(prizeWinners.fullHouse.ticketNo);
     const no=winnerTicketForPrize("secondFullHouse",excluded);
     if(no!==null){
-      prizeWinners.secondFullHouse={ticketNo:no,name:String(bookings[no].name||"Unknown")};
+      prizeWinners.secondFullHouse={ticketNo:no,name:String(bookings[no].name||"Unknown"),markedNumbers:getWinningMarkedNumbers("secondFullHouse",no)};
       changed=true;
       
     }
@@ -469,7 +481,7 @@ function checkPrizeWinners(){
     if(prizeWinners.secondFullHouse) excluded.push(prizeWinners.secondFullHouse.ticketNo);
     const no=winnerTicketForPrize("thirdFullHouse",excluded);
     if(no!==null){
-      prizeWinners.thirdFullHouse={ticketNo:no,name:String(bookings[no].name||"Unknown")};
+      prizeWinners.thirdFullHouse={ticketNo:no,name:String(bookings[no].name||"Unknown"),markedNumbers:getWinningMarkedNumbers("thirdFullHouse",no)};
       changed=true;
       
     }
@@ -491,7 +503,7 @@ function checkPrizeWinners(){
   renderPlayerPrizes();
   renderAdminPrizeWinners();
 
-  const allDone=selected.length>0 && selected.every(k=>!!prizeWinners[k]);
+ const allDone=selected.length>0 && selected.every(k=>!!prizeWinners[k]);
   if(allDone) finishPrizeGame();
 }
 
@@ -540,7 +552,8 @@ function viewWinnerTicket(prizeKey){
   for(let r=0;r<3;r++){
     for(let c=0;c<9;c++){
       const value=numbers[r][c];
-      const marked=value!==""&&drawnNumbers.includes(Number(value));
+      const winningMarked=Array.isArray(w.markedNumbers) ? w.markedNumbers : drawnNumbers.filter(n=>numbers.some(row=>row.includes(n)));
+      const marked=value!==""&&winningMarked.includes(Number(value));
       cells+=`<div class="cell ${value===""?"empty":""} ${marked?"markedCell":""}">${value}</div>`;
     }
   }
@@ -632,8 +645,7 @@ function searchMyTicket(){
 
   groups.forEach(group=>{
     visibleSet.forEach(i=>{
-
-  if(bookings[i]&&bookings[i].booked===true&&String(bookings[i].name||"").trim().toLowerCase()===group.name.toLowerCase()){
+      if(bookings[i]&&bookings[i].booked===true&&String(bookings[i].name||"").trim().toLowerCase()===group.name.toLowerCase()){
         group.allTickets.push(i);
       }
     });
@@ -704,7 +716,7 @@ alert("❌ Game cancelled. Ticket bookings are unchanged.");
 
 function openAdminLogin(){document.getElementById("loginModal").style.display="block"}
 
-function loginAdmin(){
+ function loginAdmin(){
 const user=document.getElementById("username").value.trim(),pass=document.getElementById("password").value;
 if(user===ADMIN_USERNAME&&pass===ADMIN_PASSWORD){
 document.getElementById("username").value="";document.getElementById("password").value="";
@@ -767,7 +779,7 @@ box.appendChild(div);
 }
 }
 
- function renderAdminBookings(){
+function renderAdminBookings(){
 const box=document.getElementById("adminBookings");box.innerHTML="";
 let keys=Object.keys(bookings).map(Number).filter(n=>bookings[n]&&bookings[n].booked).sort((a,b)=>a-b);
 if(!keys.length){box.innerHTML='<div class="small">No booked tickets.</div>';return}
