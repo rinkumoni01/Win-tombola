@@ -15,7 +15,7 @@ button,input{font-family:inherit}
 #gameDateDisplay{font-size:17px}#countdown{font-size:18px}#gameTimeDisplay{font-size:17px}
 .gameStatus{margin-top:8px;background:#07145e;border:3px solid #e9f900;border-radius:10px;padding:8px;font-weight:bold;font-size:16px}
 .statusRunning{color:#39ff70}.statusStopped{color:#ff5555}
-.adminBtn{margin-top:10px;border:0;background:#fff;color:#e90060;padding:8px 14px;border-radius:8px;font-weight:bold;font-size:15px;cursor:pointer}
+.headerActions{display:flex;justify-content:center;align-items:center;gap:18px;margin-top:12px}.headerIconBtn{width:46px;height:46px;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;box-shadow:0 2px 7px rgba(0,0,0,.3);font-size:23px;cursor:pointer;transition:transform .15s}.headerIconBtn:active{transform:scale(.92)}.adminBtn{color:#e90060}.whatsappBtn{color:#25d366}.phoneBtn{color:#1687ff}.telegramBtn{color:#229ed9}
 .container{max-width:900px;margin:auto;padding:12px;background:transparent}
 .info{background:rgba(255,255,255,.14);padding:12px;border-radius:12px;margin-bottom:12px;text-align:center;font-weight:bold;font-size:18px}
 .ticket{background:transparent;margin:15px 0}.ticketHead{display:flex;align-items:center;gap:8px;margin-bottom:7px}
@@ -122,7 +122,12 @@ button,input{font-family:inherit}
 <div class="gameBox" id="gameTimeDisplay">--:-- --</div>
 </div>
 <div class="gameStatus" id="playerGameStatus">🔴 GAME STOPPED</div>
-<button class="adminBtn" onclick="openAdminLogin()">🔐 ADMIN</button>
+<div class="headerActions">
+  <button class="headerIconBtn adminBtn" onclick="openAdminLogin()" aria-label="Admin" title="Admin">🔐</button>
+  <button class="headerIconBtn whatsappBtn" aria-label="WhatsApp" title="WhatsApp">💬</button>
+  <button class="headerIconBtn phoneBtn" aria-label="Phone" title="Phone">📞</button>
+  <button class="headerIconBtn telegramBtn" aria-label="Telegram" title="Telegram">✈️</button>
+</div>
 </div>
 
 <div class="container">
@@ -204,7 +209,8 @@ button,input{font-family:inherit}
 <button class="saveBtn" style="margin-top:12px" onclick="savePrizes()">💾 SAVE PRIZES</button>
 </div>
 
- <div class="adminCard">
+ 
+<div class="adminCard">
 <h3>🎟️ Ticket Status</h3>
 <div class="statusTitle">🟨 BOOKED &nbsp; | &nbsp; ⬜ UNSOLD</div>
 <div id="adminTicketStatusGrid" class="ticketStatusGrid"></div>
@@ -407,7 +413,7 @@ function fourCornersComplete(ticket){
 }
 function fullHouseComplete(ticket){return markedCount(ticket)===15}
 
-function bookedTickets(){
+ function bookedTickets(){
   return Object.keys(bookings).map(Number).filter(n=>bookings[n]&&bookings[n].booked===true).sort((a,b)=>a-b);
 }
 
@@ -453,7 +459,7 @@ function checkPrizeWinners(){
   const selected=selectedPrizeKeys();
   let changed=false;
 
- // First, normal prizes can be won independently.
+  // First, normal prizes can be won independently.
   for(const key of selected){
     if(prizeWinners[key]) continue;
     const no=winnerTicketForPrize(key);
@@ -752,9 +758,9 @@ savePrizeWinners();
 renderPlayerPrizes();
 renderAdminPrizeWinners();
 alert("Prize settings saved successfully!");
- }
+}
 
- function adminBookTicket(){
+function adminBookTicket(){
 let ticketNo=parseInt(document.getElementById("adminTicketNumber").value),name=document.getElementById("adminCustomerName").value.trim();
 const visibleSet=getVisibleTicketNumbers();
 if(isNaN(ticketNo)||!visibleSet.includes(ticketNo)){alert("Please enter one of the currently visible random ticket numbers: "+visibleSet.join(", "));return}
@@ -852,9 +858,9 @@ function closeModal(id){document.getElementById(id).style.display="none"}
 function formatGameDate(dateString){
 if(!dateString)return"--/--/----";let parts=dateString.split("-");if(parts.length!==3)return"--/--/----";
 return parts[2]+"/"+parts[1]+"/"+parts[0];
-}
+                             }
 
-function formatGameTime(timeString){
+ function formatGameTime(timeString){
 if(!timeString)return"--:-- --";let parts=timeString.split(":"),hour=parseInt(parts[0]),minute=parts[1],ampm=hour>=12?"PM":"AM";
 hour=hour%12;if(hour===0)hour=12;return String(hour).padStart(2,"0")+":"+minute+" "+ampm;
 }
