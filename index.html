@@ -267,8 +267,8 @@ let drawTimer=null;
 const NUMBER_CALLS={
 1:"Ek number ka hero — Number 1!",2:"Do aankhein — Number 2!",3:"Teen tigada — Number 3!",4:"Murgi chor — Number 4!",5:"High five, bhai! — Number 5!",6:"Chhakka laga — Number 6!",7:"Saat samundar paar — Number 7!",8:"Golmaal number — Number 8!",9:"Cloud nine — Number 9!",10:"Das ka dum — Number 10!",11:"Gyarah ka chakkar — Number 11!",12:"Baarah baj gaye — Number 12!",13:"Tera number aa gaya — Number 13!",14:"Chaudah ki chaabi — Number 14!",15:"Pandrah ka punch — Number 15!",16:"Sweet sixteen — Number 16!",17:"Satra ka tadka — Number 17!",18:"Adult ho gaya bhai — Number 18!",19:"Unnis-bees ka farak — Number 19!",20:"Bees ka tees — Number 20!",21:"Ikkees, full-on tease — Number 21!",22:"Do battakh tair rahi — Number 22!",23:"Teis ka twist — Number 23!",24:"Chaubees ghante ready — Number 24!",25:"Pachees ka patakha — Number 25!",26:"Chhabbees ka jhatka — Number 26!",27:"Sattais, jackpot wali vibe — Number 27!",28:"Atthais, late but nice — Number 28!",29:"Untees ka attitude — Number 29!",30:"Tees maar khan — Number 30!",31:"Ikattis ka dhamaal — Number 31!",32:"Battis daant, smile kamaal — Number 32!",33:"Teintis ka teesra gear — Number 33!",34:"Chautis ka chakkar — Number 34!",35:"Paintees, full masti please — Number 35!",36:"Chhattis ka chhota dhamaka — Number 36!",37:"Saintees, lucky wali fees — Number 37!",38:"Adtees ka attitude — Number 38!",39:"Untalis se pehle teesra alarm — Number 39!",40:"Chalis ka jhatka — Number 40!",41:"Iktalis, game mein twist — Number 41!",42:"Bayaalis, answer to everything — Number 42!",43:"Taintalis, tension mat le — Number 43!",44:"Double four, double dhamaka — Number 44!",45:"Paitalis, ab toh serious ho jao — Number 45!",46:"Chhiyaalis, number full stylish — Number 46!",47:"Saintalis, seedha dil pe vaar — Number 47!",48:"Adtalis, late nahi great — Number 48!",49:"Unchaas, ekdum khaas — Number 49!",50:"Pachaas, aadha game paas — Number 50!",51:"Ikyaavan, game ka tufaan — Number 51!",52:"Baavan, ticket sambhal ke rakhna — Number 52!",53:"Tirpan, kiska niklega dhan? — Number 53!",54:"Chauvan, chance pakad lo — Number 54!",55:"Double five, full high-five — Number 55!",56:"Chhappan, ab kya plan? — Number 56!",57:"Sattavan, lucky ka button — Number 57!",58:"Atthavan, game garam hai — Number 58!",59:"Unsath, bas ek kadam aur — Number 59!",60:"Saath, full power — Number 60!",61:"Iksath, ticket pe nazar rakh — Number 61!",62:"Baasath, kiski nikli baat? — Number 62!",63:"Tirsath, tension ko karo laat — Number 63!",64:"Chaunsath, number ekdum khaas — Number 64!",65:"Painsath, prize ke paas — Number 65!",66:"Double six, lucky fix — Number 66!",67:"Sadsath, game ka badshah — Number 67!",68:"Arsath, kya baat hai! — Number 68!",69:"Unhattar, sabki nazar idhar — Number 69!",70:"Sattar, winner ka meter — Number 70!",71:"Ikhattar, ticket pakad kar — Number 71!",72:"Bahattar, winner banne ka vaar — Number 72!",73:"Tihattar, kiska lagega chhakka? — Number 73!",74:"Chauhattar, game mein full speed — Number 74!",75:"Pachhattar, prize ki taraf — Number 75!",76:"Chhihattar, ab toh dil dhadak raha — Number 76!",77:"Double seven, lucky heaven — Number 77!",78:"Athhattar, kismat ka patta — Number 78!",79:"Unasi, ab kaun hasega? — Number 79!",80:"Assi, game ekdum classy — Number 80!",81:"Ikyasi, winner ki aas — Number 81!",82:"Bayaasi, kiska number khaas? — Number 82!",83:"Tiraasi, ticket wali pyaasi — Number 83!",84:"Chaurasi, kismat zara jaga lo — Number 84!",85:"Pachasi, prize ke bilkul paas — Number 85!",86:"Chhiyaasi, ab toh maza aayega — Number 86!",87:"Sattasi, kiska nikla lucky? — Number 87!",88:"Double eight, winner ka gate — Number 88!",89:"Nawasi, bas ek baaki! — Number 89!",90:"Nabbe! Game ka king number — Number 90!"
 };
-const GAME_START_VOICE="Ladies and gentlemen, game is on! Get ready… your lucky number is coming!";
-const GAME_OVER_VOICE="Ladies and gentlemen, all selected prizes are complete. Every prize is done and correct! Game over! Thank you, everyone!";
+const GAME_START_VOICE="Ladies and gentlemen... game shuru ho gaya hai! Sabhi ready rahiye... aapka lucky number aa raha hai!";
+const GAME_OVER_VOICE="Ladies and gentlemen... saare selected prizes complete ho gaye hain! Sabhi prizes done aur correct hain... game over! Thank you, everyone!";
 
 
 function generateTicketNumbers(ticketNo){
@@ -320,16 +320,32 @@ function pickFemaleVoice(){
   if(!("speechSynthesis" in window))return null;
   const voices=window.speechSynthesis.getVoices();
   const hi=voices.filter(v=>/^hi(-|_)/i.test(v.lang));
-  const candidates=hi.length?hi:voices.filter(v=>/^en(-|_)/i.test(v.lang));
-  return candidates.find(v=>/female|woman|girl|lady/i.test(v.name)) || candidates.find(v=>/Google/i.test(v.name)) || candidates[0] || voices[0] || null;
+  const enIN=voices.filter(v=>/^en(-IN|_IN)/i.test(v.lang));
+  const candidates=hi.length?hi:(enIN.length?enIN:voices.filter(v=>/^en(-|_)/i.test(v.lang)));
+  if(!candidates.length)return voices[0]||null;
+  const score=v=>{
+    const n=(v.name||"").toLowerCase();
+    let s=0;
+    if(/^hi(-|_)/i.test(v.lang))s+=50;
+    if(/female|woman|girl|lady|swara|aditi|kalpana|heera/i.test(n))s+=35;
+    if(/google|microsoft|natural|neural|online/i.test(n))s+=10;
+    if(/male|man|boy|hemant|ravi/i.test(n))s-=30;
+    return s;
+  };
+  return candidates.slice().sort((a,b)=>score(b)-score(a))[0]||candidates[0];
 }
 function makeUtterance(text){
   femaleVoice=femaleVoice||pickFemaleVoice();
-  const clean=String(text).replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,"");
+  let clean=String(text).replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,"");
+  // More natural Tambola-style rhythm: a short pause before the number.
+  clean=clean.replace(/\s*[—-]\s*/g,", ... ");
+  clean=clean.replace(/!\s*/g,"! ... ");
   const u=new SpeechSynthesisUtterance(clean);
   u.voice=femaleVoice||null;
-  u.lang=(femaleVoice&&femaleVoice.lang)||"hi-IN";
-  u.rate=.88;u.pitch=1.12;u.volume=1;
+  u.lang="hi-IN";
+  u.rate=.94;
+  u.pitch=1.16;
+  u.volume=1;
   return u;
 }
 function speak(text){
@@ -493,8 +509,8 @@ function renderPlayerPrizes(){
   if(!selected.length){
     box.innerHTML='<div class="small" style="text-align:center">No prizes selected yet.</div>';
     return;
-                                                                      }
- box.innerHTML=selected.map(key=>{
+  }
+  box.innerHTML=selected.map(key=>{
     const w=prizeWinners[key];
     return `<div class="playerPrize ${w?"done":"on"}">
       <div>${PRIZE_NAMES[key]}</div>
@@ -558,7 +574,7 @@ function searchMyTicket(){
   const visibleSet=getVisibleTicketNumbers();
   const raw=String(input.value||"").trim();
 
-  if(!raw){
+ if(!raw){
     result.innerHTML='<div class="noTicket">Please enter at least one ticket number.</div>';
     return;
   }
@@ -807,9 +823,9 @@ function closeModal(id){document.getElementById(id).style.display="none"}
 function formatGameDate(dateString){
 if(!dateString)return"--/--/----";let parts=dateString.split("-");if(parts.length!==3)return"--/--/----";
 return parts[2]+"/"+parts[1]+"/"+parts[0];
-}
+                             }
 
-function formatGameTime(timeString){
+ function formatGameTime(timeString){
 if(!timeString)return"--:-- --";let parts=timeString.split(":"),hour=parseInt(parts[0]),minute=parts[1],ampm=hour>=12?"PM":"AM";
 hour=hour%12;if(hour===0)hour=12;return String(hour).padStart(2,"0")+":"+minute+" "+ampm;
 }
@@ -844,7 +860,7 @@ function showAnnouncement(){
   modal.style.display="flex";
 }
 
- function startGame(){
+function startGame(){
 // Ensure a valid random ticket set exists before rendering.
 getVisibleTicketNumbers();
 renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();if(gameRunning){showGameBoard(true);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,6000)}else{showGameBoard(false)}setInterval(updateCountdown,1000);
