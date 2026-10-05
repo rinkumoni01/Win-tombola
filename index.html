@@ -15,7 +15,7 @@ button,input{font-family:inherit}
 #gameDateDisplay{font-size:17px}#countdown{font-size:18px}#gameTimeDisplay{font-size:17px}
 .gameStatus{margin-top:8px;background:#07145e;border:3px solid #e9f900;border-radius:10px;padding:8px;font-weight:bold;font-size:16px}
 .statusRunning{color:#39ff70}.statusStopped{color:#ff5555}
-.headerActions{display:flex;justify-content:center;align-items:center;gap:18px;margin-top:12px}.headerIconBtn{width:46px;height:46px;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;box-shadow:0 2px 7px rgba(0,0,0,.3);font-size:23px;cursor:pointer;transition:transform .15s}.headerIconBtn:active{transform:scale(.92)}.adminBtn{color:#e90060}.whatsappBtn{color:#25d366}.phoneBtn{color:#1687ff}.telegramBtn{color:#229ed9}
+.headerActions{display:flex;justify-content:center;align-items:center;gap:30px;margin-top:12px}.headerIconBtn{width:46px;height:46px;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;box-shadow:0 2px 7px rgba(0,0,0,.3);font-size:23px;cursor:pointer;transition:transform .15s}.headerIconBtn:active{transform:scale(.92)}.adminBtn{color:#e90060}.whatsappBtn{color:#25d366}.phoneBtn{color:#1687ff}.telegramBtn{color:#229ed9}.headerIconBtn svg{width:25px;height:25px;display:block;fill:currentColor}
 .container{max-width:900px;margin:auto;padding:12px;background:transparent}
 .info{background:rgba(255,255,255,.14);padding:12px;border-radius:12px;margin-bottom:12px;text-align:center;font-weight:bold;font-size:18px}
 .ticket{background:transparent;margin:15px 0}.ticketHead{display:flex;align-items:center;gap:8px;margin-bottom:7px}
@@ -124,9 +124,9 @@ button,input{font-family:inherit}
 <div class="gameStatus" id="playerGameStatus">🔴 GAME STOPPED</div>
 <div class="headerActions">
   <button class="headerIconBtn adminBtn" onclick="openAdminLogin()" aria-label="Admin" title="Admin">🔐</button>
-  <button class="headerIconBtn whatsappBtn" aria-label="WhatsApp" title="WhatsApp">💬</button>
+  <button class="headerIconBtn whatsappBtn" aria-label="WhatsApp" title="WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.5 0 .1 5.3.1 11.9c0 2.1.5 4.1 1.6 5.9L0 24l6.4-1.7a12 12 0 0 0 5.7 1.4h.1c6.6 0 11.9-5.3 11.9-11.9 0-3.2-1.3-6.1-3.6-8.3ZM12.1 21.5c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.5 9.5 0 0 1-1.5-5.1c0-5.3 4.3-9.6 9.7-9.6 2.6 0 5 1 6.8 2.8a9.5 9.5 0 0 1 2.8 6.8c0 5.4-4.3 9.8-9.7 9.8Zm5.3-7.3c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-1.7-.8-2.8-1.5-3.9-3.4-.3-.5.3-.5.8-1.7.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.7s1.2 3.1 1.4 3.3c.2.2 2.3 3.6 5.6 5 .8.3 1.4.5 1.9.7.8.2 1.5.2 2 .1.6-.1 1.8-.7 2-1.3.3-.6.3-1.2.2-1.3-.1-.2-.3-.2-.6-.4Z"/></svg></button>
   <button class="headerIconBtn phoneBtn" aria-label="Phone" title="Phone">📞</button>
-  <button class="headerIconBtn telegramBtn" aria-label="Telegram" title="Telegram">✈️</button>
+  <button class="headerIconBtn telegramBtn" aria-label="Telegram" title="Telegram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.8 2.3 2.7 9.7c-1.3.5-1.3 1.2-.2 1.5l4.9 1.5 1.9 6c.2.6.1.8.8.8.5 0 .7-.2 1-.5l2.4-2.3 5 3.7c.9.5 1.6.3 1.8-.8l3.2-15.1c.3-1.4-.5-2-1.7-1.5ZM8.1 12.3l10.9-6.9c.5-.3 1-.1.6.2l-8.9 8-.3 3.1-1.4-4.4-1.9-.6Z"/></svg></button>
 </div>
 </div>
 
@@ -190,7 +190,7 @@ button,input{font-family:inherit}
 <input class="input" id="gameTime" type="time">
 </div>
 
-<button class="saveBtn" onclick="saveSettings()">💾 SAVE SETTINGS</button>
+ <button class="saveBtn" onclick="saveSettings()">💾 SAVE SETTINGS</button>
 
 <div class="adminCard">
 <h3>🏆 Prize Settings</h3>
@@ -209,7 +209,6 @@ button,input{font-family:inherit}
 <button class="saveBtn" style="margin-top:12px" onclick="savePrizes()">💾 SAVE PRIZES</button>
 </div>
 
- 
 <div class="adminCard">
 <h3>🎟️ Ticket Status</h3>
 <div class="statusTitle">🟨 BOOKED &nbsp; | &nbsp; ⬜ UNSOLD</div>
@@ -374,7 +373,7 @@ if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged=()=>{fema
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 
-function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
+ function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
 
 const PRIZE_NAMES={
   firstLine:"🥇 First Line",
@@ -413,7 +412,7 @@ function fourCornersComplete(ticket){
 }
 function fullHouseComplete(ticket){return markedCount(ticket)===15}
 
- function bookedTickets(){
+function bookedTickets(){
   return Object.keys(bookings).map(Number).filter(n=>bookings[n]&&bookings[n].booked===true).sort((a,b)=>a-b);
 }
 
@@ -667,7 +666,8 @@ function searchMyTicket(){
       const numbers=generateTicketNumbers(no);
       let cells="";
 
-      for(let r=0;r<3;r++){
+     
+for(let r=0;r<3;r++){
         for(let c=0;c<9;c++){
           const value=numbers[r][c];
           const marked=value!==""&&drawnNumbers.includes(Number(value));
@@ -790,7 +790,7 @@ const box=document.getElementById("adminBookings");box.innerHTML="";
 let keys=Object.keys(bookings).map(Number).filter(n=>bookings[n]&&bookings[n].booked).sort((a,b)=>a-b);
 if(!keys.length){box.innerHTML='<div class="small">No booked tickets.</div>';return}
 
-let html=`<table class="adminBookingTable">
+ let html=`<table class="adminBookingTable">
 <thead><tr><th>No.</th><th>Customer Name</th><th>S</th><th>EDT</th></tr></thead><tbody>`;
 
 keys.forEach(ticketNo=>{
@@ -858,9 +858,9 @@ function closeModal(id){document.getElementById(id).style.display="none"}
 function formatGameDate(dateString){
 if(!dateString)return"--/--/----";let parts=dateString.split("-");if(parts.length!==3)return"--/--/----";
 return parts[2]+"/"+parts[1]+"/"+parts[0];
-                             }
+}
 
- function formatGameTime(timeString){
+function formatGameTime(timeString){
 if(!timeString)return"--:-- --";let parts=timeString.split(":"),hour=parseInt(parts[0]),minute=parts[1],ampm=hour>=12?"PM":"AM";
 hour=hour%12;if(hour===0)hour=12;return String(hour).padStart(2,"0")+":"+minute+" "+ampm;
 }
