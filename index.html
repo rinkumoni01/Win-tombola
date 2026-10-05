@@ -15,7 +15,7 @@ button,input{font-family:inherit}
 #gameDateDisplay{font-size:17px}#countdown{font-size:18px}#gameTimeDisplay{font-size:17px}
 .gameStatus{margin-top:8px;background:#07145e;border:3px solid #e9f900;border-radius:10px;padding:8px;font-weight:bold;font-size:16px}
 .statusRunning{color:#39ff70}.statusStopped{color:#ff5555}
-.headerActions{display:flex;justify-content:center;align-items:center;gap:30px;margin-top:12px}.headerIconBtn{width:46px;height:46px;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;box-shadow:0 2px 7px rgba(0,0,0,.3);font-size:23px;cursor:pointer;transition:transform .15s}.headerIconBtn:active{transform:scale(.92)}.adminBtn{color:#e90060}.whatsappBtn{color:#25d366}.phoneBtn{color:#1687ff}.telegramBtn{color:#229ed9}.headerIconBtn svg{width:25px;height:25px;display:block;fill:currentColor}
+.headerActions{display:flex;justify-content:center;align-items:center;gap:44px;margin-top:12px}.headerIconBtn{width:46px;height:46px;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;box-shadow:0 2px 7px rgba(0,0,0,.3);font-size:23px;cursor:pointer;transition:transform .15s}.headerIconBtn:active{transform:scale(.92)}.adminBtn{color:#e90060}.whatsappBtn{color:#25d366}.phoneBtn{color:#1687ff}.telegramBtn{color:#229ed9}.headerIconBtn svg{width:25px;height:25px;display:block;fill:currentColor}
 .container{max-width:900px;margin:auto;padding:12px;background:transparent}
 .info{background:rgba(255,255,255,.14);padding:12px;border-radius:12px;margin-bottom:12px;text-align:center;font-weight:bold;font-size:18px}
 .ticket{background:transparent;margin:15px 0}.ticketHead{display:flex;align-items:center;gap:8px;margin-bottom:7px}
@@ -162,7 +162,7 @@ button,input{font-family:inherit}
 </div>
 </div>
 
-<div class="modal" id="adminModal">
+ <div class="modal" id="adminModal">
 <div class="modalBox">
 <h2>⚙️ Game Settings</h2>
 
@@ -190,7 +190,7 @@ button,input{font-family:inherit}
 <input class="input" id="gameTime" type="time">
 </div>
 
- <button class="saveBtn" onclick="saveSettings()">💾 SAVE SETTINGS</button>
+<button class="saveBtn" onclick="saveSettings()">💾 SAVE SETTINGS</button>
 
 <div class="adminCard">
 <h3>🏆 Prize Settings</h3>
@@ -373,8 +373,8 @@ if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged=()=>{fema
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 
- function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
-
+function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
+ 
 const PRIZE_NAMES={
   firstLine:"🥇 First Line",
   secondLine:"🥈 Second Line",
@@ -458,37 +458,38 @@ function checkPrizeWinners(){
   const selected=selectedPrizeKeys();
   let changed=false;
 
-  // First, normal prizes can be won independently.
+  // For every prize, ALL tickets that become eligible on the same draw are winners.
+  // This applies to lines, corners, full houses and early prizes alike.
   for(const key of selected){
     if(prizeWinners[key]) continue;
-    const no=winnerTicketForPrize(key);
-    if(no!==null){
-      prizeWinners[key]={ticketNo:no,name:String(bookings[no].name||"Unknown"),markedNumbers:getWinningMarkedNumbers(key,no)};
-      changed=true;
-      
-    }
-  }
 
-  // Second/third full house must be different winning tickets from earlier full houses.
-  if(selected.includes("secondFullHouse") && !prizeWinners.secondFullHouse){
-    const excluded=[];
-    if(prizeWinners.fullHouse) excluded.push(prizeWinners.fullHouse.ticketNo);
-    const no=winnerTicketForPrize("secondFullHouse",excluded);
-    if(no!==null){
-      prizeWinners.secondFullHouse={ticketNo:no,name:String(bookings[no].name||"Unknown"),markedNumbers:getWinningMarkedNumbers("secondFullHouse",no)};
-      changed=true;
-      
+    let eligible=bookedTickets().filter(no=>prizeCompleteForTicket(key,no));
+
+    // Second/Third Full House are sequential prizes, but ties within that prize
+    // are still all winners. Exclude tickets that already won an earlier house prize.
+    if(key==="secondFullHouse"){
+      const excluded=[];
+      const first=prizeWinners.fullHouse;
+      if(Array.isArray(first)) first.forEach(w=>excluded.push(Number(w.ticketNo)));
+      else if(first) excluded.push(Number(first.ticketNo));
+      eligible=eligible.filter(no=>!excluded.includes(Number(no)));
     }
-  }
-  if(selected.includes("thirdFullHouse") && !prizeWinners.thirdFullHouse){
-    const excluded=[];
-    if(prizeWinners.fullHouse) excluded.push(prizeWinners.fullHouse.ticketNo);
-    if(prizeWinners.secondFullHouse) excluded.push(prizeWinners.secondFullHouse.ticketNo);
-    const no=winnerTicketForPrize("thirdFullHouse",excluded);
-    if(no!==null){
-      prizeWinners.thirdFullHouse={ticketNo:no,name:String(bookings[no].name||"Unknown"),markedNumbers:getWinningMarkedNumbers("thirdFullHouse",no)};
+    if(key==="thirdFullHouse"){
+      const excluded=[];
+      [prizeWinners.fullHouse,prizeWinners.secondFullHouse].forEach(group=>{
+        if(Array.isArray(group)) group.forEach(w=>excluded.push(Number(w.ticketNo)));
+        else if(group) excluded.push(Number(group.ticketNo));
+      });
+      eligible=eligible.filter(no=>!excluded.includes(Number(no)));
+    }
+
+    if(eligible.length){
+      prizeWinners[key]=eligible.map(no=>({
+        ticketNo:no,
+        name:String((bookings[no]&&bookings[no].name)||"Unknown"),
+        markedNumbers:getWinningMarkedNumbers(key,no)
+      }));
       changed=true;
-      
     }
   }
 
@@ -497,9 +498,11 @@ function checkPrizeWinners(){
     const announcements=[];
     for(const key of selected){
       const w=prizeWinners[key];
-      if(w && !prizeWinners[key]._announced){
-        announcements.push(`${PRIZE_NAMES[key].replace(/^[^\s]+\s/,"")} is full correct and done!`);
-        w._announced=true;
+      if(w && !w._announced){
+        const count=Array.isArray(w)?w.length:1;
+        announcements.push(`${PRIZE_NAMES[key].replace(/^[^\\s]+\\s/,"")} is full correct and done!${count>1?` ${count} winners!`:""}`);
+        if(Array.isArray(w)) w._announced=true;
+        else w._announced=true;
       }
     }
     savePrizeWinners();
@@ -522,10 +525,11 @@ function renderPlayerPrizes(){
   }
   box.innerHTML=selected.map(key=>{
     const w=prizeWinners[key];
+    const list=Array.isArray(w)?w:(w?[w]:[]);
     return `<div class="playerPrize ${w?"done":"on"}">
       <div>${PRIZE_NAMES[key]}</div>
       <div class="pStatus">${w?"✅ COMPLETED":"🟢 ACTIVE"}</div>
-      ${w?`<div class="winner">🏆 Winner: ${escapeHtml(w.name)}<br>🎟️ Ticket: ${w.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}')">👁️ VIEW TICKET</button></div>`:""}
+      ${list.map((x,i)=>`<div class="winner">🏆 Winner ${list.length>1?i+1:""}: ${escapeHtml(x.name)}<br>🎟️ Ticket: ${x.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}',${Number(x.ticketNo)})">👁️ VIEW TICKET</button></div>`).join("")}
     </div>`;
   }).join("");
   const over=document.getElementById("gameOverBox");
@@ -542,12 +546,14 @@ function renderAdminPrizeWinners(){
   if(!selected.length){box.innerHTML='<div class="small">No prizes selected.</div>';return}
   box.innerHTML=selected.map(key=>{
     const w=prizeWinners[key];
-    return `<div class="adminWinner"><b>${PRIZE_NAMES[key]}</b><br>${w?`🏆 ${escapeHtml(w.name)} — 🎟️ Ticket ${w.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}')">👁️ VIEW TICKET</button>`:"⏳ Winner not decided yet"}</div>`;
+    const list=Array.isArray(w)?w:(w?[w]:[]);
+    return `<div class="adminWinner"><b>${PRIZE_NAMES[key]}</b><br>${list.length?list.map((x,i)=>`🏆 ${list.length>1?"Winner "+(i+1)+": ":""}${escapeHtml(x.name)} — 🎟️ Ticket ${x.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}',${Number(x.ticketNo)})">👁️ VIEW TICKET</button>`).join("<hr style='border:0;border-top:1px solid #bde8c8;margin:7px 0">`):"⏳ Winner not decided yet"}</div>`;
   }).join("");
 }
 
-function viewWinnerTicket(prizeKey){
-  const w=prizeWinners[prizeKey];
+function viewWinnerTicket(prizeKey,ticketNoOverride){
+  let w=prizeWinners[prizeKey];
+  if(Array.isArray(w)) w=w.find(x=>Number(x.ticketNo)===Number(ticketNoOverride))||w[0];
   if(!w||w.ticketNo===undefined||w.ticketNo===null)return;
   const ticketNo=Number(w.ticketNo);
   const booking=bookings[ticketNo];
@@ -658,16 +664,11 @@ function searchMyTicket(){
     group.allTickets.sort((a,b)=>a-b);
     group.sourceTickets.sort((a,b)=>a-b);
 
-    html+=`<div class="myTicketFound">
-      <b>👤 ${group.name}</b>
-    </div>`;
-
-    group.allTickets.forEach(no=>{
+        group.allTickets.forEach(no=>{
       const numbers=generateTicketNumbers(no);
       let cells="";
 
-     
-for(let r=0;r<3;r++){
+      for(let r=0;r<3;r++){
         for(let c=0;c<9;c++){
           const value=numbers[r][c];
           const marked=value!==""&&drawnNumbers.includes(Number(value));
@@ -790,7 +791,7 @@ const box=document.getElementById("adminBookings");box.innerHTML="";
 let keys=Object.keys(bookings).map(Number).filter(n=>bookings[n]&&bookings[n].booked).sort((a,b)=>a-b);
 if(!keys.length){box.innerHTML='<div class="small">No booked tickets.</div>';return}
 
- let html=`<table class="adminBookingTable">
+let html=`<table class="adminBookingTable">
 <thead><tr><th>No.</th><th>Customer Name</th><th>S</th><th>EDT</th></tr></thead><tbody>`;
 
 keys.forEach(ticketNo=>{
@@ -911,4 +912,4 @@ startGame();
 showAnnouncement();
 </script>
 </body>
-</html>
+</html>             
