@@ -6,7 +6,7 @@
 <title>Win Tombola</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#07145e url("https://raw.githubusercontent.com/rinkumoni01/Win-tombola/main/file_000000000330820895bdf8b5a9114a1e.png") center top/cover fixed no-repeat;color:#222}
+body{margin:0;font-family:Arial,sans-serif;background:#07145e url("https://raw.githubusercontent.com/rinkumoni01/Win-tombola/81002449b3df62f4b3fa94a1ea9de69470f312fb/file_00000000a2b88208b329f959db54ea80.png") center top/cover fixed no-repeat;color:#222}
 button,input{font-family:inherit}
 .header{background:rgba(255,0,104,.78);color:white;padding:15px 10px;text-align:center;position:sticky;top:0;z-index:20;box-shadow:0 2px 8px #a00045}
 .logo{font-size:28px;font-weight:bold}.sub{font-size:13px;margin-top:4px}
@@ -15,10 +15,7 @@ button,input{font-family:inherit}
 #gameDateDisplay{font-size:17px}#countdown{font-size:18px}#gameTimeDisplay{font-size:17px}
 .gameStatus{margin-top:8px;background:#07145e;border:3px solid #e9f900;border-radius:10px;padding:8px;font-weight:bold;font-size:16px}
 .statusRunning{color:#39ff70}.statusStopped{color:#ff5555}
-.headerIcons{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:11px}
-.iconBtn{width:46px;height:46px;border:0;border-radius:50%;background:#fff;color:#e90060;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 7px rgba(0,0,0,.25);padding:0}
-.iconBtn svg{width:24px;height:24px;display:block;fill:currentColor}
-.iconBtn.whatsapp{color:#18b957}.iconBtn.phone{color:#1687ff}.iconBtn.telegram{color:#1687ff}.iconBtn:active{transform:scale(.94)}
+.adminBtn{margin-top:10px;border:0;background:#fff;color:#e90060;padding:8px 14px;border-radius:8px;font-weight:bold;font-size:15px;cursor:pointer}
 .container{max-width:900px;margin:auto;padding:12px;background:transparent}
 .info{background:rgba(255,255,255,.14);padding:12px;border-radius:12px;margin-bottom:12px;text-align:center;font-weight:bold;font-size:18px}
 .ticket{background:transparent;margin:15px 0}.ticketHead{display:flex;align-items:center;gap:8px;margin-bottom:7px}
@@ -116,20 +113,7 @@ button,input{font-family:inherit}
 <div class="gameBox" id="gameTimeDisplay">--:-- --</div>
 </div>
 <div class="gameStatus" id="playerGameStatus">🔴 GAME STOPPED</div>
-<div class="headerIcons">
-<button class="iconBtn" onclick="openAdminLogin()" aria-label="Admin" title="Admin">
-<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a5 5 0 0 0-5 5v2H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 7V7a3 3 0 0 1 6 0v2H9zm3 4a2 2 0 0 1 1 3.73V19h-2v-2.27A2 2 0 0 1 12 13z"/></svg>
-</button>
-<button class="iconBtn whatsapp" onclick="return false" aria-label="WhatsApp" title="WhatsApp">
-<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.66 15L2 22l5.18-1.36A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.08-1.12l-.29-.17-3.08.81.82-3-.19-.3A8 8 0 1 1 12 20zm4.36-5.89c-.24-.12-1.42-.7-1.64-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.92-1.18-.71-.63-1.18-1.4-1.32-1.64-.14-.24-.01-.37.1-.49.1-.1.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.19-.46-.39-.4-.54-.41h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.4 1.37.51.58.18 1.1.16 1.51.1.46-.07 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28z"/></svg>
-</button>
-<button class="iconBtn phone" onclick="return false" aria-label="Phone" title="Phone">
-<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.62 10.79a15.46 15.46 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.61 21 3 13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
-</button>
-<button class="iconBtn telegram" onclick="return false" aria-label="Telegram" title="Telegram">
-<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.9 3.1c.27-1.13-.82-2.12-1.9-1.7L2.65 8.1c-1.25.45-1.24 2.22.02 2.65l4.45 1.52 1.7 5.4c.34 1.08 1.68 1.4 2.4.58l2.48-2.82 4.86 3.58c.9.66 2.18.18 2.4-.91L21.9 3.1zM9.1 13.05l8.86-7.02-6.9 8.24-.4 3.1-1.2-4.32-.36-.12z"/></svg>
-</button>
-</div>
+<button class="adminBtn" onclick="openAdminLogin()">🔐 ADMIN</button>
 </div>
 
 <div class="container">
@@ -194,7 +178,7 @@ button,input{font-family:inherit}
 
 <button class="saveBtn" onclick="saveSettings()">💾 SAVE SETTINGS</button>
 
- <div class="adminCard">
+<div class="adminCard">
 <h3>🏆 Prize Settings</h3>
 <div class="small">Prize ko ON/OFF karke SAVE PRIZES dabayein.</div>
 <div class="prizeList">
@@ -250,7 +234,7 @@ button,input{font-family:inherit}
 const ADMIN_USERNAME="gyandeep";
 const ADMIN_PASSWORD="785673";
 
-let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
+ let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
 if(!Number.isInteger(Number(settings.visibleTickets))||Number(settings.visibleTickets)<1||Number(settings.visibleTickets)>600){settings.visibleTickets=15;}
 let visibleTicketNumbers=JSON.parse(localStorage.getItem("tombolaVisibleTicketNumbers")||"null");
 function getVisibleTicketNumbers(){
@@ -281,96 +265,7 @@ let gameRunning=localStorage.getItem("tombolaGameRunning")==="true";
 let drawnNumbers=JSON.parse(localStorage.getItem("tombolaDrawnNumbers")||"[]");
 let drawTimer=null;
 const NUMBER_CALLS={
-1:"One is number one… number one!",
-2:"Two little ducks… number two!",
-3:"Cup of tea… number three!",
-4:"Murgi chor… number four!",
-5:"High five… number five!",
-6:"Six-pack… number six!",
-7:"Lucky seven… number seven!",
-8:"Garden gate… number eight!",
-9:"Doctor’s order… number nine!",
-10:"Perfect ten… number ten!",
-11:"Legs eleven… number eleven!",
-12:"One dozen… number twelve!",
-13:"Unlucky thirteen… number thirteen!",
-14:"Valentine fourteen… number fourteen!",
-15:"Sweet fifteen… number fifteen!",
-16:"Sweet sixteen… number sixteen!",
-17:"Dancing queen… number seventeen!",
-18:"Coming of age… number eighteen!",
-19:"Goodbye teens… number nineteen!",
-20:"Score twenty… number twenty!",
-21:"Key of the door… number twenty-one!",
-22:"Two little ducks… number twenty-two!",
-23:"You and me… number twenty-three!",
-24:"Two dozen… number twenty-four!",
-25:"Quarter century… number twenty-five!",
-26:"Pick and mix… number twenty-six!",
-27:"Gateway to heaven… number twenty-seven!",
-28:"Over the rainbow… number twenty-eight!",
-29:"Rise and shine… number twenty-nine!",
-30:"Dirty thirty… number thirty!",
-31:"Get up and run… number thirty-one!",
-32:"Buckle my shoe… number thirty-two!",
-33:"All the threes… number thirty-three!",
-34:"Ask for more… number thirty-four!",
-35:"Jump and jive… number thirty-five!",
-36:"Three dozen… number thirty-six!",
-37:"More than eleven… number thirty-seven!",
-38:"Christmas cake… number thirty-eight!",
-39:"Steps to heaven… number thirty-nine!",
-40:"Naughty forty… number forty!",
-41:"Time for fun… number forty-one!",
-42:"Answer to everything… number forty-two!",
-43:"Down on your knees… number forty-three!",
-44:"All the fours… number forty-four!",
-45:"Halfway there… number forty-five!",
-46:"Up for more… number forty-six!",
-47:"Four and seven… number forty-seven!",
-48:"Four dozen… number forty-eight!",
-49:"Rise and shine… number forty-nine!",
-50:"Half a century… number fifty!",
-51:"Tweak of the thumb… number fifty-one!",
-52:"Pack of cards… number fifty-two!",
-53:"Stuck in a tree… number fifty-three!",
-54:"Clean the floor… number fifty-four!",
-55:"Snakes alive… number fifty-five!",
-56:"Pick up sticks… number fifty-six!",
-57:"Heinz varieties… number fifty-seven!",
-58:"Make them wait… number fifty-eight!",
-59:"Just one more… number fifty-nine!",
-60:"Five dozen… number sixty!",
-61:"Baker’s bun… number sixty-one!",
-62:"Tickety-boo… number sixty-two!",
-63:"Tickle me… number sixty-three!",
-64:"Red raw… number sixty-four!",
-65:"Retirement age… number sixty-five!",
-66:"Clickety-click… number sixty-six!",
-67:"Stairway to heaven… number sixty-seven!",
-68:"Saving grace… number sixty-eight!",
-69:"Either way up… number sixty-nine!",
-70:"Three score and ten… number seventy!",
-71:"Bang on the drum… number seventy-one!",
-72:"Six dozen… number seventy-two!",
-73:"Queen bee… number seventy-three!",
-74:"Candy store… number seventy-four!",
-75:"Diamond jubilee… number seventy-five!",
-76:"Trombones… number seventy-six!",
-77:"Sunset strip… number seventy-seven!",
-78:"Heaven’s gate… number seventy-eight!",
-79:"One more than seventy-eight… number seventy-nine!",
-80:"Eight and zero… number eighty!",
-81:"Stop and run… number eighty-one!",
-82:"Straight on through… number eighty-two!",
-83:"Time for tea… number eighty-three!",
-84:"Seven dozen… number eighty-four!",
-85:"Staying alive… number eighty-five!",
-86:"Between the sticks… number eighty-six!",
-87:"Devil’s number… number eighty-seven!",
-88:"Two fat ladies… number eighty-eight!",
-89:"Almost there… number eighty-nine!",
-90:"Top of the shop… number ninety!"
+1:"Ek number ka hero — Number 1!",2:"Do aankhein — Number 2!",3:"Teen tigada — Number 3!",4:"Murgi chor — Number 4!",5:"High five, bhai! — Number 5!",6:"Chhakka laga — Number 6!",7:"Saat samundar paar — Number 7!",8:"Golmaal number — Number 8!",9:"Cloud nine — Number 9!",10:"Das ka dum — Number 10!",11:"Gyarah ka chakkar — Number 11!",12:"Baarah baj gaye — Number 12!",13:"Tera number aa gaya — Number 13!",14:"Chaudah ki chaabi — Number 14!",15:"Pandrah ka punch — Number 15!",16:"Sweet sixteen — Number 16!",17:"Satra ka tadka — Number 17!",18:"Adult ho gaya bhai — Number 18!",19:"Unnis-bees ka farak — Number 19!",20:"Bees ka tees — Number 20!",21:"Ikkees, full-on tease — Number 21!",22:"Do battakh tair rahi — Number 22!",23:"Teis ka twist — Number 23!",24:"Chaubees ghante ready — Number 24!",25:"Pachees ka patakha — Number 25!",26:"Chhabbees ka jhatka — Number 26!",27:"Sattais, jackpot wali vibe — Number 27!",28:"Atthais, late but nice — Number 28!",29:"Untees ka attitude — Number 29!",30:"Tees maar khan — Number 30!",31:"Ikattis ka dhamaal — Number 31!",32:"Battis daant, smile kamaal — Number 32!",33:"Teintis ka teesra gear — Number 33!",34:"Chautis ka chakkar — Number 34!",35:"Paintees, full masti please — Number 35!",36:"Chhattis ka chhota dhamaka — Number 36!",37:"Saintees, lucky wali fees — Number 37!",38:"Adtees ka attitude — Number 38!",39:"Untalis se pehle teesra alarm — Number 39!",40:"Chalis ka jhatka — Number 40!",41:"Iktalis, game mein twist — Number 41!",42:"Bayaalis, answer to everything — Number 42!",43:"Taintalis, tension mat le — Number 43!",44:"Double four, double dhamaka — Number 44!",45:"Paitalis, ab toh serious ho jao — Number 45!",46:"Chhiyaalis, number full stylish — Number 46!",47:"Saintalis, seedha dil pe vaar — Number 47!",48:"Adtalis, late nahi great — Number 48!",49:"Unchaas, ekdum khaas — Number 49!",50:"Pachaas, aadha game paas — Number 50!",51:"Ikyaavan, game ka tufaan — Number 51!",52:"Baavan, ticket sambhal ke rakhna — Number 52!",53:"Tirpan, kiska niklega dhan? — Number 53!",54:"Chauvan, chance pakad lo — Number 54!",55:"Double five, full high-five — Number 55!",56:"Chhappan, ab kya plan? — Number 56!",57:"Sattavan, lucky ka button — Number 57!",58:"Atthavan, game garam hai — Number 58!",59:"Unsath, bas ek kadam aur — Number 59!",60:"Saath, full power — Number 60!",61:"Iksath, ticket pe nazar rakh — Number 61!",62:"Baasath, kiski nikli baat? — Number 62!",63:"Tirsath, tension ko karo laat — Number 63!",64:"Chaunsath, number ekdum khaas — Number 64!",65:"Painsath, prize ke paas — Number 65!",66:"Double six, lucky fix — Number 66!",67:"Sadsath, game ka badshah — Number 67!",68:"Arsath, kya baat hai! — Number 68!",69:"Unhattar, sabki nazar idhar — Number 69!",70:"Sattar, winner ka meter — Number 70!",71:"Ikhattar, ticket pakad kar — Number 71!",72:"Bahattar, winner banne ka vaar — Number 72!",73:"Tihattar, kiska lagega chhakka? — Number 73!",74:"Chauhattar, game mein full speed — Number 74!",75:"Pachhattar, prize ki taraf — Number 75!",76:"Chhihattar, ab toh dil dhadak raha — Number 76!",77:"Double seven, lucky heaven — Number 77!",78:"Athhattar, kismat ka patta — Number 78!",79:"Unasi, ab kaun hasega? — Number 79!",80:"Assi, game ekdum classy — Number 80!",81:"Ikyasi, winner ki aas — Number 81!",82:"Bayaasi, kiska number khaas? — Number 82!",83:"Tiraasi, ticket wali pyaasi — Number 83!",84:"Chaurasi, kismat zara jaga lo — Number 84!",85:"Pachasi, prize ke bilkul paas — Number 85!",86:"Chhiyaasi, ab toh maza aayega — Number 86!",87:"Sattasi, kiska nikla lucky? — Number 87!",88:"Double eight, winner ka gate — Number 88!",89:"Nawasi, bas ek baaki! — Number 89!",90:"Nabbe! Game ka king number — Number 90!"
 };
 const GAME_START_VOICE="Ladies and gentlemen, game is on! Get ready… your lucky number is coming!";
 const GAME_OVER_VOICE="Ladies and gentlemen, all selected prizes are complete. Every prize is done and correct! Game over! Thank you, everyone!";
@@ -418,14 +313,49 @@ for(let i=1;i<=90;i++){const d=document.createElement("div");d.className="drawNu
 const list=document.getElementById("calledList");if(list){list.innerHTML="";drawnNumbers.forEach(n=>{const chip=document.createElement("div");chip.className="calledChip";chip.textContent=n;list.appendChild(chip)})}
 const input=document.getElementById("myTicketNumber");if(input&&input.value)searchMyTicket();
 }
-let femaleVoice=null,voiceQueue=[],voicePlaying=false;
-function pickFemaleVoice(){if(!('speechSynthesis' in window))return null;const v=speechSynthesis.getVoices();const f=v.filter(x=>/female|woman|girl|lady|zira|samantha/i.test(x.name));return f.find(x=>/^en-IN/i.test(x.lang))||f.find(x=>/^hi-IN/i.test(x.lang))||f.find(x=>/^en/i.test(x.lang))||f[0]||v[0]||null}
-function makeUtterance(text){femaleVoice=pickFemaleVoice()||femaleVoice;const u=new SpeechSynthesisUtterance(String(text).replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,''));u.voice=femaleVoice;u.lang=femaleVoice?.lang||'en-IN';u.rate=1.05;u.pitch=1.22;u.volume=1;return u}
-function speak(text){if(!('speechSynthesis'in window))return;voiceQueue=[];voicePlaying=false;speechSynthesis.cancel();speechSynthesis.speak(makeUtterance(text))}
-function queueSpeak(text){if(!('speechSynthesis'in window))return;voiceQueue.push(String(text));if(!voicePlaying)playVoiceQueue()}
-function playVoiceQueue(){if(!voiceQueue.length){voicePlaying=false;return}voicePlaying=true;const u=makeUtterance(voiceQueue.shift());u.onend=playVoiceQueue;u.onerror=playVoiceQueue;speechSynthesis.speak(u)}
-function clearVoiceQueue(){voiceQueue=[];voicePlaying=false;if('speechSynthesis'in window)speechSynthesis.cancel()}
-if('speechSynthesis'in window)speechSynthesis.onvoiceschanged=()=>{femaleVoice=pickFemaleVoice()};
+let femaleVoice=null;
+let voiceQueue=[];
+let voicePlaying=false;
+function pickFemaleVoice(){
+  if(!("speechSynthesis" in window))return null;
+  const voices=window.speechSynthesis.getVoices();
+  const hi=voices.filter(v=>/^hi(-|_)/i.test(v.lang));
+  const candidates=hi.length?hi:voices.filter(v=>/^en(-|_)/i.test(v.lang));
+  return candidates.find(v=>/female|woman|girl|lady/i.test(v.name)) || candidates.find(v=>/Google/i.test(v.name)) || candidates[0] || voices[0] || null;
+}
+function makeUtterance(text){
+  femaleVoice=femaleVoice||pickFemaleVoice();
+  const clean=String(text).replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,"");
+  const u=new SpeechSynthesisUtterance(clean);
+  u.voice=femaleVoice||null;
+  u.lang=(femaleVoice&&femaleVoice.lang)||"hi-IN";
+  u.rate=.88;u.pitch=1.12;u.volume=1;
+  return u;
+}
+function speak(text){
+  if(!("speechSynthesis" in window))return;
+  voiceQueue=[];voicePlaying=false;window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(makeUtterance(text));
+}
+function queueSpeak(text){
+  if(!("speechSynthesis" in window))return;
+  voiceQueue.push(String(text));
+  if(voicePlaying)return;
+  playVoiceQueue();
+}
+function playVoiceQueue(){
+  if(!voiceQueue.length){voicePlaying=false;return;}
+  voicePlaying=true;
+  const u=makeUtterance(voiceQueue.shift());
+  u.onend=()=>playVoiceQueue();
+  u.onerror=()=>playVoiceQueue();
+  window.speechSynthesis.speak(u);
+}
+function clearVoiceQueue(){
+  voiceQueue=[];voicePlaying=false;
+  if("speechSynthesis" in window)window.speechSynthesis.cancel();
+}
+if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged=()=>{femaleVoice=pickFemaleVoice()};
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 
@@ -513,7 +443,7 @@ function checkPrizeWinners(){
     }
   }
 
- // Second/third full house must be different winning tickets from earlier full houses.
+  // Second/third full house must be different winning tickets from earlier full houses.
   if(selected.includes("secondFullHouse") && !prizeWinners.secondFullHouse){
     const excluded=[];
     if(prizeWinners.fullHouse) excluded.push(prizeWinners.fullHouse.ticketNo);
@@ -563,8 +493,8 @@ function renderPlayerPrizes(){
   if(!selected.length){
     box.innerHTML='<div class="small" style="text-align:center">No prizes selected yet.</div>';
     return;
-  }
-  box.innerHTML=selected.map(key=>{
+                                                                      }
+ box.innerHTML=selected.map(key=>{
     const w=prizeWinners[key];
     return `<div class="playerPrize ${w?"done":"on"}">
       <div>${PRIZE_NAMES[key]}</div>
@@ -802,9 +732,9 @@ div.title=booked?"BOOKED - "+bookings[i].name:"UNSOLD";
 div.onclick=function(){alert(booked?"🎟️ Ticket "+i+"\n👤 Customer: "+bookings[i].name:"🎟️ Ticket "+i+"\n⬜ UNSOLD")};
 box.appendChild(div);
 }
- }
+}
 
- function renderAdminBookings(){
+function renderAdminBookings(){
 const box=document.getElementById("adminBookings");box.innerHTML="";
 let keys=Object.keys(bookings).map(Number).filter(n=>bookings[n]&&bookings[n].booked).sort((a,b)=>a-b);
 if(!keys.length){box.innerHTML='<div class="small">No booked tickets.</div>';return}
@@ -914,7 +844,7 @@ function showAnnouncement(){
   modal.style.display="flex";
 }
 
-function startGame(){
+ function startGame(){
 // Ensure a valid random ticket set exists before rendering.
 getVisibleTicketNumbers();
 renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();if(gameRunning){showGameBoard(true);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,6000)}else{showGameBoard(false)}setInterval(updateCountdown,1000);
