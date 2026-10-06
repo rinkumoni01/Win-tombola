@@ -143,7 +143,7 @@ button,input{font-family:inherit}
 </div>
 <div class="gameOverBox" id="gameOverBox">🎉 GAME OVER 🎉</div>
 
-<div class="myTicketBox">
+ <div class="myTicketBox">
 <div class="myTicketTitle">🎟️ Search Tickets</div>
 <div class="myTicketRow"><input class="myTicketInput" id="myTicketNumber" type="text" inputmode="numeric" placeholder="Example: 25, 80"><button class="myTicketBtn" onclick="searchMyTicket()">SEARCH</button></div>
 
@@ -162,7 +162,7 @@ button,input{font-family:inherit}
 </div>
 </div>
 
- <div class="modal" id="adminModal">
+<div class="modal" id="adminModal">
 <div class="modalBox">
 <h2>⚙️ Game Settings</h2>
 
@@ -373,8 +373,8 @@ if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged=()=>{fema
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 
-function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
- 
+ function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
+
 const PRIZE_NAMES={
   firstLine:"🥇 First Line",
   secondLine:"🥈 Second Line",
@@ -511,7 +511,7 @@ function checkPrizeWinners(){
   renderPlayerPrizes();
   renderAdminPrizeWinners();
 
-  const allDone=selected.length>0 && selected.every(k=>!!prizeWinners[k]);
+ const allDone=selected.length>0 && selected.every(k=>!!prizeWinners[k]);
   if(allDone) finishPrizeGame();
 }
 
@@ -664,7 +664,7 @@ function searchMyTicket(){
     group.allTickets.sort((a,b)=>a-b);
     group.sourceTickets.sort((a,b)=>a-b);
 
-        group.allTickets.forEach(no=>{
+    group.allTickets.forEach(no=>{
       const numbers=generateTicketNumbers(no);
       let cells="";
 
@@ -704,7 +704,7 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 function setGameStatus(status){
 if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,6000);alert("🟢 Game is now RUNNING. First number 6 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
-function cancelGame(){
+ function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
 gameRunning=false;
 clearVoiceQueue();
