@@ -329,127 +329,123 @@ const input=document.getElementById("myTicketNumber");if(input&&input.value)sear
 let femaleVoice=null;
 let voiceQueue=[];
 let voicePlaying=false;
+let voiceGeneration=0;
 
+// Pick the most natural female Hindi/Indian-English voice available on the device.
+// Android Chrome exposes different voice names on different phones, so we score
+// several common Google/Samsung/Microsoft/Indian voice names instead of relying
+// on one exact name.
 function pickFemaleVoice(){
   if(!("speechSynthesis" in window))return null;
   const voices=window.speechSynthesis.getVoices();
   if(!voices.length)return null;
 
-  // Prefer a natural Hindi/English female voice when the phone provides one.
-  const female=voices.filter(v=>/female|woman|girl|lady|zira|heera|kalpana|google.*female|samantha/i.test(v.name));
-  const hiFemale=female.filter(v=>/^hi(-|_)/i.test(v.lang));
-  const hi=voices.filter(v=>/^hi(-|_)/i.test(v.lang));
-  const enFemale=female.filter(v=>/^en(-|_)/i.test(v.lang));
-  const en=voices.filter(v=>/^en(-|_)/i.test(v.lang));
-
-  return hiFemale[0] || enFemale[0] || hi[0] || en[0] || female[0] || voices[0];
+  const femaleWords=/female|woman|girl|lady|zira|heera|kalpana|veena|neerja|priya|google|samsung|microsoft/i;
+  const naturalWords=/google|natural|neural|wavenet|enhanced|premium|online/i;
+  const hindi=/^hi(-|_)/i;
+  const indianEnglish=/^en-(IN|GB)/i;
+  const score=v=>{
+    let n=0;
+    if(hindi.test(v.lang))n+=70;
+    if(indianEnglish.test(v.lang))n+=45;
+    if(femaleWords.test(v.name))n+=35;
+    if(naturalWords.test(v.name))n+=20;
+    if(/en(-|_)/i.test(v.lang))n+=10;
+    return n;
+  };
+  return voices.slice().sort((a,b)=>score(b)-score(a))[0]||voices[0];
 }
 
 function cleanVoiceText(text){
   return String(text)
-    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,"")
-    .replace(/—/g," ... ")
-    .replace(/!/g,"! ... ")
-    .replace(/,/g,", ... ")
+    .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u27BF]/gu,"")
+    .replace(/[—–]/g," ... ")
+    // One natural pause is enough; too many punctuation pauses sound robotic.
+    .replace(/\s*,\s*/g,", ")
+    .replace(/\s*!\s*/g,"! ")
+    .replace(/\s*\.\.\.\s*/g," ... ")
     .replace(/\s+/g," ")
     .trim();
 }
 
-function makeUtterance(text){
+function makeUtterance(text, style="number"){
   femaleVoice=femaleVoice||pickFemaleVoice();
-  const isEnglishNumber=String(text).startsWith('__EN_NUMBER__');
-  let clean=String(text).replace(/^__EN_NUMBER__/,'');
-  clean=clean.replace(/[\u{1F300}-\u{1FAFF}\u2600-\u27BF]/gu,'');
-  if(isEnglishNumber){
-    const n=Number(clean);
-    clean='Number '+numberToEnglish(n)+'!';
-  }
+  const clean=cleanVoiceText(text);
   const u=new SpeechSynthesisUtterance(clean);
   u.voice=femaleVoice||null;
-  u.lang=isEnglishNumber?'en-US':((femaleVoice&&femaleVoice.lang)||'hi-IN');
-  u.rate=isEnglishNumber?.84:.84;
-  u.pitch=isEnglishNumber?1.10:1.18;
+  u.lang=(femaleVoice&&femaleVoice.lang)||"hi-IN";
   u.volume=1;
+
+  // Human-style game-caller delivery: small variation prevents every call
+  // from sounding like the exact same recorded robot sentence.
+  const wobble=(Number(clean.match(/\d+\s*$/)?.[0]||0)%5);
+  if(style==="start"){
+    u.rate=.88; u.pitch=1.08;
+  }else if(style==="winner"){
+    u.rate=.91; u.pitch=1.13;
+  }else{
+    u.rate=.84 + wobble*.012;
+    u.pitch=1.04 + (wobble%3)*.025;
+  }
   return u;
 }
-function speak(text){
+
+function speak(text,style="normal"){
   if(!("speechSynthesis" in window))return;
   voiceQueue=[];
   voicePlaying=false;
+  voiceGeneration++;
   window.speechSynthesis.cancel();
-
-  // Small dramatic lead-in for the opening announcement only.
-  window.speechSynthesis.speak(makeUtterance(text));
-}
-
-function numberToEnglish(n){
-  const ones=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
-  const tens=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
-  n=Number(n);
-  if(n<20)return ones[n];
-  if(n<100)return tens[Math.floor(n/10)]+(n%10?'-'+ones[n%10]:'');
-  return String(n);
+  const u=makeUtterance(text,style);
+  u.onend=()=>{voicePlaying=false};
+  u.onerror=()=>{voicePlaying=false};
+  window.speechSynthesis.speak(u);
 }
 
 function makeFunnyCallText(text){
   let t=String(text).trim();
-  const m=t.match(/^(.*?)(?:\s*[—-]\s*|,\s*)(?:Number\s*)?(\d+)\s*$/i);
-  if(m){
-    // Keep the funny Hindi line natural; the number is spoken separately in English.
-    return m[1].trim()+'...';
-  }
-  const m2=t.match(/^(.*?)(?:\s+Number\s+)(\d+)\s*$/i);
-  if(m2)return m2[1].trim()+'...';
+  // Keep the joke together, then give the number a clear natural beat.
+  t=t.replace(/\s*[—-]\s*(Number\s*\d+)$/i," ... $1");
+  t=t.replace(/\bNumber\s+(\d+)\b/i,"Number ... $1");
   return t;
 }
 
-function queueSpeak(text){
-  if(!('speechSynthesis' in window))return;
-  const raw=String(text).trim();
-  const m=raw.match(/(?:Number\s*)(\d+)\s*$/i);
-  if(m){
-    voiceQueue.push(makeFunnyCallText(raw));
-    voiceQueue.push('__EN_NUMBER__'+m[1]);
-  }else{
-    voiceQueue.push(makeFunnyCallText(raw));
-  }
+function queueSpeak(text,style="number"){
+  if(!("speechSynthesis" in window))return;
+  voiceQueue.push({text:makeFunnyCallText(text),style});
   if(voicePlaying)return;
   playVoiceQueue();
 }
 
 function playVoiceQueue(){
-  if(!voiceQueue.length){
-    voicePlaying=false;
-    return;
-  }
-
+  if(!voiceQueue.length){voicePlaying=false;return;}
   voicePlaying=true;
   const item=voiceQueue.shift();
-  const u=makeUtterance(item);
-
+  const u=makeUtterance(item.text,item.style);
+  const generation=voiceGeneration;
   u.onend=()=>{
-    // Natural pause between the Hindi punch line and the English number.
-    setTimeout(playVoiceQueue,item.startsWith('__EN_NUMBER__')?120:360);
+    if(generation!==voiceGeneration)return;
+    // Natural breathing gap between calls; not long enough to feel delayed.
+    setTimeout(()=>{if(generation===voiceGeneration)playVoiceQueue()},260);
   };
   u.onerror=()=>{
-    setTimeout(playVoiceQueue,80);
+    if(generation!==voiceGeneration)return;
+    setTimeout(()=>{if(generation===voiceGeneration)playVoiceQueue()},80);
   };
-
   window.speechSynthesis.speak(u);
 }
 
 function clearVoiceQueue(){
   voiceQueue=[];
   voicePlaying=false;
+  voiceGeneration++;
   if("speechSynthesis" in window)window.speechSynthesis.cancel();
 }
 
 if("speechSynthesis" in window){
-  window.speechSynthesis.onvoiceschanged=()=>{
-    femaleVoice=pickFemaleVoice();
-  };
-  // Android Chrome sometimes loads voices a little late.
-  setTimeout(()=>{femaleVoice=pickFemaleVoice()},700);
+  window.speechSynthesis.onvoiceschanged=()=>{femaleVoice=pickFemaleVoice()};
+  setTimeout(()=>{femaleVoice=pickFemaleVoice()},300);
+  setTimeout(()=>{if(!femaleVoice)femaleVoice=pickFemaleVoice()},1200);
 }
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
@@ -668,7 +664,7 @@ function finishPrizeGame(){
   updatePlayerGameStatus();
   renderPlayerPrizes();
   renderAdminPrizeWinners();
-  queueSpeak(GAME_OVER_VOICE);
+  queueSpeak(GAME_OVER_VOICE,"winner");
 }
 function showCenterNumber(n){const el=document.getElementById("centerNumberPopup");if(!el)return;el.textContent=n;el.classList.add("show");clearTimeout(window.centerNumberTimer);window.centerNumberTimer=setTimeout(()=>{el.classList.remove("show")},4000)}
 function drawNextNumber(){if(!gameRunning)return;if(drawnNumbers.length>=90){finishGame();return}const a=[];for(let i=1;i<=90;i++)if(!drawnNumbers.includes(i))a.push(i);const n=a[Math.floor(Math.random()*a.length)];drawnNumbers.push(n);saveDrawnNumbers();renderNumberBoard();showCenterNumber(n);queueSpeak(NUMBER_CALLS[n]||(`Number ${n}`));checkPrizeWinners();if(gameRunning&&drawnNumbers.length>=90)finishGame()}
@@ -692,7 +688,7 @@ function searchMyTicket(){
   const result=document.getElementById("myTicketResult");
   if(!input||!result)return;
 
-   const visibleSet=getVisibleTicketNumbers();
+  const visibleSet=getVisibleTicketNumbers();
   const raw=String(input.value||"").trim();
   if(!raw){result.innerHTML='<div class="noTicket">Please enter at least one ticket number.</div>';return;}
 
@@ -767,9 +763,9 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 }
 
 function setGameStatus(status){
-if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. First number 8 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
+if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE,"start");clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. First number 8 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
-function cancelGame(){
+ function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
 gameRunning=false;
 clearVoiceQueue();
