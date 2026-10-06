@@ -323,7 +323,7 @@ function renderNumberBoard(){
 const grid=document.getElementById("numberGrid");if(!grid)return;grid.innerHTML="";
 for(let i=1;i<=90;i++){const d=document.createElement("div");d.className="drawNumber"+(drawnNumbers.includes(i)?" called":"");d.textContent=i;grid.appendChild(d)}
 
- const list=document.getElementById("calledList");if(list){list.innerHTML="";drawnNumbers.forEach(n=>{const chip=document.createElement("div");chip.className="calledChip";chip.textContent=n;list.appendChild(chip)})}
+const list=document.getElementById("calledList");if(list){list.innerHTML="";drawnNumbers.forEach(n=>{const chip=document.createElement("div");chip.className="calledChip";chip.textContent=n;list.appendChild(chip)})}
 const input=document.getElementById("myTicketNumber");if(input&&input.value)searchMyTicket();
 }
 let femaleVoice=null;
@@ -357,20 +357,21 @@ function cleanVoiceText(text){
 
 function makeUtterance(text){
   femaleVoice=femaleVoice||pickFemaleVoice();
-  const clean=cleanVoiceText(text);
+  const isEnglishNumber=String(text).startsWith('__EN_NUMBER__');
+  let clean=String(text).replace(/^__EN_NUMBER__/,'');
+  clean=clean.replace(/[\u{1F300}-\u{1FAFF}\u2600-\u27BF]/gu,'');
+  if(isEnglishNumber){
+    const n=Number(clean);
+    clean='Number '+numberToEnglish(n)+'!';
+  }
   const u=new SpeechSynthesisUtterance(clean);
-
   u.voice=femaleVoice||null;
-  u.lang=(femaleVoice&&femaleVoice.lang)||"hi-IN";
-
-  // Slightly slower + brighter for a female game-show feel.
-  u.rate=.89;
-  u.pitch=1.10;
+  u.lang=isEnglishNumber?'en-US':((femaleVoice&&femaleVoice.lang)||'hi-IN');
+  u.rate=isEnglishNumber?.84:.84;
+  u.pitch=isEnglishNumber?1.10:1.18;
   u.volume=1;
-
   return u;
 }
-
 function speak(text){
   if(!("speechSynthesis" in window))return;
   voiceQueue=[];
@@ -381,16 +382,37 @@ function speak(text){
   window.speechSynthesis.speak(makeUtterance(text));
 }
 
+function numberToEnglish(n){
+  const ones=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+  const tens=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+  n=Number(n);
+  if(n<20)return ones[n];
+  if(n<100)return tens[Math.floor(n/10)]+(n%10?'-'+ones[n%10]:'');
+  return String(n);
+}
+
 function makeFunnyCallText(text){
   let t=String(text).trim();
-  t=t.replace(/^(.*?)(?:\s*[—-]\s*|,\s*)(Number\s*\d+)$/i,"$1 ... $2");
-  t=t.replace(/\bNumber\s+(\d+)\b/i,"Number ... $1");
+  const m=t.match(/^(.*?)(?:\s*[—-]\s*|,\s*)(?:Number\s*)?(\d+)\s*$/i);
+  if(m){
+    // Keep the funny Hindi line natural; the number is spoken separately in English.
+    return m[1].trim()+'...';
+  }
+  const m2=t.match(/^(.*?)(?:\s+Number\s+)(\d+)\s*$/i);
+  if(m2)return m2[1].trim()+'...';
   return t;
 }
 
 function queueSpeak(text){
-  if(!("speechSynthesis" in window))return;
-  voiceQueue.push(makeFunnyCallText(text));
+  if(!('speechSynthesis' in window))return;
+  const raw=String(text).trim();
+  const m=raw.match(/(?:Number\s*)(\d+)\s*$/i);
+  if(m){
+    voiceQueue.push(makeFunnyCallText(raw));
+    voiceQueue.push('__EN_NUMBER__'+m[1]);
+  }else{
+    voiceQueue.push(makeFunnyCallText(raw));
+  }
   if(voicePlaying)return;
   playVoiceQueue();
 }
@@ -402,11 +424,12 @@ function playVoiceQueue(){
   }
 
   voicePlaying=true;
-  const u=makeUtterance(voiceQueue.shift());
+  const item=voiceQueue.shift();
+  const u=makeUtterance(item);
 
   u.onend=()=>{
-    // Tiny gap makes consecutive numbers sound cleaner.
-    setTimeout(playVoiceQueue,220);
+    // Natural pause between the Hindi punch line and the English number.
+    setTimeout(playVoiceQueue,item.startsWith('__EN_NUMBER__')?120:360);
   };
   u.onerror=()=>{
     setTimeout(playVoiceQueue,80);
@@ -431,7 +454,7 @@ if("speechSynthesis" in window){
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 
-function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
+ function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
 
 const PRIZE_NAMES={
   firstLine:"🥇 First Line",
@@ -571,9 +594,9 @@ function checkPrizeWinners(){
 
   const allDone=selected.length>0 && selected.every(k=>!!prizeWinners[k]);
   if(allDone) finishPrizeGame();
- }
+}
 
- function renderPlayerPrizes(){
+function renderPlayerPrizes(){
   const box=document.getElementById("playerPrizeList");
   if(!box)return;
   const selected=selectedPrizeKeys();
@@ -669,7 +692,7 @@ function searchMyTicket(){
   const result=document.getElementById("myTicketResult");
   if(!input||!result)return;
 
-  const visibleSet=getVisibleTicketNumbers();
+   const visibleSet=getVisibleTicketNumbers();
   const raw=String(input.value||"").trim();
   if(!raw){result.innerHTML='<div class="noTicket">Please enter at least one ticket number.</div>';return;}
 
@@ -746,7 +769,7 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 function setGameStatus(status){
 if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. First number 8 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
- function cancelGame(){
+function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
 gameRunning=false;
 clearVoiceQueue();
