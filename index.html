@@ -61,7 +61,8 @@ button,input{font-family:inherit}
 .currentGameStatus{text-align:center;padding:10px;border-radius:8px;background:#07145e;color:white;font-weight:bold;margin-top:10px}
 .gameBoard{display:none;position:relative;background:rgba(255,255,255,.10);border-radius:15px;padding:12px;margin-top:12px;box-shadow:0 2px 10px rgba(0,0,0,.18)}.gameBoard.active{display:block}.boardTitle{text-align:center;font-size:22px;font-weight:bold;color:#ed005f;margin:5px 0 12px}.numberGrid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}.drawNumber{aspect-ratio:1/1;border-radius:8px;border:2px solid #aaa;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:bold}.drawNumber.called{background:#18c957;color:#fff;border-color:#078b35}
 .numberGridWrap{position:relative}.centerNumberPopup{position:absolute;left:50%;top:0;transform:translate(-50%,0) scale(.72);width:82px;height:82px;border-radius:50%;background:#ffe900;color:#111;display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:900;border:4px solid #07145e;box-shadow:0 0 0 3px #e9f900,0 4px 12px rgba(0,0,0,.28);z-index:20;opacity:0;pointer-events:none;transition:top .45s ease,transform .45s ease,opacity .2s ease}
-.centerNumberPopup.show{opacity:1;top:50%;transform:translate(-50%,-50%) scale(1)}.calledListTitle{text-align:center;font-weight:bold;color:#ed005f;margin:12px 0 7px}.calledList{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:4px}.calledChip{background:#000;color:#fff;border:3px solid #e9f900;border-radius:50%;width:44px;height:44px;min-width:44px;padding:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:17px;font-weight:bold;box-shadow:0 2px 5px rgba(0,0,0,.25)}.myTicketBox{margin-top:14px;background:rgba(247,247,247,.14);border-radius:10px;padding:12px;border:2px solid #ddd}.myTicketTitle{text-align:center;font-size:19px;font-weight:bold;color:#ed005f;margin-bottom:8px}.myTicketRow{display:flex;gap:7px}.myTicketInput{flex:1;min-width:0;padding:12px;border:2px solid #aaa;border-radius:8px;font-size:17px}.myTicketBtn{background:#ed005f;color:#fff;border:0;border-radius:8px;padding:12px 15px;font-size:16px;font-weight:bold}.myTicketFound{background:#fff;border:3px solid #ff684e;border-radius:10px;padding:10px;margin:10px 0;text-align:center;font-size:17px;color:#07145e}\n.myTicketResult{margin-top:10px}.myTicketResult .ticket{margin:0}.markedCell{background:#18c957!important;color:#fff!important;border-color:#078b35!important}.noTicket{text-align:center;background:#fff0f0;color:#d00;padding:10px;border-radius:8px;font-weight:bold}.voiceNote{text-align:center;font-size:12px;color:#666;margin-top:8px}
+.centerNumberPopup.show{opacity:1;top:50%;transform:translate(-50%,-50%) scale(1)}.calledListTitle{text-align:center;font-weight:bold;color:#ed005f;margin:12px 0 7px}.calledList{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:4px}.calledChip{background:#000;color:#fff;border:3px solid #e9f900;border-radius:50%;width:44px;height:44px;min-width:44px;padding:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:17px;font-weight:bold;box-shadow:0 2px 5px rgba(0,0,0,.25)}.myTicketBox{margin-top:14px;background:rgba(247,247,247,.14);border-radius:10px;padding:12px;border:2px solid #ddd}.myTicketTitle{text-align:center;font-size:19px;font-weight:bold;color:#ed005f;margin-bottom:8px}.myTicketRow{display:flex;gap:7px}.myTicketInput{flex:1;min-width:0;padding:12px;border:2px solid #aaa;border-radius:8px;font-size:17px}.myTicketBtn{background:#ed005f;color:#fff;border:0;border-radius:8px;padding:12px 15px;font-size:16px;font-weight:bold}\n.myTicketResult .customerNameHeader,.myTicketResult .searchCustomerHeader,.myTicketResult .myTicketFound{display:none!important}
+.myTicketResult{margin-top:10px}.myTicketResult .ticket{margin:0}.markedCell{background:#18c957!important;color:#fff!important;border-color:#078b35!important}.noTicket{text-align:center;background:#fff0f0;color:#d00;padding:10px;border-radius:8px;font-weight:bold}.voiceNote{text-align:center;font-size:12px;color:#666;margin-top:8px}
 .prizeBoard{margin-top:14px;background:rgba(255,255,255,.14);border:2px solid #ddd;border-radius:12px;padding:12px}
 .prizeBoardTitle{text-align:center;color:#ed005f;font-size:20px;font-weight:bold;margin-bottom:10px}
 .playerPrize{background:#fff;border:2px solid #ddd;border-radius:9px;padding:9px 10px;margin-bottom:7px;font-weight:bold}
@@ -143,7 +144,7 @@ button,input{font-family:inherit}
 </div>
 <div class="gameOverBox" id="gameOverBox">🎉 GAME OVER 🎉</div>
 
- <div class="myTicketBox">
+<div class="myTicketBox">
 <div class="myTicketTitle">🎟️ Search Tickets</div>
 <div class="myTicketRow"><input class="myTicketInput" id="myTicketNumber" type="text" inputmode="numeric" placeholder="Example: 25, 80"><button class="myTicketBtn" onclick="searchMyTicket()">SEARCH</button></div>
 
@@ -162,7 +163,7 @@ button,input{font-family:inherit}
 </div>
 </div>
 
-<div class="modal" id="adminModal">
+ <div class="modal" id="adminModal">
 <div class="modalBox">
 <h2>⚙️ Game Settings</h2>
 
@@ -373,9 +374,9 @@ if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged=()=>{fema
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 
- function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
+function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
 
-const PRIZE_NAMES={
+ const PRIZE_NAMES={
   firstLine:"🥇 First Line",
   secondLine:"🥈 Second Line",
   thirdLine:"🥉 Third Line",
@@ -511,7 +512,7 @@ function checkPrizeWinners(){
   renderPlayerPrizes();
   renderAdminPrizeWinners();
 
- const allDone=selected.length>0 && selected.every(k=>!!prizeWinners[k]);
+  const allDone=selected.length>0 && selected.every(k=>!!prizeWinners[k]);
   if(allDone) finishPrizeGame();
 }
 
@@ -547,7 +548,7 @@ function renderAdminPrizeWinners(){
   box.innerHTML=selected.map(key=>{
     const w=prizeWinners[key];
     const list=Array.isArray(w)?w:(w?[w]:[]);
-    return `<div class="adminWinner"><b>${PRIZE_NAMES[key]}</b><br>${list.length?list.map((x,i)=>`🏆 ${list.length>1?"Winner "+(i+1)+": ":""}${escapeHtml(x.name)} — 🎟️ Ticket ${x.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}',${Number(x.ticketNo)})">👁️ VIEW TICKET</button>`).join("<hr style='border:0;border-top:1px solid #bde8c8;margin:7px 0">`):"⏳ Winner not decided yet"}</div>`;
+    return `<div class="adminWinner"><b>${PRIZE_NAMES[key]}</b><br>${list.length?list.map((x,i)=>`🏆 ${list.length>1?"Winner "+(i+1)+": ":""}${escapeHtml(x.name)} — 🎟️ Ticket ${x.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}',${Number(x.ticketNo)})">👁️ VIEW TICKET</button>`).join("<hr style='border:0;border-top:1px solid #bde8c8;margin:7px 0'>"):"⏳ Winner not decided yet"}</div>`;
   }).join("");
 }
 
@@ -613,84 +614,48 @@ function searchMyTicket(){
 
   const visibleSet=getVisibleTicketNumbers();
   const raw=String(input.value||"").trim();
-
-  if(!raw){
-    result.innerHTML='<div class="noTicket">Please enter at least one ticket number.</div>';
-    return;
-  }
+  if(!raw){result.innerHTML='<div class="noTicket">Please enter at least one ticket number.</div>';return;}
 
   const requested=[...new Set(raw.split(/[\s,]+/).map(x=>parseInt(x,10)).filter(n=>!isNaN(n)))];
-
-  if(!requested.length){
-    result.innerHTML='<div class="noTicket">Please enter valid ticket numbers.</div>';
-    return;
-  }
+  if(!requested.length){result.innerHTML='<div class="noTicket">Please enter valid ticket numbers.</div>';return;}
 
   const invalid=requested.filter(n=>!visibleSet.includes(n));
   if(invalid.length){
-    result.innerHTML='<div class="noTicket">Invalid ticket number: '+invalid.join(", ")+'<br>Visible ticket numbers are: '+visibleSet.join(', ')+'.</div>';
-    return;
-  }
-
-  const customerGroups={};
-  const notBooked=[];
-
-  requested.forEach(ticketNo=>{
-    const booking=bookings[ticketNo];
-    if(!booking||booking.booked!==true){notBooked.push(ticketNo);return;}
-
-    const name=String(booking.name||"").trim()||"Unknown";
-    const key=name.toLowerCase();
-    if(!customerGroups[key]) customerGroups[key]={name:name,sourceTickets:[],allTickets:[]};
-    customerGroups[key].sourceTickets.push(ticketNo);
-  });
-
-  const groups=Object.values(customerGroups);
-
-  if(!groups.length){
-    result.innerHTML='<div class="noTicket">None of the entered tickets are booked.</div>';
+    result.innerHTML='<div class="noTicket">Invalid ticket number: '+invalid.join(", ")+"<br>Visible ticket numbers are: "+visibleSet.join(', ')+'.</div>';
     return;
   }
 
   let html="";
+  const notBooked=[];
+  requested.sort((a,b)=>a-b).forEach(ticketNo=>{
+    const booking=bookings[ticketNo];
+    if(!booking||booking.booked!==true){notBooked.push(ticketNo);return;}
 
-  groups.forEach(group=>{
-    visibleSet.forEach(i=>{
-      if(bookings[i]&&bookings[i].booked===true&&String(bookings[i].name||"").trim().toLowerCase()===group.name.toLowerCase()){
-        group.allTickets.push(i);
+    const name=String(booking.name||"").trim()||"Unknown";
+    const numbers=generateTicketNumbers(ticketNo);
+    let cells="";
+    for(let r=0;r<3;r++){
+      for(let c=0;c<9;c++){
+        const value=numbers[r][c];
+        const marked=value!==""&&drawnNumbers.includes(Number(value));
+        cells+=`<div class="cell ${value===""?"empty":""} ${marked?"markedCell":""}">${value}</div>`;
       }
-    });
+    }
 
-    group.allTickets.sort((a,b)=>a-b);
-    group.sourceTickets.sort((a,b)=>a-b);
-
-    group.allTickets.forEach(no=>{
-      const numbers=generateTicketNumbers(no);
-      let cells="";
-
-      for(let r=0;r<3;r++){
-        for(let c=0;c<9;c++){
-          const value=numbers[r][c];
-          const marked=value!==""&&drawnNumbers.includes(Number(value));
-          cells+=`<div class="cell ${value===""?"empty":""} ${marked?"markedCell":""}">${value}</div>`;
-        }
-      }
-
-      html+=`<div class="ticket">
-        <div class="ticketHead">
-          <div class="ticketNo">${no}</div>
-          <div class="ticketName">${group.name}</div>
-        </div>
-        <div class="ticketGrid">${cells}</div>
-      </div>`;
-    });
+    // One name only: the name inside the ticket header. No extra name box above it.
+    html+=`<div class="ticket">
+      <div class="ticketHead">
+        <div class="ticketNo">${ticketNo}</div>
+        <div class="ticketName">${escapeHtml(name)}</div>
+      </div>
+      <div class="ticketGrid">${cells}</div>
+    </div>`;
   });
 
   if(notBooked.length){
-    html=`<div class="noTicket" style="margin-bottom:10px">⚠️ Not booked: ${notBooked.join(", ")}</div>`+html;
+    html='<div class="noTicket" style="margin-bottom:10px">⚠️ Not booked: '+notBooked.join(", ")+'</div>'+html;
   }
-
-  result.innerHTML=html;
+  result.innerHTML=html||'<div class="noTicket">None of the entered tickets are booked.</div>';
 }
 
 function updatePlayerGameStatus(){
