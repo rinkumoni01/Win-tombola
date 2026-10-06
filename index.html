@@ -249,78 +249,109 @@ button,input{font-family:inherit}
 const ADMIN_USERNAME="gyandeep";
 const ADMIN_PASSWORD="785673";
 
-// ===== SUPABASE SHARED LIVE STATE =====
+// Supabase shared game state
 const SUPABASE_URL="https://rwordrqvzaldivvlqkbk.supabase.co";
 const SUPABASE_KEY="sb_publishable_2Kt3fQMeRjeFitT8Fiwo5g_c7yCZZQ0";
-const SUPABASE_STATE_URL=SUPABASE_URL+"/rest/v1/tambola_state?id=eq.main";
-const SUPABASE_STATE_KEYS=[
-  "tombolaSettings","tombolaVisibleTicketNumbers","tombolaTicketNumbers","tombolaBookings",
-  "tombolaPrizes","tombolaPrizeWinners","tombolaGameRunning","tombolaDrawnNumbers","tombolaAnnouncementAccepted"
-];
-let supabaseSyncReady=false;
-let supabaseApplyingRemote=false;
-let supabaseWriteTimer=null;
+const SUPABASE_STATE_URL=SUPABASE_URL+"/rest/v1/tambola_state";
+let cloudSaving=false;
+let cloudLastUpdated="";
+let isAdminSession=sessionStorage.getItem("tombolaAdminSession")==="true";
 
-function supabaseHeaders(extra={}){
-  return Object.assign({"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"},extra);
+function localGameState(){
+  return {
+    settings,
+    visibleTicketNumbers,
+    bookings,
+    prizes,
+    prizeWinners,
+    gameRunning,
+    drawnNumbers,
+    ticketNumbers:JSON.parse(localStorage.getItem("tombolaTicketNumbers")||"{}")
+  };
 }
-function getSharedState(){
-  const data={};
-  SUPABASE_STATE_KEYS.forEach(k=>{ const v=localStorage.getItem(k); if(v!==null) data[k]=v; });
-  return data;
+
+function cloudHeaders(extra={}){
+  return Object.assign({
+    "apikey":SUPABASE_KEY,
+    "Authorization":"Bearer "+SUPABASE_KEY,
+    "Content-Type":"application/json"
+  },extra);
 }
-async function pushSharedState(){
-  if(!supabaseSyncReady || supabaseApplyingRemote) return;
+
+async function saveCloudState(){
+  if(cloudSaving)return;
+  cloudSaving=true;
   try{
-    await fetch(SUPABASE_STATE_URL,{method:"POST",headers:supabaseHeaders({"Prefer":"resolution=merge-duplicates,return=minimal"}),body:JSON.stringify({id:"main",data:getSharedState()})});
-  }catch(e){ console.warn("Supabase sync write failed",e); }
+    const payload={data:localGameState(),updated_at:new Date().toISOString()};
+    const res=await fetch(SUPABASE_STATE_URL+"?id=eq.main",{
+      method:"PATCH",headers:cloudHeaders({"Prefer":"return=minimal"}),body:JSON.stringify(payload)
+    });
+    if(!res.ok) console.warn("Supabase save failed",await res.text());
+    else cloudLastUpdated=payload.updated_at;
+  }catch(e){console.warn("Supabase save error",e)}
+  finally{cloudSaving=false}
 }
-function scheduleSharedStatePush(){
-  if(!supabaseSyncReady || supabaseApplyingRemote) return;
-  clearTimeout(supabaseWriteTimer);
-  supabaseWriteTimer=setTimeout(pushSharedState,250);
+
+function applyCloudState(data,updatedAt){
+  if(!data||typeof data!=="object"||!Object.keys(data).length)return false;
+  if(data.settings)settings=data.settings;
+  if(Array.isArray(data.visibleTicketNumbers))visibleTicketNumbers=data.visibleTicketNumbers;
+  if(data.bookings&&typeof data.bookings==="object")bookings=data.bookings;
+  if(data.prizes&&typeof data.prizes==="object")prizes=data.prizes;
+  if(data.prizeWinners&&typeof data.prizeWinners==="object")prizeWinners=data.prizeWinners;
+  if(typeof data.gameRunning==="boolean")gameRunning=data.gameRunning;
+  if(Array.isArray(data.drawnNumbers))drawnNumbers=data.drawnNumbers.map(Number);
+  if(data.ticketNumbers&&typeof data.ticketNumbers==="object")localStorage.setItem("tombolaTicketNumbers",JSON.stringify(data.ticketNumbers));
+  localStorage.setItem("tombolaSettings",JSON.stringify(settings));
+  localStorage.setItem("tombolaVisibleTicketNumbers",JSON.stringify(visibleTicketNumbers));
+  localStorage.setItem("tombolaBookings",JSON.stringify(bookings));
+  localStorage.setItem("tombolaPrizes",JSON.stringify(prizes));
+  localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners));
+  localStorage.setItem("tombolaGameRunning",String(gameRunning));
+  localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers));
+  if(updatedAt)cloudLastUpdated=updatedAt;
+  renderTickets();renderNumberBoard();updateGameDisplay();updatePlayerGameStatus();renderPlayerPrizes();renderAdminBookings();renderAdminTicketStatus();renderAdminPrizeWinners();
+  if(gameRunning){showGameBoard(true); if(isAdminSession && !drawTimer){drawTimer=setInterval(drawNextNumber,8000)}}
+  else{showGameBoard(false);clearInterval(drawTimer);drawTimer=null}
+  return true;
 }
-async function pullSharedState(){
+
+async function loadCloudState(){
   try{
-    const r=await fetch(SUPABASE_STATE_URL,{headers:supabaseHeaders({"Accept":"application/json"})});
-    if(!r.ok) throw new Error("HTTP "+r.status);
-    const rows=await r.json();
-    if(rows.length && rows[0].data){
-      supabaseApplyingRemote=true;
-      const data=rows[0].data;
-      SUPABASE_STATE_KEYS.forEach(k=>{
-        if(Object.prototype.hasOwnProperty.call(data,k)) localStorage.setItem(k,data[k]);
-        else localStorage.removeItem(k);
-      });
-      supabaseApplyingRemote=false;
-      reloadSharedVariables();
-      if(typeof renderAll === "function") renderAll();
-      if(typeof renderNumberBoard === "function") renderNumberBoard();
-      if(typeof updatePlayerGameStatus === "function") updatePlayerGameStatus();
-      if(typeof renderAdmin === "function") renderAdmin();
-    } else {
-      await pushSharedState();
+    const res=await fetch(SUPABASE_STATE_URL+"?id=eq.main&select=id,data,updated_at",{headers:cloudHeaders()});
+    if(!res.ok){console.warn("Supabase load failed",await res.text());return}
+    const rows=await res.json();
+    if(!rows.length)return;
+    const row=rows[0];
+    if(row.data&&Object.keys(row.data).length){
+      applyCloudState(row.data,row.updated_at);
+    }else{
+      await saveCloudState();
     }
-  }catch(e){ console.warn("Supabase sync read failed",e); }
+  }catch(e){console.warn("Supabase load error",e)}
 }
-function reloadSharedVariables(){
-  try{ settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""}; }catch(e){}
-  try{ visibleTicketNumbers=JSON.parse(localStorage.getItem("tombolaVisibleTicketNumbers")||"null"); }catch(e){}
-  try{ bookings=JSON.parse(localStorage.getItem("tombolaBookings"))||{}; }catch(e){}
-  try{ prizes=JSON.parse(localStorage.getItem("tombolaPrizes"))||{}; }catch(e){}
-  try{ prizeWinners=JSON.parse(localStorage.getItem("tombolaPrizeWinners")||"{}"); }catch(e){}
-  gameRunning=localStorage.getItem("tombolaGameRunning")==="true";
-  try{ drawnNumbers=JSON.parse(localStorage.getItem("tombolaDrawnNumbers")||"[]"); }catch(e){}
+
+async function pollCloudState(){
+  if(cloudSaving)return;
+  try{
+    const res=await fetch(SUPABASE_STATE_URL+"?id=eq.main&select=id,data,updated_at",{headers:cloudHeaders()});
+    if(!res.ok)return;
+    const rows=await res.json();
+    if(!rows.length)return;
+    const row=rows[0];
+    if(row.updated_at && row.updated_at!==cloudLastUpdated){
+      applyCloudState(row.data,row.updated_at);
+    }
+  }catch(e){}
 }
-(function installSupabaseStorageSync(){
-  const originalSet=Storage.prototype.setItem;
-  const originalRemove=Storage.prototype.removeItem;
-  Storage.prototype.setItem=function(k,v){ originalSet.call(this,k,v); if(this===localStorage && SUPABASE_STATE_KEYS.includes(k)) scheduleSharedStatePush(); };
-  Storage.prototype.removeItem=function(k){ originalRemove.call(this,k); if(this===localStorage && SUPABASE_STATE_KEYS.includes(k)) scheduleSharedStatePush(); };
-})();
-setTimeout(async()=>{ supabaseSyncReady=true; await pullSharedState(); },0);
-setInterval(pullSharedState,2000);
-// ===== END SUPABASE SHARED LIVE STATE =====
+
+function startCloudSync(){
+  setInterval(pollCloudState,2000);
+}
+
+function saveSharedState(){
+  saveCloudState();
+}
 
 let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
 if(!Number.isInteger(Number(settings.visibleTickets))||Number(settings.visibleTickets)<1||Number(settings.visibleTickets)>600){settings.visibleTickets=15;}
@@ -396,7 +427,7 @@ function renderNumberBoard(){
 const grid=document.getElementById("numberGrid");if(!grid)return;grid.innerHTML="";
 for(let i=1;i<=90;i++){const d=document.createElement("div");d.className="drawNumber"+(drawnNumbers.includes(i)?" called":"");d.textContent=i;grid.appendChild(d)}
 
- const list=document.getElementById("calledList");if(list){list.innerHTML="";drawnNumbers.forEach(n=>{const chip=document.createElement("div");chip.className="calledChip";chip.textContent=n;list.appendChild(chip)})}
+const list=document.getElementById("calledList");if(list){list.innerHTML="";drawnNumbers.forEach(n=>{const chip=document.createElement("div");chip.className="calledChip";chip.textContent=n;list.appendChild(chip)})}
 const input=document.getElementById("myTicketNumber");if(input&&input.value)searchMyTicket();
 }
 let femaleVoice=null;
@@ -440,7 +471,7 @@ function cleanVoiceText(text){
     .trim();
 }
 
-function makeUtterance(text, style="number"){
+ function makeUtterance(text, style="number"){
   femaleVoice=femaleVoice||pickFemaleVoice();
   const clean=cleanVoiceText(text);
   const u=new SpeechSynthesisUtterance(clean);
@@ -518,9 +549,9 @@ if("speechSynthesis" in window){
   setTimeout(()=>{if(!femaleVoice)femaleVoice=pickFemaleVoice()},1200);
 }
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
-function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
+function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers));saveSharedState()}
 
-function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
+function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners));saveSharedState()}
 
 const PRIZE_NAMES={
   firstLine:"🥇 First Line",
@@ -684,9 +715,9 @@ function renderPlayerPrizes(){
     const done=selected.length>0 && selected.every(k=>!!prizeWinners[k]);
     over.style.display=done?"block":"none";
   }
-}
+ }
 
-function renderAdminPrizeWinners(){
+ function renderAdminPrizeWinners(){
   const box=document.getElementById("adminPrizeWinners");
   if(!box)return;
   const selected=selectedPrizeKeys();
@@ -725,9 +756,9 @@ function viewWinnerTicket(prizeKey,ticketNoOverride){
 
 function escapeHtml(value){
   return String(value).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
- }
+}
 
- function finishPrizeGame(){
+function finishPrizeGame(){
   clearInterval(drawTimer);drawTimer=null;
   gameRunning=false;
   localStorage.setItem("tombolaGameRunning","false");
@@ -833,7 +864,7 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 }
 
 function setGameStatus(status){
-if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE,"start");clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. First number 8 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
+if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");saveSharedState();updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE,"start");clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. First number 8 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");saveSharedState();clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
 function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
@@ -858,7 +889,7 @@ function loginAdmin(){
 const user=document.getElementById("username").value.trim(),pass=document.getElementById("password").value;
 if(user===ADMIN_USERNAME&&pass===ADMIN_PASSWORD){
 document.getElementById("username").value="";document.getElementById("password").value="";
-closeModal("loginModal");openAdminPanel();
+isAdminSession=true;sessionStorage.setItem("tombolaAdminSession","true");closeModal("loginModal");openAdminPanel();
 }else alert("Wrong username or password.");
 }
 
@@ -885,6 +916,7 @@ function savePrizes(){
 const names=["firstLine","secondLine","thirdLine","fourCorners","fullHouse","secondFullHouse","thirdFullHouse","early5","early7"];
 names.forEach(name=>prizes[name]=document.getElementById("prize_"+name).checked);
 localStorage.setItem("tombolaPrizes",JSON.stringify(prizes));
+saveSharedState();
 Object.keys(prizeWinners).forEach(k=>{if(!prizes[k])delete prizeWinners[k]});
 savePrizeWinners();
 renderPlayerPrizes();
@@ -900,6 +932,7 @@ if(!name){alert("Please enter customer name.");return}
 if(bookings[ticketNo]&&bookings[ticketNo].booked===true){alert("This ticket is already booked.");return}
 bookings[ticketNo]={booked:true,name:name,time:new Date().toISOString()};
 localStorage.setItem("tombolaBookings",JSON.stringify(bookings));
+saveSharedState();
 document.getElementById("adminTicketNumber").value="";document.getElementById("adminCustomerName").value="";
 renderTickets();renderAdminBookings();renderAdminTicketStatus();
 alert("Ticket "+ticketNo+" booked for "+name);
@@ -943,6 +976,7 @@ const name=newName.trim();
 if(!name){alert("Customer name cannot be empty.");return;}
 bookings[ticketNo].name=name;
 localStorage.setItem("tombolaBookings",JSON.stringify(bookings));
+saveSharedState();
 renderTickets();
 renderAdminBookings();
 renderAdminTicketStatus();
@@ -973,7 +1007,8 @@ function saveSettings(){
  settings.gameDate=document.getElementById("gameDate").value;
  settings.gameTime=document.getElementById("gameTime").value;
  localStorage.setItem("tombolaSettings",JSON.stringify(settings));
- renderTickets();updateGameDisplay();renderAdminBookings();renderAdminTicketStatus();
+ saveSharedState();
+ renderTickets();updateGameDisplay();renderAdminBookings();renderAdminTicketStatus();saveSharedState();
  alert("Settings saved successfully!");
  closeModal("adminModal");
 }
@@ -1030,7 +1065,7 @@ function showAnnouncement(){
 function startGame(){
 // Ensure a valid random ticket set exists before rendering.
 getVisibleTicketNumbers();
-renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();if(gameRunning){showGameBoard(true);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000)}else{showGameBoard(false)}setInterval(updateCountdown,1000);
+renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();saveSharedState();if(gameRunning){showGameBoard(true);if(isAdminSession){clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000)}}else{showGameBoard(false)}setInterval(updateCountdown,1000);startCloudSync();
 }
 
 window.addEventListener("click",function(event){
@@ -1039,8 +1074,7 @@ if(event.target===loginModal)loginModal.style.display="none";
 if(event.target===adminModal)adminModal.style.display="none";
 });
 
-startGame();
-showAnnouncement();
+loadCloudState().finally(()=>{startGame();showAnnouncement();});
 </script>
 </body>
 </html>
