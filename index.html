@@ -177,8 +177,8 @@ button,input{font-family:inherit}
 <button class="cancelGameBtn" onclick="cancelGame()">❌ CANCEL GAME</button>
 <div class="currentGameStatus" id="adminGameStatus">🔴 GAME STOPPED</div>
 </div>
-
- <div class="adminCard">
+ 
+<div class="adminCard">
 <label>🎟️ Visible Tickets</label>
 <input class="input" id="visibleTickets" type="number" min="1" max="600" placeholder="Example: 100">
 <div class="small">Player ko yahan jitne tickets set karenge, utne random tickets 1–600 me se dikhenge. Example: 100 = 100 random tickets.</div>
@@ -280,7 +280,7 @@ let gameRunning=localStorage.getItem("tombolaGameRunning")==="true";
 let drawnNumbers=JSON.parse(localStorage.getItem("tombolaDrawnNumbers")||"[]");
 let drawTimer=null;
 const NUMBER_CALLS={1:'Akela hi sher — Number 1',2:'Do rupaye ki Pepsi, meri wali sexy — Number 2',3:'Teen peg aur full scene — Number 3',4:'Murgi chor, sambhal ke — Number 4',5:'Punjab ka puttar, full jigar — Number 5',6:'Chhakka maar ke nikla yaar — Number 6',7:'Saat samundar paar, kaun hai taiyaar — Number 7',8:'Aath baje ka khana, nau baje bahana — Number 8',9:'Nau nau ke chakkar mein, mat padna — Number 9',10:'Dus ka note, dil ka khot — Number 10',11:'Gyarah number, attitude zabardast — Number 11',12:'Baarah mahine, ek hi bahana — Number 12',13:'Tera mera chakkar, number — Number 13',14:'Chaudah ka jadoo, sabko kar de qabu — Number 14',15:'Pandrah ka pataka, full dhamaka — Number 15',16:'Solah ka dola, kisne bola — Number 16',17:'Satrah ki setting, full betting — Number 17',18:'Atharah ka jawaan, dil se pareshaan — Number 18',19:'Unnees ka scene, bilkul haseen — Number 19',20:'Bees ka boss, baaki sab loss — Number 20',21:'Ikkis ka style, dekho bhai smile — Number 21',22:'Do do ka joda, kisne kisko chhoda — Number 22',23:'Teis ka twist, miss mat karna — Number 23',24:'Chaubees ghante, biwi ke taane — Number 24',25:'Pachchis ka punch, seedha dil pe — Number 25',26:'Chhabbees ka chhora, bada hi gora — Number 26',27:'Sattais ka swag, jeb mein tag — Number 27',28:'Atthais ka attitude, bilkul rude — Number 28',29:'Untees ka drama, ghar ka hungama — Number 29',30:'Tees maar khan, nikla jawaan — Number 30',31:'Ikattis ka item, ekdum premium — Number 31',32:'Battis daant, phir bhi sharmana — Number 32',33:'Teen teen ka magic, full fantastic — Number 33',34:'Chauntis ka chhora, dil ka thoda gora — Number 34',35:'Bloody wife, poori life — Number 35',36:'Chhattis ka figure, dekho zara picture — Number 36',37:'Saintis ka swag, bina kisi tag — Number 37',38:'Adtis ka attitude, dekho iska mood — Number 38',39:'Untalis ka chakkar, dimaag mein takkar — Number 39',40:'Chalis ka chhora, dil ka chor — Number 40',41:'Iktalis ka item, ghar ka system — Number 41',42:'Bayalis ka bhaisaab, kya hai hisaab — Number 42',43:'Taintalis ka tadka, full masala — Number 43',44:'Chawaalis ki jodi, sabse naughty — Number 44',45:'Paintalis ka pataka, phatega dhamaka — Number 45',46:'Chhiyaalis ka chhora, paisa ka bhooka — Number 46',47:'Saintalis ka swag, dekho iska tag — Number 47',48:'Adtalis ka adda, yahin hai lafda — Number 48',49:'Unchaas ka scene, bilkul mean — Number 49',50:'Pachaas ka paisa, sabko hai waisa — Number 50',51:'Ikyavan ka ishq, dil hua risk — Number 51',52:'Bawan ka bomb, full on dhamaka — Number 52',53:'Tirpan ka tadka, muh mein chatka — Number 53',54:'Chauvan ka chaska, chhodna mushkil — Number 54',55:'Pachpan ki jodi, dono naughty — Number 55',56:'Chhappan ka chhora, style mein gora — Number 56',57:'Sattavan ka swag, dil mein tag — Number 57',58:'Athavan ka attitude, full-on rude — Number 58',59:'Unsath ka scene, biwi bole clean — Number 59',60:'Saath ka shikari, sab pe bhaari — Number 60',61:'Iksath ka item, ekdum solid — Number 61',62:'Basath ka boss, baaki sab loss — Number 62',63:'Tirsath ka tadka, full masala — Number 63',64:'Chaunsath ka chaska, lag gaya toh gaya — Number 64',65:'Painsath ka pataka, dekho dhamaka — Number 65',66:'Chhiyaasath ki double entry — Number 66',67:'Sadsath ka style, dekh ke smile — Number 67',68:'Adsath ka attitude, bilkul rude — Number 68',69:'Unhattar ka romance, chance pe dance — Number 69',70:'Sattar ka superstar, sabse damdaar — Number 70',71:'Ikhattar ka item, full-time handsome — Number 71',72:'Bahattar ka bhaisaab, kya zabardast hisaab — Number 72',73:'Tihattar ka tadka, mood kare bhadka — Number 73',74:'Chauhattar ka chaska, control kar bhai — Number 74',75:'Pachhattar ka pataka, aaya dhamaka — Number 75',76:'Chihattar ka champion, sabka attention — Number 76',77:'Sattattar double seven, number aaye heaven — Number 77',78:'Athhattar ka attitude, full-on mood — Number 78',79:'Unasi ka ulta-pulta, dimaag gaya hilta — Number 79',80:'Assi ka asli boss, baaki sab loss — Number 80',81:'Ikyasi ka item, full premium — Number 81',82:'Bayasi ka bomb, phir se dhamaka — Number 82',83:'Tirasi ka tadka, sabko bhadka — Number 83',84:'Chaurasi ka chaska, dil mein atka — Number 84',85:'Pachasi ka pataka, final dhamaka — Number 85',86:'Chhiyasi ka champion, full attention — Number 86',87:'Sattasi ka swag, jeb mein tag — Number 87',88:'Atthasi double eight, der mat karna wait — Number 88',89:'Navasi ka nawab, sabse lajawab — Number 89',90:'Nabbey ka nasha, Tambola mein paisa — Number 90'};
-const GAME_START_VOICE="Ladies and gentlemen! Game is on! Get ready... your lucky number is coming!";
+const GAME_START_VOICE="Ladies and gentlemen, game is on! Get ready... your lucky number is coming!";
 const GAME_OVER_VOICE="Ladies and gentlemen, that's the end of the game! All selected prizes are complete. Congratulations to all our winners! Thank you for playing, and have a wonderful day!";
 
 
@@ -332,79 +332,60 @@ let voicePlaying=false;
 let voiceReady=false;
 
 function pickFemaleVoice(){
-  if(!("speechSynthesis" in window))return null;
-  const voices=window.speechSynthesis.getVoices()||[];
+  const voices=speechSynthesis.getVoices()||[];
   if(!voices.length)return null;
-  const hiIN=voices.filter(v=>/^hi-IN$/i.test(v.lang));
-  const hi=voices.filter(v=>/^hi(-|_)/i.test(v.lang));
-  const enIN=voices.filter(v=>/^en-IN$/i.test(v.lang));
-  const pool=hiIN.length?hiIN:(hi.length?hi:(enIN.length?enIN:voices));
-  const femaleWords=/female|woman|girl|lady|swara|svara|heera|kalpana|veena|lekha|priya/i;
-  const preferred=pool.find(v=>femaleWords.test(v.name));
-  const googleMicrosoft=pool.find(v=>/Google|Microsoft/i.test(v.name));
-  return preferred||googleMicrosoft||pool.find(v=>v.default)||pool[0]||voices[0]||null;
+  const indian=voices.filter(v=>/^(hi-IN|en-IN)/i.test(v.lang||''));
+  const pool=indian.length?indian:voices;
+  const female=/female|woman|girl|lady|swara|heera|kalpana|veena|lekha|neerja|aditi|raveena|priya/i;
+  return pool.find(v=>female.test(v.name||'')) ||
+         pool.find(v=>/google|microsoft/i.test(v.name||'')) ||
+         pool.find(v=>/^hi-IN/i.test(v.lang||'')) || pool[0];
 }
 
 function refreshVoice(){
   femaleVoice=pickFemaleVoice();
   voiceReady=!!femaleVoice;
-  return femaleVoice;
 }
 
-function makeUtterance(text,opts={}){
+function makeUtterance(text){
   refreshVoice();
-  const clean=String(text)
-    .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u27BF]/gu,"")
-    .replace(/—/g,"...")
-    .replace(/,/g,", ")
-    .replace(/!/g,"! ");
-  const u=new SpeechSynthesisUtterance(clean.trim());
-  u.voice=femaleVoice||null;
-  u.lang=(femaleVoice&&femaleVoice.lang)||"hi-IN";
-  u.rate=opts.rate??0.90;
-  u.pitch=opts.pitch??1.12;
+  const clean=String(text||'').replace(/[🎟️🥇🥈🥉🎯⭐👑💎🔴]/g,'').replace(/—/g,'...').replace(/!/g,'! ');
+  const u=new SpeechSynthesisUtterance(clean);
+  if(femaleVoice){u.voice=femaleVoice;u.lang=femaleVoice.lang||'hi-IN';}
+  else u.lang='hi-IN';
+  u.rate=.90;
+  u.pitch=1.14;
   u.volume=1;
   return u;
 }
 
 function speak(text){
-  if(!("speechSynthesis" in window))return;
-  voiceQueue=[];voicePlaying=false;
-  window.speechSynthesis.cancel();
-  setTimeout(()=>window.speechSynthesis.speak(makeUtterance(text)),80);
+  voiceQueue=[]; voicePlaying=false;
+  speechSynthesis.cancel();
+  setTimeout(()=>{
+    try{speechSynthesis.resume();speechSynthesis.speak(makeUtterance(text));}catch(e){}
+  },80);
 }
 
 function queueSpeak(text){
-  if(!("speechSynthesis" in window))return;
-  voiceQueue.push(String(text));
-  if(!voicePlaying)playVoiceQueue();
+  if(!text)return;
+  voiceQueue.push(text);
+  playVoiceQueue();
 }
 
 function playVoiceQueue(){
-  if(!voiceQueue.length){voicePlaying=false;return;}
+  if(voicePlaying||!voiceQueue.length)return;
   voicePlaying=true;
   const u=makeUtterance(voiceQueue.shift());
-  u.onend=()=>setTimeout(playVoiceQueue,120);
-  u.onerror=()=>setTimeout(playVoiceQueue,120);
-  window.speechSynthesis.speak(u);
+  u.onend=()=>{voicePlaying=false;setTimeout(playVoiceQueue,70);};
+  u.onerror=()=>{voicePlaying=false;setTimeout(playVoiceQueue,50);};
+  try{speechSynthesis.resume();speechSynthesis.speak(u);}catch(e){voicePlaying=false;setTimeout(playVoiceQueue,50);}
 }
 
-function speakNumberCall(n){
-  if(!("speechSynthesis" in window))return;
-  const text=NUMBER_CALLS[n]||`Lucky number ${n}`;
-  voiceQueue=[];voicePlaying=false;window.speechSynthesis.cancel();
-  setTimeout(()=>window.speechSynthesis.speak(makeUtterance(text,{rate:.88,pitch:1.15})),80);
-}
+function clearVoiceQueue(){voiceQueue=[];voicePlaying=false;speechSynthesis.cancel();}
 
-function clearVoiceQueue(){
-  voiceQueue=[];voicePlaying=false;
-  if("speechSynthesis" in window)window.speechSynthesis.cancel();
-}
-
-if("speechSynthesis" in window){
-  refreshVoice();
-  window.speechSynthesis.onvoiceschanged=()=>refreshVoice();
-}
+refreshVoice();
+speechSynthesis.onvoiceschanged=()=>{refreshVoice();};
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 
@@ -710,9 +691,9 @@ function searchMyTicket(){
     html='<div class="noTicket" style="margin-bottom:10px">⚠️ Not booked: '+notBooked.join(", ")+'</div>'+html;
   }
   result.innerHTML=html||'<div class="noTicket">None of the entered tickets are booked.</div>';
- }
+}
 
- function updatePlayerGameStatus(){
+function updatePlayerGameStatus(){
 const el=document.getElementById("playerGameStatus");
 el.className="gameStatus "+(gameRunning?"statusRunning":"statusStopped");
 el.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPPED";
@@ -723,7 +704,7 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 function setGameStatus(status){
 if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,6000);alert("🟢 Game is now RUNNING. First number 6 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
-function cancelGame(){
+ function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
 gameRunning=false;
 clearVoiceQueue();
