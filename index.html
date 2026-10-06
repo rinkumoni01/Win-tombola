@@ -329,51 +329,105 @@ const input=document.getElementById("myTicketNumber");if(input&&input.value)sear
 let femaleVoice=null;
 let voiceQueue=[];
 let voicePlaying=false;
+
 function pickFemaleVoice(){
   if(!("speechSynthesis" in window))return null;
   const voices=window.speechSynthesis.getVoices();
   if(!voices.length)return null;
-  const female=voices.filter(v=>/female|woman|girl|lady|zira|heera|kalpana|google hindi/i.test(v.name));
+
+  // Prefer a natural Hindi/English female voice when the phone provides one.
+  const female=voices.filter(v=>/female|woman|girl|lady|zira|heera|kalpana|google.*female|samantha/i.test(v.name));
   const hiFemale=female.filter(v=>/^hi(-|_)/i.test(v.lang));
   const hi=voices.filter(v=>/^hi(-|_)/i.test(v.lang));
   const enFemale=female.filter(v=>/^en(-|_)/i.test(v.lang));
-  return hiFemale[0] || hi[0] || enFemale[0] || female[0] || voices[0];
+  const en=voices.filter(v=>/^en(-|_)/i.test(v.lang));
+
+  return hiFemale[0] || enFemale[0] || hi[0] || en[0] || female[0] || voices[0];
 }
+
+function cleanVoiceText(text){
+  return String(text)
+    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,"")
+    .replace(/—/g," ... ")
+    .replace(/!/g,"! ... ")
+    .replace(/,/g,", ... ")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
 function makeUtterance(text){
   femaleVoice=femaleVoice||pickFemaleVoice();
-  const clean=String(text).replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,"");
+  const clean=cleanVoiceText(text);
   const u=new SpeechSynthesisUtterance(clean);
+
   u.voice=femaleVoice||null;
   u.lang=(femaleVoice&&femaleVoice.lang)||"hi-IN";
-  u.rate=.92;
-  u.pitch=1.12;
+
+  // Slightly slower + brighter for a female game-show feel.
+  u.rate=.89;
+  u.pitch=1.10;
   u.volume=1;
+
   return u;
 }
+
 function speak(text){
   if(!("speechSynthesis" in window))return;
-  voiceQueue=[];voicePlaying=false;window.speechSynthesis.cancel();
+  voiceQueue=[];
+  voicePlaying=false;
+  window.speechSynthesis.cancel();
+
+  // Small dramatic lead-in for the opening announcement only.
   window.speechSynthesis.speak(makeUtterance(text));
 }
+
+function makeFunnyCallText(text){
+  let t=String(text).trim();
+  t=t.replace(/^(.*?)(?:\s*[—-]\s*|,\s*)(Number\s*\d+)$/i,"$1 ... $2");
+  t=t.replace(/\bNumber\s+(\d+)\b/i,"Number ... $1");
+  return t;
+}
+
 function queueSpeak(text){
   if(!("speechSynthesis" in window))return;
-  voiceQueue.push(String(text));
+  voiceQueue.push(makeFunnyCallText(text));
   if(voicePlaying)return;
   playVoiceQueue();
 }
+
 function playVoiceQueue(){
-  if(!voiceQueue.length){voicePlaying=false;return;}
+  if(!voiceQueue.length){
+    voicePlaying=false;
+    return;
+  }
+
   voicePlaying=true;
   const u=makeUtterance(voiceQueue.shift());
-  u.onend=()=>playVoiceQueue();
-  u.onerror=()=>playVoiceQueue();
+
+  u.onend=()=>{
+    // Tiny gap makes consecutive numbers sound cleaner.
+    setTimeout(playVoiceQueue,220);
+  };
+  u.onerror=()=>{
+    setTimeout(playVoiceQueue,80);
+  };
+
   window.speechSynthesis.speak(u);
 }
+
 function clearVoiceQueue(){
-  voiceQueue=[];voicePlaying=false;
+  voiceQueue=[];
+  voicePlaying=false;
   if("speechSynthesis" in window)window.speechSynthesis.cancel();
 }
-if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged=()=>{femaleVoice=pickFemaleVoice()};
+
+if("speechSynthesis" in window){
+  window.speechSynthesis.onvoiceschanged=()=>{
+    femaleVoice=pickFemaleVoice();
+  };
+  // Android Chrome sometimes loads voices a little late.
+  setTimeout(()=>{femaleVoice=pickFemaleVoice()},700);
+}
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 
@@ -517,9 +571,9 @@ function checkPrizeWinners(){
 
   const allDone=selected.length>0 && selected.every(k=>!!prizeWinners[k]);
   if(allDone) finishPrizeGame();
-}
+ }
 
-function renderPlayerPrizes(){
+ function renderPlayerPrizes(){
   const box=document.getElementById("playerPrizeList");
   if(!box)return;
   const selected=selectedPrizeKeys();
@@ -582,9 +636,9 @@ function viewWinnerTicket(prizeKey,ticketNoOverride){
 
 function escapeHtml(value){
   return String(value).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
-   }
+}
 
- function finishPrizeGame(){
+function finishPrizeGame(){
   clearInterval(drawTimer);drawTimer=null;
   gameRunning=false;
   localStorage.setItem("tombolaGameRunning","false");
@@ -692,7 +746,7 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 function setGameStatus(status){
 if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. First number 8 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
-function cancelGame(){
+ function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
 gameRunning=false;
 clearVoiceQueue();
@@ -747,9 +801,9 @@ savePrizeWinners();
 renderPlayerPrizes();
 renderAdminPrizeWinners();
 alert("Prize settings saved successfully!");
- }
+}
 
- function adminBookTicket(){
+function adminBookTicket(){
 let ticketNo=parseInt(document.getElementById("adminTicketNumber").value),name=document.getElementById("adminCustomerName").value.trim();
 const visibleSet=getVisibleTicketNumbers();
 if(isNaN(ticketNo)||!visibleSet.includes(ticketNo)){alert("Please enter one of the currently visible random ticket numbers: "+visibleSet.join(", "));return}
