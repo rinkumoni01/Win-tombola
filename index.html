@@ -280,11 +280,10 @@ let gameRunning=localStorage.getItem("tombolaGameRunning")==="true";
 let drawnNumbers=JSON.parse(localStorage.getItem("tombolaDrawnNumbers")||"[]");
 let drawTimer=null;
 const NUMBER_CALLS={1:'Akela hi sher — Number 1',2:'Do rupaye ki Pepsi, meri wali sexy — Number 2',3:'Teen peg aur full scene — Number 3',4:'Murgi chor, sambhal ke — Number 4',5:'Punjab ka puttar, full jigar — Number 5',6:'Chhakka maar ke nikla yaar — Number 6',7:'Saat samundar paar, kaun hai taiyaar — Number 7',8:'Aath baje ka khana, nau baje bahana — Number 8',9:'Nau nau ke chakkar mein, mat padna — Number 9',10:'Dus ka note, dil ka khot — Number 10',11:'Gyarah number, attitude zabardast — Number 11',12:'Baarah mahine, ek hi bahana — Number 12',13:'Tera mera chakkar, number — Number 13',14:'Chaudah ka jadoo, sabko kar de qabu — Number 14',15:'Pandrah ka pataka, full dhamaka — Number 15',16:'Solah ka dola, kisne bola — Number 16',17:'Satrah ki setting, full betting — Number 17',18:'Atharah ka jawaan, dil se pareshaan — Number 18',19:'Unnees ka scene, bilkul haseen — Number 19',20:'Bees ka boss, baaki sab loss — Number 20',21:'Ikkis ka style, dekho bhai smile — Number 21',22:'Do do ka joda, kisne kisko chhoda — Number 22',23:'Teis ka twist, miss mat karna — Number 23',24:'Chaubees ghante, biwi ke taane — Number 24',25:'Pachchis ka punch, seedha dil pe — Number 25',26:'Chhabbees ka chhora, bada hi gora — Number 26',27:'Sattais ka swag, jeb mein tag — Number 27',28:'Atthais ka attitude, bilkul rude — Number 28',29:'Untees ka drama, ghar ka hungama — Number 29',30:'Tees maar khan, nikla jawaan — Number 30',31:'Ikattis ka item, ekdum premium — Number 31',32:'Battis daant, phir bhi sharmana — Number 32',33:'Teen teen ka magic, full fantastic — Number 33',34:'Chauntis ka chhora, dil ka thoda gora — Number 34',35:'Bloody wife, poori life — Number 35',36:'Chhattis ka figure, dekho zara picture — Number 36',37:'Saintis ka swag, bina kisi tag — Number 37',38:'Adtis ka attitude, dekho iska mood — Number 38',39:'Untalis ka chakkar, dimaag mein takkar — Number 39',40:'Chalis ka chhora, dil ka chor — Number 40',41:'Iktalis ka item, ghar ka system — Number 41',42:'Bayalis ka bhaisaab, kya hai hisaab — Number 42',43:'Taintalis ka tadka, full masala — Number 43',44:'Chawaalis ki jodi, sabse naughty — Number 44',45:'Paintalis ka pataka, phatega dhamaka — Number 45',46:'Chhiyaalis ka chhora, paisa ka bhooka — Number 46',47:'Saintalis ka swag, dekho iska tag — Number 47',48:'Adtalis ka adda, yahin hai lafda — Number 48',49:'Unchaas ka scene, bilkul mean — Number 49',50:'Pachaas ka paisa, sabko hai waisa — Number 50',51:'Ikyavan ka ishq, dil hua risk — Number 51',52:'Bawan ka bomb, full on dhamaka — Number 52',53:'Tirpan ka tadka, muh mein chatka — Number 53',54:'Chauvan ka chaska, chhodna mushkil — Number 54',55:'Pachpan ki jodi, dono naughty — Number 55',56:'Chhappan ka chhora, style mein gora — Number 56',57:'Sattavan ka swag, dil mein tag — Number 57',58:'Athavan ka attitude, full-on rude — Number 58',59:'Unsath ka scene, biwi bole clean — Number 59',60:'Saath ka shikari, sab pe bhaari — Number 60',61:'Iksath ka item, ekdum solid — Number 61',62:'Basath ka boss, baaki sab loss — Number 62',63:'Tirsath ka tadka, full masala — Number 63',64:'Chaunsath ka chaska, lag gaya toh gaya — Number 64',65:'Painsath ka pataka, dekho dhamaka — Number 65',66:'Chhiyaasath ki double entry — Number 66',67:'Sadsath ka style, dekh ke smile — Number 67',68:'Adsath ka attitude, bilkul rude — Number 68',69:'Unhattar ka romance, chance pe dance — Number 69',70:'Sattar ka superstar, sabse damdaar — Number 70',71:'Ikhattar ka item, full-time handsome — Number 71',72:'Bahattar ka bhaisaab, kya zabardast hisaab — Number 72',73:'Tihattar ka tadka, mood kare bhadka — Number 73',74:'Chauhattar ka chaska, control kar bhai — Number 74',75:'Pachhattar ka pataka, aaya dhamaka — Number 75',76:'Chihattar ka champion, sabka attention — Number 76',77:'Sattattar double seven, number aaye heaven — Number 77',78:'Athhattar ka attitude, full-on mood — Number 78',79:'Unasi ka ulta-pulta, dimaag gaya hilta — Number 79',80:'Assi ka asli boss, baaki sab loss — Number 80',81:'Ikyasi ka item, full premium — Number 81',82:'Bayasi ka bomb, phir se dhamaka — Number 82',83:'Tirasi ka tadka, sabko bhadka — Number 83',84:'Chaurasi ka chaska, dil mein atka — Number 84',85:'Pachasi ka pataka, final dhamaka — Number 85',86:'Chhiyasi ka champion, full attention — Number 86',87:'Sattasi ka swag, jeb mein tag — Number 87',88:'Atthasi double eight, der mat karna wait — Number 88',89:'Navasi ka nawab, sabse lajawab — Number 89',90:'Nabbey ka nasha, Tambola mein paisa — Number 90'};
-const GAME_START_VOICE="Ladies and gentlemen, game is on! Get ready... your lucky number is coming!";
-const GAME_OVER_VOICE="Ladies and gentlemen, that's the end of the game! All selected prizes are complete. Congratulations to all our winners! Thank you for playing, and have a wonderful day!";
+const GAME_START_VOICE="Ladies and gentlemen! ... Game is ON! ... Are you ready? ... Tickets ready? ... Eyes on the board! ... Because your lucky number can come anytime! ... Let the Tambola fun begin!";
+const GAME_OVER_VOICE="Ohooo! What a game! ... All selected prizes are complete! ... Congratulations to our winners! ... Kya baat hai! Thank you for playing Tambola!";
 
-
-function generateTicketNumbers(ticketNo){
+ function generateTicketNumbers(ticketNo){
 const key="tombolaTicketNumbers";
 let saved=JSON.parse(localStorage.getItem(key)||"{}");
 if(saved[ticketNo]) return saved[ticketNo];
@@ -329,63 +328,51 @@ const input=document.getElementById("myTicketNumber");if(input&&input.value)sear
 let femaleVoice=null;
 let voiceQueue=[];
 let voicePlaying=false;
-let voiceReady=false;
-
 function pickFemaleVoice(){
-  const voices=speechSynthesis.getVoices()||[];
+  if(!("speechSynthesis" in window))return null;
+  const voices=window.speechSynthesis.getVoices();
   if(!voices.length)return null;
-  const indian=voices.filter(v=>/^(hi-IN|en-IN)/i.test(v.lang||''));
-  const pool=indian.length?indian:voices;
-  const female=/female|woman|girl|lady|swara|heera|kalpana|veena|lekha|neerja|aditi|raveena|priya/i;
-  return pool.find(v=>female.test(v.name||'')) ||
-         pool.find(v=>/google|microsoft/i.test(v.name||'')) ||
-         pool.find(v=>/^hi-IN/i.test(v.lang||'')) || pool[0];
+  const female=voices.filter(v=>/female|woman|girl|lady|zira|heera|kalpana|google hindi/i.test(v.name));
+  const hiFemale=female.filter(v=>/^hi(-|_)/i.test(v.lang));
+  const hi=voices.filter(v=>/^hi(-|_)/i.test(v.lang));
+  const enFemale=female.filter(v=>/^en(-|_)/i.test(v.lang));
+  return hiFemale[0] || hi[0] || enFemale[0] || female[0] || voices[0];
 }
-
-function refreshVoice(){
-  femaleVoice=pickFemaleVoice();
-  voiceReady=!!femaleVoice;
-}
-
 function makeUtterance(text){
-  refreshVoice();
-  const clean=String(text||'').replace(/[🎟️🥇🥈🥉🎯⭐👑💎🔴]/g,'').replace(/—/g,'...').replace(/!/g,'! ');
+  femaleVoice=femaleVoice||pickFemaleVoice();
+  const clean=String(text).replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,"");
   const u=new SpeechSynthesisUtterance(clean);
-  if(femaleVoice){u.voice=femaleVoice;u.lang=femaleVoice.lang||'hi-IN';}
-  else u.lang='hi-IN';
-  u.rate=.90;
-  u.pitch=1.14;
+  u.voice=femaleVoice||null;
+  u.lang=(femaleVoice&&femaleVoice.lang)||"hi-IN";
+  u.rate=.82;
+  u.pitch=1.20;
   u.volume=1;
   return u;
 }
-
- function speak(text){
-  voiceQueue=[]; voicePlaying=false;
-  speechSynthesis.cancel();
-  setTimeout(()=>{
-    try{speechSynthesis.resume();speechSynthesis.speak(makeUtterance(text));}catch(e){}
-  },80);
+function speak(text){
+  if(!("speechSynthesis" in window))return;
+  voiceQueue=[];voicePlaying=false;window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(makeUtterance(text));
 }
-
 function queueSpeak(text){
-  if(!text)return;
-  voiceQueue.push(text);
+  if(!("speechSynthesis" in window))return;
+  voiceQueue.push(String(text));
+  if(voicePlaying)return;
   playVoiceQueue();
 }
-
 function playVoiceQueue(){
-  if(voicePlaying||!voiceQueue.length)return;
+  if(!voiceQueue.length){voicePlaying=false;return;}
   voicePlaying=true;
   const u=makeUtterance(voiceQueue.shift());
-  u.onend=()=>{voicePlaying=false;setTimeout(playVoiceQueue,70);};
-  u.onerror=()=>{voicePlaying=false;setTimeout(playVoiceQueue,50);};
-  try{speechSynthesis.resume();speechSynthesis.speak(u);}catch(e){voicePlaying=false;setTimeout(playVoiceQueue,50);}
+  u.onend=()=>playVoiceQueue();
+  u.onerror=()=>playVoiceQueue();
+  window.speechSynthesis.speak(u);
 }
-
-function clearVoiceQueue(){voiceQueue=[];voicePlaying=false;speechSynthesis.cancel();}
-
-refreshVoice();
-speechSynthesis.onvoiceschanged=()=>{refreshVoice();};
+function clearVoiceQueue(){
+  voiceQueue=[];voicePlaying=false;
+  if("speechSynthesis" in window)window.speechSynthesis.cancel();
+}
+if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged=()=>{femaleVoice=pickFemaleVoice()};
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 
@@ -481,7 +468,7 @@ function checkPrizeWinners(){
 
     let eligible=bookedTickets().filter(no=>prizeCompleteForTicket(key,no));
 
-    // Second/Third Full House are sequential prizes, but ties within that prize
+     // Second/Third Full House are sequential prizes, but ties within that prize
     // are still all winners. Exclude tickets that already won an earlier house prize.
     if(key==="secondFullHouse"){
       const excluded=[];
@@ -606,7 +593,7 @@ function finishPrizeGame(){
   queueSpeak(GAME_OVER_VOICE);
 }
 function showCenterNumber(n){const el=document.getElementById("centerNumberPopup");if(!el)return;el.textContent=n;el.classList.add("show");clearTimeout(window.centerNumberTimer);window.centerNumberTimer=setTimeout(()=>{el.classList.remove("show")},4000)}
-function drawNextNumber(){if(!gameRunning)return;if(drawnNumbers.length>=90){finishGame();return}const a=[];for(let i=1;i<=90;i++)if(!drawnNumbers.includes(i))a.push(i);const n=a[Math.floor(Math.random()*a.length)];drawnNumbers.push(n);saveDrawnNumbers();renderNumberBoard();showCenterNumber(n);queueSpeak(NUMBER_CALLS[n]||(`Number ${n}`));checkPrizeWinners();if(gameRunning&&drawnNumbers.length>=90)finishGame()}
+function drawNextNumber(){if(!gameRunning)return;if(drawnNumbers.length>=90){finishGame();return}const a=[];for(let i=1;i<=90;i++)if(!drawnNumbers.includes(i))a.push(i);const n=a[Math.floor(Math.random()*a.length)];drawnNumbers.push(n);saveDrawnNumbers();renderNumberBoard();showCenterNumber(n);const caller=NUMBER_CALLS[n]||(`Number ${n}`);queueSpeak("Ohooo... " + caller.replace(" — ","! ... ") + "! Wah! Kya number hai!");checkPrizeWinners();if(gameRunning&&drawnNumbers.length>=90)finishGame()}
 function finishGame(){clearInterval(drawTimer);drawTimer=null;gameRunning=false;localStorage.setItem("tombolaGameRunning","false");renderNumberBoard();updatePlayerGameStatus();speak("Game over")}
 function renderTickets(){
 const box=document.getElementById("tickets");box.innerHTML="";
@@ -662,7 +649,7 @@ function searchMyTicket(){
       const nameKey=String(booking.name||"").trim().toLowerCase();
       if(targetNames.has(nameKey)) matchedTickets.push(ticketNo);
     });
- }
+  }
 
   let html="";
   matchedTickets.forEach(ticketNo=>{
@@ -702,9 +689,9 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 }
 
 function setGameStatus(status){
-if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,6000);alert("🟢 Game is now RUNNING. First number 6 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
+if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. First number 8 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
-function cancelGame(){
+ function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
 gameRunning=false;
 clearVoiceQueue();
@@ -831,7 +818,7 @@ function saveSettings(){
  let visible=parseInt(document.getElementById("visibleTickets").value);
  if(isNaN(visible)||visible<1||visible>600){alert("Visible Tickets 1 se 600 ke beech hona chahiye.");return}
 
-  // Date/Time save karne par existing ticket set ko change nahi karna.
+ // Date/Time save karne par existing ticket set ko change nahi karna.
  // Sirf Visible Tickets ki quantity change hone par naya ticket set generate hoga.
  const oldVisible=Number(settings.visibleTickets)||0;
  settings.visibleTickets=visible;
@@ -899,7 +886,7 @@ function showAnnouncement(){
 function startGame(){
 // Ensure a valid random ticket set exists before rendering.
 getVisibleTicketNumbers();
-renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();if(gameRunning){showGameBoard(true);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,6000)}else{showGameBoard(false)}setInterval(updateCountdown,1000);
+renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();if(gameRunning){showGameBoard(true);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000)}else{showGameBoard(false)}setInterval(updateCountdown,1000);
 }
 
 window.addEventListener("click",function(event){
