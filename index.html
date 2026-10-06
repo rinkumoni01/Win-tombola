@@ -360,7 +360,6 @@ function cleanVoiceText(text){
   return String(text)
     .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u27BF]/gu,"")
     .replace(/[—–]/g," ... ")
-    // One natural pause is enough; too many punctuation pauses sound robotic.
     .replace(/\s*,\s*/g,", ")
     .replace(/\s*!\s*/g,"! ")
     .replace(/\s*\.\.\.\s*/g," ... ")
@@ -375,22 +374,20 @@ function makeUtterance(text, style="number"){
   u.voice=femaleVoice||null;
   u.lang=(femaleVoice&&femaleVoice.lang)||"hi-IN";
   u.volume=1;
-
-  // Human-style game-caller delivery: small variation prevents every call
-  // from sounding like the exact same recorded robot sentence.
-  const wobble=(Number(clean.match(/\d+\s*$/)?.[0]||0)%5);
+  const n=Number(clean.match(/\d+\s*$/)?.[0]||0);
+  const wobble=n%7;
   if(style==="start"){
-    u.rate=.88; u.pitch=1.08;
+    u.rate=.86; u.pitch=1.10;
   }else if(style==="winner"){
-    u.rate=.91; u.pitch=1.13;
+    u.rate=.88; u.pitch=1.14;
   }else{
-    u.rate=.84 + wobble*.012;
-    u.pitch=1.04 + (wobble%3)*.025;
+    u.rate=.79 + wobble*.010;
+    u.pitch=1.06 + (wobble%4)*.018;
   }
   return u;
 }
 
-function speak(text,style="normal"){
+ function speak(text,style="normal"){
   if(!("speechSynthesis" in window))return;
   voiceQueue=[];
   voicePlaying=false;
@@ -426,7 +423,7 @@ function playVoiceQueue(){
   u.onend=()=>{
     if(generation!==voiceGeneration)return;
     // Natural breathing gap between calls; not long enough to feel delayed.
-    setTimeout(()=>{if(generation===voiceGeneration)playVoiceQueue()},260);
+    setTimeout(()=>{if(generation===voiceGeneration)playVoiceQueue()},360);
   };
   u.onerror=()=>{
     if(generation!==voiceGeneration)return;
@@ -450,7 +447,7 @@ if("speechSynthesis" in window){
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 
- function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
+function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
 
 const PRIZE_NAMES={
   firstLine:"🥇 First Line",
@@ -688,7 +685,7 @@ function searchMyTicket(){
   const result=document.getElementById("myTicketResult");
   if(!input||!result)return;
 
-  const visibleSet=getVisibleTicketNumbers();
+ const visibleSet=getVisibleTicketNumbers();
   const raw=String(input.value||"").trim();
   if(!raw){result.innerHTML='<div class="noTicket">Please enter at least one ticket number.</div>';return;}
 
@@ -765,7 +762,7 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 function setGameStatus(status){
 if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE,"start");clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. First number 8 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
- function cancelGame(){
+function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
 gameRunning=false;
 clearVoiceQueue();
@@ -855,7 +852,7 @@ if(!keys.length){box.innerHTML='<div class="small">No booked tickets.</div>';ret
 let html=`<table class="adminBookingTable">
 <thead><tr><th>No.</th><th>Customer Name</th><th>S</th><th>EDT</th></tr></thead><tbody>`;
 
-keys.forEach(ticketNo=>{
+ keys.forEach(ticketNo=>{
 let name=escapeHtml(bookings[ticketNo].name||"");
 html+=`<tr><td>${ticketNo}</td><td>${name}</td><td>S</td><td><button class="adminEditBtn" onclick="editBooking(${ticketNo})">EDT</button></td></tr>`;
 });
