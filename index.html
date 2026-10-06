@@ -177,8 +177,8 @@ button,input{font-family:inherit}
 <button class="cancelGameBtn" onclick="cancelGame()">❌ CANCEL GAME</button>
 <div class="currentGameStatus" id="adminGameStatus">🔴 GAME STOPPED</div>
 </div>
- 
-<div class="adminCard">
+
+ <div class="adminCard">
 <label>🎟️ Visible Tickets</label>
 <input class="input" id="visibleTickets" type="number" min="1" max="600" placeholder="Example: 100">
 <div class="small">Player ko yahan jitne tickets set karenge, utne random tickets 1–600 me se dikhenge. Example: 100 = 100 random tickets.</div>
@@ -359,7 +359,7 @@ function makeUtterance(text){
   return u;
 }
 
-function speak(text){
+ function speak(text){
   voiceQueue=[]; voicePlaying=false;
   speechSynthesis.cancel();
   setTimeout(()=>{
@@ -389,7 +389,7 @@ speechSynthesis.onvoiceschanged=()=>{refreshVoice();};
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 
- function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
+function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
 
 const PRIZE_NAMES={
   firstLine:"🥇 First Line",
@@ -662,7 +662,7 @@ function searchMyTicket(){
       const nameKey=String(booking.name||"").trim().toLowerCase();
       if(targetNames.has(nameKey)) matchedTickets.push(ticketNo);
     });
-  }
+ }
 
   let html="";
   matchedTickets.forEach(ticketNo=>{
@@ -704,7 +704,7 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 function setGameStatus(status){
 if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,6000);alert("🟢 Game is now RUNNING. First number 6 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
- function cancelGame(){
+function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
 gameRunning=false;
 clearVoiceQueue();
@@ -831,7 +831,7 @@ function saveSettings(){
  let visible=parseInt(document.getElementById("visibleTickets").value);
  if(isNaN(visible)||visible<1||visible>600){alert("Visible Tickets 1 se 600 ke beech hona chahiye.");return}
 
- // Date/Time save karne par existing ticket set ko change nahi karna.
+  // Date/Time save karne par existing ticket set ko change nahi karna.
  // Sirf Visible Tickets ki quantity change hone par naya ticket set generate hoga.
  const oldVisible=Number(settings.visibleTickets)||0;
  settings.visibleTickets=visible;
