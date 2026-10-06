@@ -143,7 +143,7 @@ button,input{font-family:inherit}
   <div id="playerPrizeList"></div>
 </div>
 <div class="gameOverBox" id="gameOverBox">🎉 GAME OVER 🎉</div>
-
+ 
 <div class="myTicketBox">
 <div class="myTicketTitle">🎟️ Search Tickets</div>
 <div class="myTicketRow"><input class="myTicketInput" id="myTicketNumber" type="text" inputmode="numeric" placeholder="Example: 25, 80"><button class="myTicketBtn" onclick="searchMyTicket()">SEARCH</button></div>
@@ -163,7 +163,7 @@ button,input{font-family:inherit}
 </div>
 </div>
 
- <div class="modal" id="adminModal">
+<div class="modal" id="adminModal">
 <div class="modalBox">
 <h2>⚙️ Game Settings</h2>
 
@@ -374,9 +374,9 @@ if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged=()=>{fema
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 
-function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
+ function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
 
- const PRIZE_NAMES={
+const PRIZE_NAMES={
   firstLine:"🥇 First Line",
   secondLine:"🥈 Second Line",
   thirdLine:"🥉 Third Line",
@@ -625,12 +625,33 @@ function searchMyTicket(){
     return;
   }
 
-  let html="";
+  // If any searched ticket is booked, show ALL booked tickets belonging to the same customer name.
+  // This means a customer who booked 10 tickets can search any one of those 10 and see all 10.
+  const targetNames=new Set();
   const notBooked=[];
-  requested.sort((a,b)=>a-b).forEach(ticketNo=>{
+  requested.forEach(ticketNo=>{
     const booking=bookings[ticketNo];
-    if(!booking||booking.booked!==true){notBooked.push(ticketNo);return;}
+    if(!booking||booking.booked!==true){
+      notBooked.push(ticketNo);
+      return;
+    }
+    const nameKey=String(booking.name||"").trim().toLowerCase();
+    if(nameKey) targetNames.add(nameKey);
+  });
 
+  const matchedTickets=[];
+  if(targetNames.size){
+    Object.keys(bookings).map(Number).sort((a,b)=>a-b).forEach(ticketNo=>{
+      const booking=bookings[ticketNo];
+      if(!booking||booking.booked!==true)return;
+      const nameKey=String(booking.name||"").trim().toLowerCase();
+      if(targetNames.has(nameKey)) matchedTickets.push(ticketNo);
+    });
+  }
+
+  let html="";
+  matchedTickets.forEach(ticketNo=>{
+    const booking=bookings[ticketNo];
     const name=String(booking.name||"").trim()||"Unknown";
     const numbers=generateTicketNumbers(ticketNo);
     let cells="";
@@ -642,7 +663,6 @@ function searchMyTicket(){
       }
     }
 
-    // One name only: the name inside the ticket header. No extra name box above it.
     html+=`<div class="ticket">
       <div class="ticketHead">
         <div class="ticketNo">${ticketNo}</div>
