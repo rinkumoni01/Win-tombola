@@ -249,128 +249,6 @@ button,input{font-family:inherit}
 const ADMIN_USERNAME="gyandeep";
 const ADMIN_PASSWORD="785673";
 
-/* ===== SHARED LIVE GAME (SUPABASE) =====
-   Keeps the existing design and game UI. Only shared game data is synced. */
-const SUPABASE_URL="https://fticnarblyqgjbtlwgff.supabase.co";
-const SUPABASE_ANON_KEY="sb_publishable_nvbAiu89F9l6sNiJ0YFtiQ_sLXRrGYO";
-const SUPABASE_TABLE="tombola_state";
-const SUPABASE_ROW_ID=1;
-let adminSession=false;
-let remoteSyncBusy=false;
-let remoteLastSignature="";
-let remoteLastDrawnCount=0;
-
-function sharedStateSnapshot(){
-  let ticketNumbers={};
-  try{ ticketNumbers=JSON.parse(localStorage.getItem("tombolaTicketNumbers")||"{}"); }catch(e){ ticketNumbers={}; }
-  return {
-    settings:settings||{},
-    visibleTicketNumbers:Array.isArray(visibleTicketNumbers)?visibleTicketNumbers:[],
-    ticketNumbers:ticketNumbers,
-    bookings:bookings||{},
-    prizes:prizes||{},
-    prizeWinners:prizeWinners||{},
-    drawnNumbers:Array.isArray(drawnNumbers)?drawnNumbers:[],
-    gameRunning:gameRunning===true,
-    announcementAccepted:localStorage.getItem("tombolaAnnouncementAccepted")==="true"
-  };
-}
-function sharedConfigured(){return !!SUPABASE_URL&&!!SUPABASE_ANON_KEY;}
-function supabaseHeaders(extra={}){
-  return Object.assign({"apikey":SUPABASE_ANON_KEY,"Authorization":"Bearer "+SUPABASE_ANON_KEY,"Content-Type":"application/json"},extra);
-}
-async function pushSharedState(){
-  if(!sharedConfigured()||remoteSyncBusy)return;
-  remoteSyncBusy=true;
-  try{
-    const st=sharedStateSnapshot();
-    const res=await fetch(SUPABASE_URL+"/rest/v1/"+SUPABASE_TABLE+"?id=eq."+SUPABASE_ROW_ID,{
-      method:"PATCH",
-      headers:supabaseHeaders({"Prefer":"return=minimal"}),
-      body:JSON.stringify({
-        settings:st.settings,
-        ticket_numbers:st.ticketNumbers,
-        bookings:st.bookings,
-        prizes:st.prizes,
-        prize_winners:st.prizeWinners,
-        /* visible ticket list is stored inside settings/ticket state via this JSON field */
-        ticket_numbers:Object.assign({__visibleTicketNumbers:st.visibleTicketNumbers},st.ticketNumbers),
-        drawn_numbers:st.drawnNumbers,
-        game_running:st.gameRunning,
-        updated_at:new Date().toISOString()
-      })
-    });
-    if(!res.ok) console.warn("Shared state save failed",await res.text());
-  }catch(e){console.warn("Shared state save failed",e)}
-  remoteSyncBusy=false;
-}
-async function pullSharedState(){
-  if(!sharedConfigured()||remoteSyncBusy)return;
-  try{
-    const res=await fetch(SUPABASE_URL+"/rest/v1/"+SUPABASE_TABLE+"?id=eq."+SUPABASE_ROW_ID+"&select=settings,ticket_numbers,bookings,prizes,prize_winners,drawn_numbers,game_running,updated_at",{headers:supabaseHeaders()});
-    if(!res.ok){console.warn("Shared state load failed",await res.text());return;}
-    const rows=await res.json();
-    if(!rows.length)return;
-    const row=rows[0];
-    const state={
-      settings:row.settings||{},
-      ticketNumbers:row.ticket_numbers||{},
-      visibleTicketNumbers:Array.isArray((row.ticket_numbers||{}).__visibleTicketNumbers)?(row.ticket_numbers||{}).__visibleTicketNumbers:[],
-      bookings:row.bookings||{},
-      prizes:row.prizes||{},
-      prizeWinners:row.prize_winners||{},
-      drawnNumbers:Array.isArray(row.drawn_numbers)?row.drawn_numbers:[],
-      gameRunning:row.game_running===true
-    };
-    /* The SQL-created row starts empty. Do not erase a device's local setup
-       until an admin has seeded the shared row. */
-    if(!Object.keys(state.settings).length && !Object.keys(state.bookings).length && !state.drawnNumbers.length && !Object.keys(state.prizes).length)return;
-    const sig=String(row.updated_at||"")+"|"+JSON.stringify(state.drawnNumbers)+"|"+JSON.stringify(state.prizeWinners);
-    if(sig===remoteLastSignature)return;
-    remoteLastSignature=sig;
-    applySharedState(state);
-  }catch(e){console.warn("Shared state load failed",e)}
-}
-function applySharedState(state){
-  if(state.settings&&Object.keys(state.settings).length)settings=state.settings;
-  if(state.ticketNumbers)localStorage.setItem("tombolaTicketNumbers",JSON.stringify(state.ticketNumbers));
-  if(Array.isArray(state.visibleTicketNumbers)&&state.visibleTicketNumbers.length)visibleTicketNumbers=state.visibleTicketNumbers;
-  if(state.bookings)bookings=state.bookings;
-  if(state.prizes)prizes=state.prizes;
-  if(state.prizeWinners)prizeWinners=state.prizeWinners;
-  if(Array.isArray(state.drawnNumbers))drawnNumbers=state.drawnNumbers;
-  gameRunning=state.gameRunning===true;
-  localStorage.setItem("tombolaSettings",JSON.stringify(settings));
-  localStorage.setItem("tombolaVisibleTicketNumbers",JSON.stringify(visibleTicketNumbers||[]));
-  localStorage.setItem("tombolaBookings",JSON.stringify(bookings));
-  localStorage.setItem("tombolaPrizes",JSON.stringify(prizes));
-  localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners));
-  localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers));
-  localStorage.setItem("tombolaGameRunning",gameRunning?"true":"false");
-  renderTickets();updateGameDisplay();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminBookings();renderAdminTicketStatus();renderAdminPrizeWinners();
-  if(!adminSession){
-    clearInterval(drawTimer);drawTimer=null;showGameBoard(gameRunning);
-    const newest=drawnNumbers.length;
-    if(newest>remoteLastDrawnCount&&newest){const n=drawnNumbers[newest-1];showCenterNumber(n);queueSpeak(NUMBER_CALLS[n]||("Number "+n));}
-  }
-  remoteLastDrawnCount=drawnNumbers.length;
-}
-function scheduleSharedSync(){
-  clearTimeout(window.__sharedSyncTimer);
-  window.__sharedSyncTimer=setTimeout(pushSharedState,150);
-}
-function enableAdminRealtime(){
-  adminSession=true;
-  /* First admin login seeds the Supabase row from the current local game. */
-  pushSharedState();
-  if(gameRunning){clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);}
-}
-function startSharedSync(){
-  if(!sharedConfigured())return;
-  pullSharedState();
-  setInterval(()=>{if(!adminSession)pullSharedState();},1000);
-}
-
 let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
 if(!Number.isInteger(Number(settings.visibleTickets))||Number(settings.visibleTickets)<1||Number(settings.visibleTickets)>600){settings.visibleTickets=15;}
 let visibleTicketNumbers=JSON.parse(localStorage.getItem("tombolaVisibleTicketNumbers")||"null");
@@ -391,7 +269,7 @@ function regenerateVisibleTicketNumbers(){
 
   // Whenever the admin saves the ticket count, generate a completely new
   // random 15-number combination for every visible ticket.
-  localStorage.removeItem("tombolaTicketNumbers");scheduleSharedSync();
+  localStorage.removeItem("tombolaTicketNumbers");
 }
 function isVisibleTicket(n){return getVisibleTicketNumbers().includes(Number(n));}
 let bookings=JSON.parse(localStorage.getItem("tombolaBookings"))||{};
@@ -402,9 +280,74 @@ let gameRunning=localStorage.getItem("tombolaGameRunning")==="true";
 let drawnNumbers=JSON.parse(localStorage.getItem("tombolaDrawnNumbers")||"[]");
 let drawTimer=null;
 const NUMBER_CALLS={1:'Akela hi sher — Number 1',2:'Do rupaye ki Pepsi, meri wali sexy — Number 2',3:'Teen peg aur full scene — Number 3',4:'Murgi chor, sambhal ke — Number 4',5:'Punjab ka puttar, full jigar — Number 5',6:'Chhakka maar ke nikla yaar — Number 6',7:'Saat samundar paar, kaun hai taiyaar — Number 7',8:'Aath baje ka khana, nau baje bahana — Number 8',9:'Nau nau ke chakkar mein, mat padna — Number 9',10:'Dus ka note, dil ka khot — Number 10',11:'Gyarah number, attitude zabardast — Number 11',12:'Baarah mahine, ek hi bahana — Number 12',13:'Tera mera chakkar, number — Number 13',14:'Chaudah ka jadoo, sabko kar de qabu — Number 14',15:'Pandrah ka pataka, full dhamaka — Number 15',16:'Solah ka dola, kisne bola — Number 16',17:'Satrah ki setting, full betting — Number 17',18:'Atharah ka jawaan, dil se pareshaan — Number 18',19:'Unnees ka scene, bilkul haseen — Number 19',20:'Bees ka boss, baaki sab loss — Number 20',21:'Ikkis ka style, dekho bhai smile — Number 21',22:'Do do ka joda, kisne kisko chhoda — Number 22',23:'Teis ka twist, miss mat karna — Number 23',24:'Chaubees ghante, biwi ke taane — Number 24',25:'Pachchis ka punch, seedha dil pe — Number 25',26:'Chhabbees ka chhora, bada hi gora — Number 26',27:'Sattais ka swag, jeb mein tag — Number 27',28:'Atthais ka attitude, bilkul rude — Number 28',29:'Untees ka drama, ghar ka hungama — Number 29',30:'Tees maar khan, nikla jawaan — Number 30',31:'Ikattis ka item, ekdum premium — Number 31',32:'Battis daant, phir bhi sharmana — Number 32',33:'Teen teen ka magic, full fantastic — Number 33',34:'Chauntis ka chhora, dil ka thoda gora — Number 34',35:'Bloody wife, poori life — Number 35',36:'Chhattis ka figure, dekho zara picture — Number 36',37:'Saintis ka swag, bina kisi tag — Number 37',38:'Adtis ka attitude, dekho iska mood — Number 38',39:'Untalis ka chakkar, dimaag mein takkar — Number 39',40:'Chalis ka chhora, dil ka chor — Number 40',41:'Iktalis ka item, ghar ka system — Number 41',42:'Bayalis ka bhaisaab, kya hai hisaab — Number 42',43:'Taintalis ka tadka, full masala — Number 43',44:'Chawaalis ki jodi, sabse naughty — Number 44',45:'Paintalis ka pataka, phatega dhamaka — Number 45',46:'Chhiyaalis ka chhora, paisa ka bhooka — Number 46',47:'Saintalis ka swag, dekho iska tag — Number 47',48:'Adtalis ka adda, yahin hai lafda — Number 48',49:'Unchaas ka scene, bilkul mean — Number 49',50:'Pachaas ka paisa, sabko hai waisa — Number 50',51:'Ikyavan ka ishq, dil hua risk — Number 51',52:'Bawan ka bomb, full on dhamaka — Number 52',53:'Tirpan ka tadka, muh mein chatka — Number 53',54:'Chauvan ka chaska, chhodna mushkil — Number 54',55:'Pachpan ki jodi, dono naughty — Number 55',56:'Chhappan ka chhora, style mein gora — Number 56',57:'Sattavan ka swag, dil mein tag — Number 57',58:'Athavan ka attitude, full-on rude — Number 58',59:'Unsath ka scene, biwi bole clean — Number 59',60:'Saath ka shikari, sab pe bhaari — Number 60',61:'Iksath ka item, ekdum solid — Number 61',62:'Basath ka boss, baaki sab loss — Number 62',63:'Tirsath ka tadka, full masala — Number 63',64:'Chaunsath ka chaska, lag gaya toh gaya — Number 64',65:'Painsath ka pataka, dekho dhamaka — Number 65',66:'Chhiyaasath ki double entry — Number 66',67:'Sadsath ka style, dekh ke smile — Number 67',68:'Adsath ka attitude, bilkul rude — Number 68',69:'Unhattar ka romance, chance pe dance — Number 69',70:'Sattar ka superstar, sabse damdaar — Number 70',71:'Ikhattar ka item, full-time handsome — Number 71',72:'Bahattar ka bhaisaab, kya zabardast hisaab — Number 72',73:'Tihattar ka tadka, mood kare bhadka — Number 73',74:'Chauhattar ka chaska, control kar bhai — Number 74',75:'Pachhattar ka pataka, aaya dhamaka — Number 75',76:'Chihattar ka champion, sabka attention — Number 76',77:'Sattattar double seven, number aaye heaven — Number 77',78:'Athhattar ka attitude, full-on mood — Number 78',79:'Unasi ka ulta-pulta, dimaag gaya hilta — Number 79',80:'Assi ka asli boss, baaki sab loss — Number 80',81:'Ikyasi ka item, full premium — Number 81',82:'Bayasi ka bomb, phir se dhamaka — Number 82',83:'Tirasi ka tadka, sabko bhadka — Number 83',84:'Chaurasi ka chaska, dil mein atka — Number 84',85:'Pachasi ka pataka, final dhamaka — Number 85',86:'Chhiyasi ka champion, full attention — Number 86',87:'Sattasi ka swag, jeb mein tag — Number 87',88:'Atthasi double eight, der mat karna wait — Number 88',89:'Navasi ka nawab, sabse lajawab — Number 89',90:'Nabbey ka nasha, Tambola mein paisa — Number 90'};
-const GAME_START_VOICE="Ladies and gentlemen! Game is on! Get ready... your lucky number is coming!";
-const GAME_OVER_VOICE="Ladies and gentlemen! What a game! All selected prizes are complete. Congratulations to all our winners! Thank you for playing! game over!";
+const GAME_START_VOICE="Ladies and gentlemen! Game is on! Get ready... your lucky number is coming! Keep your tickets ready, keep your eyes on the board, and let's play!";
+const GAME_OVER_VOICE="Ladies and gentlemen! What a game! All selected prizes are complete. Congratulations to all our winners! Thank you for playing!";
 
+// ===== SUPABASE LIVE SYNC =====
+const SUPABASE_URL="https://fticnarblyqgjbtlwgff.supabase.co";
+const SUPABASE_KEY="sb_publishable_nvbAiu89F9l6sNiJ0YFtiQ_sLXRrGYO";
+const SUPABASE_STATE_URL=SUPABASE_URL+"/rest/v1/tombola_state?id=eq.1";
+let isAdminSession=false;
+let syncingRemote=false;
+let lastRemoteDrawnCount=drawnNumbers.length;
+let lastRemoteRunning=gameRunning;
+let lastRemoteUpdatedAt="";
+
+function supabaseHeaders(){return {"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"};}
+function currentTicketStore(){return JSON.parse(localStorage.getItem("tombolaTicketNumbers")||"{}");}
+async function saveSharedState(){
+  if(syncingRemote)return;
+  try{
+    const body={settings,ticket_numbers:{visible:getVisibleTicketNumbers(),numbers:currentTicketStore()},bookings,prizes,prize_winners:prizeWinners,drawn_numbers:drawnNumbers,game_running:gameRunning,updated_at:new Date().toISOString()};
+    await fetch(SUPABASE_STATE_URL,{method:"PATCH",headers:{...supabaseHeaders(),"Prefer":"return=minimal"},body:JSON.stringify(body)});
+  }catch(e){console.warn("Supabase sync failed",e);}
+}
+async function loadSharedState(speakRemote=false){
+  try{
+    const res=await fetch(SUPABASE_STATE_URL,{headers:supabaseHeaders(),cache:"no-store"});
+    if(!res.ok)return;
+    const rows=await res.json(); if(!rows.length)return;
+    const st=rows[0];
+    if(!st.updated_at || st.updated_at===lastRemoteUpdatedAt)return;
+    lastRemoteUpdatedAt=st.updated_at;
+    const oldRunning=gameRunning,oldDrawn=drawnNumbers.slice();
+    syncingRemote=true;
+    if(st.settings && Object.keys(st.settings).length) settings=st.settings;
+    if(st.ticket_numbers){
+      if(Array.isArray(st.ticket_numbers.visible)){visibleTicketNumbers=st.ticket_numbers.visible;localStorage.setItem("tombolaVisibleTicketNumbers",JSON.stringify(visibleTicketNumbers));}
+      if(st.ticket_numbers.numbers){localStorage.setItem("tombolaTicketNumbers",JSON.stringify(st.ticket_numbers.numbers));}
+    }
+    if(st.bookings)bookings=st.bookings;
+    if(st.prizes)prizes=st.prizes;
+    if(st.prize_winners)prizeWinners=st.prize_winners;
+    if(Array.isArray(st.drawn_numbers))drawnNumbers=st.drawn_numbers;
+    gameRunning=st.game_running===true;
+    localStorage.setItem("tombolaSettings",JSON.stringify(settings));
+    localStorage.setItem("tombolaBookings",JSON.stringify(bookings));
+    localStorage.setItem("tombolaPrizes",JSON.stringify(prizes));
+    localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners));
+    localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers));
+    localStorage.setItem("tombolaGameRunning",String(gameRunning));
+    syncingRemote=false;
+    renderTickets();updateGameDisplay();renderAdminBookings();renderAdminTicketStatus();renderPlayerPrizes();renderAdminPrizeWinners();renderNumberBoard();updatePlayerGameStatus();
+    if(gameRunning)showGameBoard(true);
+    else if(!isAdminSession)showGameBoard(false);
+    if(speakRemote){
+      if(!oldRunning && gameRunning){clearVoiceQueue();queueSpeak(GAME_START_VOICE,"start");}
+      if(gameRunning && drawnNumbers.length>oldDrawn.length){
+        const newNumbers=drawnNumbers.slice(oldDrawn.length);
+        newNumbers.forEach(n=>queueSpeak(NUMBER_CALLS[n]||("Number "+n)));
+      }
+      if(oldRunning && !gameRunning){
+        const selected=selectedPrizeKeys();
+        const completed=selected.length>0 && selected.every(k=>!!prizeWinners[k]);
+        queueSpeak(completed?GAME_OVER_VOICE:"Game stopped");
+      }
+    }
+    lastRemoteDrawnCount=drawnNumbers.length;lastRemoteRunning=gameRunning;
+  }catch(e){console.warn("Supabase load failed",e);syncingRemote=false;}
+}
+setInterval(()=>loadSharedState(true),1000);
 
 function generateTicketNumbers(ticketNo){
 const key="tombolaTicketNumbers";
@@ -445,7 +388,7 @@ function renderNumberBoard(){
 const grid=document.getElementById("numberGrid");if(!grid)return;grid.innerHTML="";
 for(let i=1;i<=90;i++){const d=document.createElement("div");d.className="drawNumber"+(drawnNumbers.includes(i)?" called":"");d.textContent=i;grid.appendChild(d)}
 
- const list=document.getElementById("calledList");if(list){list.innerHTML="";drawnNumbers.forEach(n=>{const chip=document.createElement("div");chip.className="calledChip";chip.textContent=n;list.appendChild(chip)})}
+const list=document.getElementById("calledList");if(list){list.innerHTML="";drawnNumbers.forEach(n=>{const chip=document.createElement("div");chip.className="calledChip";chip.textContent=n;list.appendChild(chip)})}
 const input=document.getElementById("myTicketNumber");if(input&&input.value)searchMyTicket();
 }
 let femaleVoice=null;
@@ -453,7 +396,7 @@ let voiceQueue=[];
 let voicePlaying=false;
 let voiceGeneration=0;
 
-// Pick the most natural female Hindi/Indian-English voice available on the device.
+ // Pick the most natural female Hindi/Indian-English voice available on the device.
 // Android Chrome exposes different voice names on different phones, so we score
 // several common Google/Samsung/Microsoft/Indian voice names instead of relying
 // on one exact name.
@@ -567,9 +510,9 @@ if("speechSynthesis" in window){
   setTimeout(()=>{if(!femaleVoice)femaleVoice=pickFemaleVoice()},1200);
 }
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
-function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers));scheduleSharedSync()}
+function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers));saveSharedState()}
 
-function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners));scheduleSharedSync()}
+function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners));saveSharedState()}
 
 const PRIZE_NAMES={
   firstLine:"🥇 First Line",
@@ -654,7 +597,8 @@ function checkPrizeWinners(){
   const selected=selectedPrizeKeys();
   let changed=false;
 
-  // Normal prizes can have multiple winners; Early 5 is limited to one winner.
+  // For every prize, ALL tickets that become eligible on the same draw are winners.
+  // This applies to lines, corners, full houses and early prizes alike.
   for(const key of selected){
     if(prizeWinners[key]) continue;
 
@@ -679,21 +623,11 @@ function checkPrizeWinners(){
     }
 
     if(eligible.length){
-      if(key==="early5"){
-        /* Early 5 has exactly ONE winner: the first ticket to qualify. */
-        const no=eligible[0];
-        prizeWinners[key]={
-          ticketNo:no,
-          name:String((bookings[no]&&bookings[no].name)||"Unknown"),
-          markedNumbers:getWinningMarkedNumbers(key,no)
-        };
-      }else{
-        prizeWinners[key]=eligible.map(no=>({
-          ticketNo:no,
-          name:String((bookings[no]&&bookings[no].name)||"Unknown"),
-          markedNumbers:getWinningMarkedNumbers(key,no)
-        }));
-      }
+      prizeWinners[key]=eligible.map(no=>({
+        ticketNo:no,
+        name:String((bookings[no]&&bookings[no].name)||"Unknown"),
+        markedNumbers:getWinningMarkedNumbers(key,no)
+      }));
       changed=true;
     }
   }
@@ -788,15 +722,16 @@ function escapeHtml(value){
 function finishPrizeGame(){
   clearInterval(drawTimer);drawTimer=null;
   gameRunning=false;
-  localStorage.setItem("tombolaGameRunning","false");scheduleSharedSync();
+  localStorage.setItem("tombolaGameRunning","false");
+  saveSharedState();
   updatePlayerGameStatus();
   renderPlayerPrizes();
   renderAdminPrizeWinners();
   queueSpeak(GAME_OVER_VOICE,"winner");
 }
 function showCenterNumber(n){const el=document.getElementById("centerNumberPopup");if(!el)return;el.textContent=n;el.classList.add("show");clearTimeout(window.centerNumberTimer);window.centerNumberTimer=setTimeout(()=>{el.classList.remove("show")},4000)}
-function drawNextNumber(){if(!gameRunning||!adminSession)return;if(drawnNumbers.length>=90){finishGame();return}const a=[];for(let i=1;i<=90;i++)if(!drawnNumbers.includes(i))a.push(i);const n=a[Math.floor(Math.random()*a.length)];drawnNumbers.push(n);saveDrawnNumbers();renderNumberBoard();showCenterNumber(n);queueSpeak(NUMBER_CALLS[n]||(`Number ${n}`));checkPrizeWinners();if(gameRunning&&drawnNumbers.length>=90)finishGame()}
-function finishGame(){clearInterval(drawTimer);drawTimer=null;gameRunning=false;localStorage.setItem("tombolaGameRunning","false");scheduleSharedSync();renderNumberBoard();updatePlayerGameStatus();speak("Game over")}
+function drawNextNumber(){if(!gameRunning)return;if(drawnNumbers.length>=90){finishGame();return}const a=[];for(let i=1;i<=90;i++)if(!drawnNumbers.includes(i))a.push(i);const n=a[Math.floor(Math.random()*a.length)];drawnNumbers.push(n);saveDrawnNumbers();renderNumberBoard();showCenterNumber(n);queueSpeak(NUMBER_CALLS[n]||(`Number ${n}`));checkPrizeWinners();if(gameRunning&&drawnNumbers.length>=90)finishGame()}
+function finishGame(){clearInterval(drawTimer);drawTimer=null;gameRunning=false;localStorage.setItem("tombolaGameRunning","false");saveSharedState();renderNumberBoard();updatePlayerGameStatus();speak("Game over")}
 function renderTickets(){
 const box=document.getElementById("tickets");box.innerHTML="";
 const ticketNumbers=getVisibleTicketNumbers();
@@ -820,7 +755,7 @@ function searchMyTicket(){
   const raw=String(input.value||"").trim();
   if(!raw){result.innerHTML='<div class="noTicket">Please enter at least one ticket number.</div>';return;}
 
-  const requested=[...new Set(raw.split(/[\s,]+/).map(x=>parseInt(x,10)).filter(n=>!isNaN(n)))];
+   const requested=[...new Set(raw.split(/[\s,]+/).map(x=>parseInt(x,10)).filter(n=>!isNaN(n)))];
   if(!requested.length){result.innerHTML='<div class="noTicket">Please enter valid ticket numbers.</div>';return;}
 
   const invalid=requested.filter(n=>!visibleSet.includes(n));
@@ -891,8 +826,8 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 }
 
 function setGameStatus(status){
-if(!adminSession){alert("Please login as Admin first.");return}
-if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");scheduleSharedSync();updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE,"start");clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. First number 8 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");scheduleSharedSync();clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
+if(!isAdminSession){alert("Admin login required.");return}
+if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");saveSharedState();updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE,"start");clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. First number 8 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");saveSharedState();clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
 function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
@@ -904,7 +839,8 @@ drawnNumbers=[];
 saveDrawnNumbers();
 prizeWinners={};
 savePrizeWinners();
-localStorage.setItem("tombolaGameRunning","false");scheduleSharedSync();
+localStorage.setItem("tombolaGameRunning","false");
+saveSharedState();
 updatePlayerGameStatus();
 renderNumberBoard();
 showGameBoard(false);
@@ -917,7 +853,7 @@ function loginAdmin(){
 const user=document.getElementById("username").value.trim(),pass=document.getElementById("password").value;
 if(user===ADMIN_USERNAME&&pass===ADMIN_PASSWORD){
 document.getElementById("username").value="";document.getElementById("password").value="";
-closeModal("loginModal");enableAdminRealtime();openAdminPanel();
+closeModal("loginModal");isAdminSession=true;openAdminPanel();if(gameRunning){clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);}
 }else alert("Wrong username or password.");
 }
 
@@ -943,7 +879,8 @@ checkbox.onchange=function(){status.textContent=checkbox.checked?"ON":"OFF"};
 function savePrizes(){
 const names=["firstLine","secondLine","thirdLine","fourCorners","fullHouse","secondFullHouse","thirdFullHouse","early5","early7"];
 names.forEach(name=>prizes[name]=document.getElementById("prize_"+name).checked);
-localStorage.setItem("tombolaPrizes",JSON.stringify(prizes));scheduleSharedSync();
+localStorage.setItem("tombolaPrizes",JSON.stringify(prizes));
+saveSharedState();
 Object.keys(prizeWinners).forEach(k=>{if(!prizes[k])delete prizeWinners[k]});
 savePrizeWinners();
 renderPlayerPrizes();
@@ -958,7 +895,8 @@ if(isNaN(ticketNo)||!visibleSet.includes(ticketNo)){alert("Please enter one of t
 if(!name){alert("Please enter customer name.");return}
 if(bookings[ticketNo]&&bookings[ticketNo].booked===true){alert("This ticket is already booked.");return}
 bookings[ticketNo]={booked:true,name:name,time:new Date().toISOString()};
-localStorage.setItem("tombolaBookings",JSON.stringify(bookings));scheduleSharedSync();
+localStorage.setItem("tombolaBookings",JSON.stringify(bookings));
+saveSharedState();
 document.getElementById("adminTicketNumber").value="";document.getElementById("adminCustomerName").value="";
 renderTickets();renderAdminBookings();renderAdminTicketStatus();
 alert("Ticket "+ticketNo+" booked for "+name);
@@ -1001,7 +939,8 @@ if(newName===null)return;
 const name=newName.trim();
 if(!name){alert("Customer name cannot be empty.");return;}
 bookings[ticketNo].name=name;
-localStorage.setItem("tombolaBookings",JSON.stringify(bookings));scheduleSharedSync();
+localStorage.setItem("tombolaBookings",JSON.stringify(bookings));
+saveSharedState();
 renderTickets();
 renderAdminBookings();
 renderAdminTicketStatus();
@@ -1011,7 +950,7 @@ renderAdminPrizeWinners();
 
 function cancelBooking(ticketNo){
 if(!confirm("Cancel booking for Ticket "+ticketNo+"?"))return;
-delete bookings[ticketNo];localStorage.setItem("tombolaBookings",JSON.stringify(bookings));scheduleSharedSync();
+delete bookings[ticketNo];localStorage.setItem("tombolaBookings",JSON.stringify(bookings));
 Object.keys(prizeWinners).forEach(k=>{if(prizeWinners[k]&&prizeWinners[k].ticketNo===ticketNo)delete prizeWinners[k]});
 savePrizeWinners();
 renderTickets();renderAdminBookings();renderAdminTicketStatus();renderPlayerPrizes();renderAdminPrizeWinners();alert("Ticket "+ticketNo+" is now UNSOLD.");
@@ -1031,7 +970,8 @@ function saveSettings(){
 
  settings.gameDate=document.getElementById("gameDate").value;
  settings.gameTime=document.getElementById("gameTime").value;
- localStorage.setItem("tombolaSettings",JSON.stringify(settings));scheduleSharedSync();
+ localStorage.setItem("tombolaSettings",JSON.stringify(settings));
+ saveSharedState();
  renderTickets();updateGameDisplay();renderAdminBookings();renderAdminTicketStatus();
  alert("Settings saved successfully!");
  closeModal("adminModal");
@@ -1039,7 +979,7 @@ function saveSettings(){
 
 function resetBookings(){
 if(!confirm("Are you sure you want to reset ALL bookings?"))return;
-bookings={};localStorage.setItem("tombolaBookings",JSON.stringify(bookings));scheduleSharedSync();
+bookings={};localStorage.setItem("tombolaBookings",JSON.stringify(bookings));
 prizeWinners={};savePrizeWinners();
 renderTickets();renderAdminBookings();renderAdminTicketStatus();renderPlayerPrizes();renderAdminPrizeWinners();alert("All bookings reset.");
 }
@@ -1074,7 +1014,7 @@ el.textContent=days>0?days+"d "+String(hours).padStart(2,"0")+":"+String(minutes
 
 
 function acceptAnnouncement(){
-  localStorage.setItem("tombolaAnnouncementAccepted","true");scheduleSharedSync();
+  localStorage.setItem("tombolaAnnouncementAccepted","true");
   const modal=document.getElementById("announcementModal");
   if(modal) modal.style.display="none";
 }
@@ -1089,7 +1029,7 @@ function showAnnouncement(){
 function startGame(){
 // Ensure a valid random ticket set exists before rendering.
 getVisibleTicketNumbers();
-renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();if(gameRunning){showGameBoard(true);clearInterval(drawTimer);if(adminSession)drawTimer=setInterval(drawNextNumber,8000)}else{showGameBoard(false)}setInterval(updateCountdown,1000);startSharedSync();
+renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();if(gameRunning){showGameBoard(true);if(isAdminSession){clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000)}}else{showGameBoard(false)}loadSharedState(false);setInterval(updateCountdown,1000);
 }
 
 window.addEventListener("click",function(event){
@@ -1100,7 +1040,6 @@ if(event.target===adminModal)adminModal.style.display="none";
 
 startGame();
 showAnnouncement();
-if(sharedConfigured()) setTimeout(()=>pullSharedState(),250);
 </script>
 </body>
 </html>
