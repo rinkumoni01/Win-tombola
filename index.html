@@ -255,6 +255,12 @@ const SUPABASE_KEY="sb_publishable_2Kt3fQMeRjeFitT8Fiwo5g_c7yCZZQ0";
 const SUPABASE_STATE_URL=SUPABASE_URL+"/rest/v1/tambola_state";
 let cloudSaving=false;
 let cloudLastUpdated="";
+let cloudInitialLoaded=false;
+let localSpokenPrizes={};
+let voiceUnlocked=false;
+function unlockVoice(){if(voiceUnlocked||!("speechSynthesis" in window))return;voiceUnlocked=true;try{const u=new SpeechSynthesisUtterance("");u.volume=0;window.speechSynthesis.speak(u)}catch(e){}}
+window.addEventListener("touchstart",unlockVoice,{passive:true});
+window.addEventListener("click",unlockVoice,{passive:true});
 let isAdminSession=sessionStorage.getItem("tombolaAdminSession")==="true";
 
 function localGameState(){
@@ -294,6 +300,9 @@ async function saveCloudState(){
 
 function applyCloudState(data,updatedAt){
   if(!data||typeof data!=="object"||!Object.keys(data).length)return false;
+  const oldDrawn=Array.isArray(drawnNumbers)?drawnNumbers.slice():[];
+  const oldWinners=prizeWinners&&typeof prizeWinners==="object"?JSON.parse(JSON.stringify(prizeWinners)):{};
+  const hadCloudState=cloudInitialLoaded;
   if(data.settings)settings=data.settings;
   if(Array.isArray(data.visibleTicketNumbers))visibleTicketNumbers=data.visibleTicketNumbers;
   if(data.bookings&&typeof data.bookings==="object")bookings=data.bookings;
@@ -311,8 +320,20 @@ function applyCloudState(data,updatedAt){
   localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers));
   if(updatedAt)cloudLastUpdated=updatedAt;
   renderTickets();renderNumberBoard();updateGameDisplay();updatePlayerGameStatus();renderPlayerPrizes();renderAdminBookings();renderAdminTicketStatus();renderAdminPrizeWinners();
+  if(hadCloudState){
+    drawnNumbers.filter(n=>!oldDrawn.includes(Number(n))).forEach(n=>queueSpeak(NUMBER_CALLS[n]||(`Number ${n}`)));
+    Object.keys(prizeWinners||{}).forEach(key=>{
+      if(!oldWinners[key] && prizeWinners[key] && !localSpokenPrizes[key]){
+        const count=Array.isArray(prizeWinners[key])?prizeWinners[key].length:1;
+        const cleanName=String(PRIZE_NAMES[key]||key).replace(/^[^\s]+\s*/,"");
+        queueSpeak(`${cleanName} is full correct and done!${count>1?` ${count} winners!`:""}`,"winner");
+        localSpokenPrizes[key]=true;
+      }
+    });
+  }
   if(gameRunning){showGameBoard(true); if(isAdminSession && !drawTimer){drawTimer=setInterval(drawNextNumber,8000)}}
   else{showGameBoard(false);clearInterval(drawTimer);drawTimer=null}
+  cloudInitialLoaded=true;
   return true;
 }
 
@@ -444,7 +465,7 @@ function pickFemaleVoice(){
   const voices=window.speechSynthesis.getVoices();
   if(!voices.length)return null;
 
-  const femaleWords=/female|woman|girl|lady|zira|heera|kalpana|veena|neerja|priya|google|samsung|microsoft/i;
+   const femaleWords=/female|woman|girl|lady|zira|heera|kalpana|veena|neerja|priya|google|samsung|microsoft/i;
   const naturalWords=/google|natural|neural|wavenet|enhanced|premium|online/i;
   const hindi=/^hi(-|_)/i;
   const indianEnglish=/^en-(IN|GB)/i;
@@ -471,7 +492,7 @@ function cleanVoiceText(text){
     .trim();
 }
 
- function makeUtterance(text, style="number"){
+function makeUtterance(text, style="number"){
   femaleVoice=femaleVoice||pickFemaleVoice();
   const clean=cleanVoiceText(text);
   const u=new SpeechSynthesisUtterance(clean);
@@ -673,18 +694,15 @@ function checkPrizeWinners(){
 
   if(changed){
     savePrizeWinners();
-    const announcements=[];
     for(const key of selected){
       const w=prizeWinners[key];
-      if(w && !w._announced){
+      if(w && !localSpokenPrizes[key]){
         const count=Array.isArray(w)?w.length:1;
-        announcements.push(`${PRIZE_NAMES[key].replace(/^[^\\s]+\\s/,"")} is full correct and done!${count>1?` ${count} winners!`:""}`);
-        if(Array.isArray(w)) w._announced=true;
-        else w._announced=true;
+        const cleanName=String(PRIZE_NAMES[key]||key).replace(/^[^\s]+\s*/,"");
+        queueSpeak(`${cleanName} is full correct and done!${count>1?` ${count} winners!`:""}`,"winner");
+        localSpokenPrizes[key]=true;
       }
     }
-    savePrizeWinners();
-    if(announcements.length) announcements.forEach(a=>queueSpeak(a));
   }
   renderPlayerPrizes();
   renderAdminPrizeWinners();
@@ -715,9 +733,9 @@ function renderPlayerPrizes(){
     const done=selected.length>0 && selected.every(k=>!!prizeWinners[k]);
     over.style.display=done?"block":"none";
   }
- }
+}
 
- function renderAdminPrizeWinners(){
+function renderAdminPrizeWinners(){
   const box=document.getElementById("adminPrizeWinners");
   if(!box)return;
   const selected=selectedPrizeKeys();
@@ -789,7 +807,7 @@ function searchMyTicket(){
   const result=document.getElementById("myTicketResult");
   if(!input||!result)return;
 
-  const visibleSet=getVisibleTicketNumbers();
+   const visibleSet=getVisibleTicketNumbers();
   const raw=String(input.value||"").trim();
   if(!raw){result.innerHTML='<div class="noTicket">Please enter at least one ticket number.</div>';return;}
 
@@ -958,7 +976,7 @@ if(!keys.length){box.innerHTML='<div class="small">No booked tickets.</div>';ret
 let html=`<table class="adminBookingTable">
 <thead><tr><th>No.</th><th>Customer Name</th><th>S</th><th>EDT</th></tr></thead><tbody>`;
 
-keys.forEach(ticketNo=>{
+ keys.forEach(ticketNo=>{
 let name=escapeHtml(bookings[ticketNo].name||"");
 html+=`<tr><td>${ticketNo}</td><td>${name}</td><td>S</td><td><button class="adminEditBtn" onclick="editBooking(${ticketNo})">EDT</button></td></tr>`;
 });
