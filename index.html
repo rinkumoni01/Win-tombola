@@ -455,7 +455,7 @@ let femaleVoice=null;
 let voiceQueue=[];
 let voicePlaying=false;
 let voiceGeneration=0;
-
+ 
 // Pick the most natural female Hindi/Indian-English voice available on the device.
 // Android Chrome exposes different voice names on different phones, so we score
 // several common Google/Samsung/Microsoft/Indian voice names instead of relying
@@ -465,7 +465,7 @@ function pickFemaleVoice(){
   const voices=window.speechSynthesis.getVoices();
   if(!voices.length)return null;
 
-   const femaleWords=/female|woman|girl|lady|zira|heera|kalpana|veena|neerja|priya|google|samsung|microsoft/i;
+  const femaleWords=/female|woman|girl|lady|zira|heera|kalpana|veena|neerja|priya|google|samsung|microsoft/i;
   const naturalWords=/google|natural|neural|wavenet|enhanced|premium|online/i;
   const hindi=/^hi(-|_)/i;
   const indianEnglish=/^en-(IN|GB)/i;
@@ -682,6 +682,10 @@ function checkPrizeWinners(){
       eligible=eligible.filter(no=>!excluded.includes(Number(no)));
     }
 
+    // Early 5 has exactly ONE winner. If multiple tickets complete it on the same draw,
+    // the first ticket in the current ticket order wins. Other prizes can have multiple winners.
+    if(key==="early5" && eligible.length>1) eligible=[eligible[0]];
+
     if(eligible.length){
       prizeWinners[key]=eligible.map(no=>({
         ticketNo:no,
@@ -807,12 +811,9 @@ function searchMyTicket(){
   const result=document.getElementById("myTicketResult");
   if(!input||!result)return;
 
-   const visibleSet=getVisibleTicketNumbers();
+  const visibleSet=getVisibleTicketNumbers();
   const raw=String(input.value||"").trim();
   if(!raw){result.innerHTML='<div class="noTicket">Please enter at least one ticket number.</div>';return;}
-
-  const requested=[...new Set(raw.split(/[\s,]+/).map(x=>parseInt(x,10)).filter(n=>!isNaN(n)))];
-  if(!requested.length){result.innerHTML='<div class="noTicket">Please enter valid ticket numbers.</div>';return;}
 
   const invalid=requested.filter(n=>!visibleSet.includes(n));
   if(invalid.length){
@@ -976,7 +977,7 @@ if(!keys.length){box.innerHTML='<div class="small">No booked tickets.</div>';ret
 let html=`<table class="adminBookingTable">
 <thead><tr><th>No.</th><th>Customer Name</th><th>S</th><th>EDT</th></tr></thead><tbody>`;
 
- keys.forEach(ticketNo=>{
+keys.forEach(ticketNo=>{
 let name=escapeHtml(bookings[ticketNo].name||"");
 html+=`<tr><td>${ticketNo}</td><td>${name}</td><td>S</td><td><button class="adminEditBtn" onclick="editBooking(${ticketNo})">EDT</button></td></tr>`;
 });
