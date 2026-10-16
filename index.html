@@ -15,7 +15,7 @@ button,input{font-family:inherit}
 #gameDateDisplay{font-size:17px}#countdown{font-size:18px}#gameTimeDisplay{font-size:17px}
 .gameStatus{margin-top:8px;background:#07145e;border:3px solid #e9f900;border-radius:10px;padding:8px;font-weight:bold;font-size:16px}
 .statusRunning{color:#39ff70}.statusStopped{color:#ff5555}
-.headerActions{display:flex;justify-content:center;align-items:center;gap:44px;margin-top:12px}.headerIconBtn{width:46px;height:46px;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;box-shadow:0 2px 7px rgba(0,0,0,.3);font-size:23px;cursor:pointer;transition:transform .15s}.headerIconBtn:active{transform:scale(.92)}.adminBtn{color:#e90060}.whatsappBtn{color:#25d366}.phoneBtn{color:#1687ff}.telegramBtn{color:#229ed9}.headerIconBtn svg{width:25px;height:25px;display:block;fill:currentColor}
+.headerActions{display:flex;justify-content:center;align-items:center;gap:18px;margin-top:12px}.headerIconBtn{width:46px;height:46px;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;box-shadow:0 2px 7px rgba(0,0,0,.3);font-size:23px;cursor:pointer;transition:transform .15s}.headerIconBtn:active{transform:scale(.92)}.adminBtn{color:#e90060}.whatsappBtn{color:#25d366}.phoneBtn{color:#1687ff}.telegramBtn{color:#229ed9}
 .container{max-width:900px;margin:auto;padding:12px;background:transparent}
 .info{background:rgba(255,255,255,.14);padding:12px;border-radius:12px;margin-bottom:12px;text-align:center;font-weight:bold;font-size:18px}
 .ticket{background:transparent;margin:15px 0}.ticketHead{display:flex;align-items:center;gap:8px;margin-bottom:7px}
@@ -61,8 +61,7 @@ button,input{font-family:inherit}
 .currentGameStatus{text-align:center;padding:10px;border-radius:8px;background:#07145e;color:white;font-weight:bold;margin-top:10px}
 .gameBoard{display:none;position:relative;background:rgba(255,255,255,.10);border-radius:15px;padding:12px;margin-top:12px;box-shadow:0 2px 10px rgba(0,0,0,.18)}.gameBoard.active{display:block}.boardTitle{text-align:center;font-size:22px;font-weight:bold;color:#ed005f;margin:5px 0 12px}.numberGrid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}.drawNumber{aspect-ratio:1/1;border-radius:8px;border:2px solid #aaa;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:bold}.drawNumber.called{background:#18c957;color:#fff;border-color:#078b35}
 .numberGridWrap{position:relative}.centerNumberPopup{position:absolute;left:50%;top:0;transform:translate(-50%,0) scale(.72);width:82px;height:82px;border-radius:50%;background:#ffe900;color:#111;display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:900;border:4px solid #07145e;box-shadow:0 0 0 3px #e9f900,0 4px 12px rgba(0,0,0,.28);z-index:20;opacity:0;pointer-events:none;transition:top .45s ease,transform .45s ease,opacity .2s ease}
-.centerNumberPopup.show{opacity:1;top:50%;transform:translate(-50%,-50%) scale(1)}.calledListTitle{text-align:center;font-weight:bold;color:#ed005f;margin:12px 0 7px}.calledList{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:4px}.calledChip{background:#000;color:#fff;border:3px solid #e9f900;border-radius:50%;width:44px;height:44px;min-width:44px;padding:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:17px;font-weight:bold;box-shadow:0 2px 5px rgba(0,0,0,.25)}.myTicketBox{margin-top:14px;background:rgba(247,247,247,.14);border-radius:10px;padding:12px;border:2px solid #ddd}.myTicketTitle{text-align:center;font-size:19px;font-weight:bold;color:#ed005f;margin-bottom:8px}.myTicketRow{display:flex;gap:7px}.myTicketInput{flex:1;min-width:0;padding:12px;border:2px solid #aaa;border-radius:8px;font-size:17px}.myTicketBtn{background:#ed005f;color:#fff;border:0;border-radius:8px;padding:12px 15px;font-size:16px;font-weight:bold}\n.myTicketResult .customerNameHeader,.myTicketResult .searchCustomerHeader,.myTicketResult .myTicketFound{display:none!important}
-.myTicketResult{margin-top:10px}.myTicketResult .ticket{margin:0}.markedCell{background:#18c957!important;color:#fff!important;border-color:#078b35!important}.noTicket{text-align:center;background:#fff0f0;color:#d00;padding:10px;border-radius:8px;font-weight:bold}.voiceNote{text-align:center;font-size:12px;color:#666;margin-top:8px}
+.centerNumberPopup.show{opacity:1;top:50%;transform:translate(-50%,-50%) scale(1)}.calledListTitle{text-align:center;font-weight:bold;color:#ed005f;margin:12px 0 7px}.calledList{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:4px}.calledChip{background:#000;color:#fff;border:3px solid #e9f900;border-radius:50%;width:44px;height:44px;min-width:44px;padding:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:17px;font-weight:bold;box-shadow:0 2px 5px rgba(0,0,0,.25)}.myTicketBox{margin-top:14px;background:rgba(247,247,247,.14);border-radius:10px;padding:12px;border:2px solid #ddd}.myTicketTitle{text-align:center;font-size:19px;font-weight:bold;color:#ed005f;margin-bottom:8px}.myTicketRow{display:flex;gap:7px}.myTicketInput{flex:1;min-width:0;padding:12px;border:2px solid #aaa;border-radius:8px;font-size:17px}.myTicketBtn{background:#ed005f;color:#fff;border:0;border-radius:8px;padding:12px 15px;font-size:16px;font-weight:bold}.myTicketFound{background:#fff;border:3px solid #ff684e;border-radius:10px;padding:10px;margin:10px 0;text-align:center;font-size:17px;color:#07145e}\n.myTicketResult{margin-top:10px}.myTicketResult .ticket{margin:0}.markedCell{background:#18c957!important;color:#fff!important;border-color:#078b35!important}.noTicket{text-align:center;background:#fff0f0;color:#d00;padding:10px;border-radius:8px;font-weight:bold}.voiceNote{text-align:center;font-size:12px;color:#666;margin-top:8px}
 .prizeBoard{margin-top:14px;background:rgba(255,255,255,.14);border:2px solid #ddd;border-radius:12px;padding:12px}
 .prizeBoardTitle{text-align:center;color:#ed005f;font-size:20px;font-weight:bold;margin-bottom:10px}
 .playerPrize{background:#fff;border:2px solid #ddd;border-radius:9px;padding:9px 10px;margin-bottom:7px;font-weight:bold}
@@ -125,9 +124,9 @@ button,input{font-family:inherit}
 <div class="gameStatus" id="playerGameStatus">🔴 GAME STOPPED</div>
 <div class="headerActions">
   <button class="headerIconBtn adminBtn" onclick="openAdminLogin()" aria-label="Admin" title="Admin">🔐</button>
-  <button class="headerIconBtn whatsappBtn" aria-label="WhatsApp" title="WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.5 0 .1 5.3.1 11.9c0 2.1.5 4.1 1.6 5.9L0 24l6.4-1.7a12 12 0 0 0 5.7 1.4h.1c6.6 0 11.9-5.3 11.9-11.9 0-3.2-1.3-6.1-3.6-8.3ZM12.1 21.5c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.5 9.5 0 0 1-1.5-5.1c0-5.3 4.3-9.6 9.7-9.6 2.6 0 5 1 6.8 2.8a9.5 9.5 0 0 1 2.8 6.8c0 5.4-4.3 9.8-9.7 9.8Zm5.3-7.3c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-1.7-.8-2.8-1.5-3.9-3.4-.3-.5.3-.5.8-1.7.1-.2.1-.4 0-.6-.1-.2-.7-1.7-.9-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.7s1.2 3.1 1.4 3.3c.2.2 2.3 3.6 5.6 5 .8.3 1.4.5 1.9.7.8.2 1.5.2 2 .1.6-.1 1.8-.7 2-1.3.3-.6.3-1.2.2-1.3-.1-.2-.3-.2-.6-.4Z"/></svg></button>
+  <button class="headerIconBtn whatsappBtn" aria-label="WhatsApp" title="WhatsApp">💬</button>
   <button class="headerIconBtn phoneBtn" aria-label="Phone" title="Phone">📞</button>
-  <button class="headerIconBtn telegramBtn" aria-label="Telegram" title="Telegram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.8 2.3 2.7 9.7c-1.3.5-1.3 1.2-.2 1.5l4.9 1.5 1.9 6c.2.6.1.8.8.8.5 0 .7-.2 1-.5l2.4-2.3 5 3.7c.9.5 1.6.3 1.8-.8l3.2-15.1c.3-1.4-.5-2-1.7-1.5ZM8.1 12.3l10.9-6.9c.5-.3 1-.1.6.2l-8.9 8-.3 3.1-1.4-4.4-1.9-.6Z"/></svg></button>
+  <button class="headerIconBtn telegramBtn" aria-label="Telegram" title="Telegram">✈️</button>
 </div>
 </div>
 
@@ -279,75 +278,12 @@ let prizeWinners=JSON.parse(localStorage.getItem("tombolaPrizeWinners")||"{}");
 let gameRunning=localStorage.getItem("tombolaGameRunning")==="true";
 let drawnNumbers=JSON.parse(localStorage.getItem("tombolaDrawnNumbers")||"[]");
 let drawTimer=null;
-const NUMBER_CALLS={1:'Akela hi sher — Number 1',2:'Do rupaye ki Pepsi, meri wali sexy — Number 2',3:'Teen peg aur full scene — Number 3',4:'Murgi chor, sambhal ke — Number 4',5:'Punjab ka puttar, full jigar — Number 5',6:'Chhakka maar ke nikla yaar — Number 6',7:'Saat samundar paar, kaun hai taiyaar — Number 7',8:'Aath baje ka khana, nau baje bahana — Number 8',9:'Nau nau ke chakkar mein, mat padna — Number 9',10:'Dus ka note, dil ka khot — Number 10',11:'Gyarah number, attitude zabardast — Number 11',12:'Baarah mahine, ek hi bahana — Number 12',13:'Tera mera chakkar, number — Number 13',14:'Chaudah ka jadoo, sabko kar de qabu — Number 14',15:'Pandrah ka pataka, full dhamaka — Number 15',16:'Solah ka dola, kisne bola — Number 16',17:'Satrah ki setting, full betting — Number 17',18:'Atharah ka jawaan, dil se pareshaan — Number 18',19:'Unnees ka scene, bilkul haseen — Number 19',20:'Bees ka boss, baaki sab loss — Number 20',21:'Ikkis ka style, dekho bhai smile — Number 21',22:'Do do ka joda, kisne kisko chhoda — Number 22',23:'Teis ka twist, miss mat karna — Number 23',24:'Chaubees ghante, biwi ke taane — Number 24',25:'Pachchis ka punch, seedha dil pe — Number 25',26:'Chhabbees ka chhora, bada hi gora — Number 26',27:'Sattais ka swag, jeb mein tag — Number 27',28:'Atthais ka attitude, bilkul rude — Number 28',29:'Untees ka drama, ghar ka hungama — Number 29',30:'Tees maar khan, nikla jawaan — Number 30',31:'Ikattis ka item, ekdum premium — Number 31',32:'Battis daant, phir bhi sharmana — Number 32',33:'Teen teen ka magic, full fantastic — Number 33',34:'Chauntis ka chhora, dil ka thoda gora — Number 34',35:'Bloody wife, poori life — Number 35',36:'Chhattis ka figure, dekho zara picture — Number 36',37:'Saintis ka swag, bina kisi tag — Number 37',38:'Adtis ka attitude, dekho iska mood — Number 38',39:'Untalis ka chakkar, dimaag mein takkar — Number 39',40:'Chalis ka chhora, dil ka chor — Number 40',41:'Iktalis ka item, ghar ka system — Number 41',42:'Bayalis ka bhaisaab, kya hai hisaab — Number 42',43:'Taintalis ka tadka, full masala — Number 43',44:'Chawaalis ki jodi, sabse naughty — Number 44',45:'Paintalis ka pataka, phatega dhamaka — Number 45',46:'Chhiyaalis ka chhora, paisa ka bhooka — Number 46',47:'Saintalis ka swag, dekho iska tag — Number 47',48:'Adtalis ka adda, yahin hai lafda — Number 48',49:'Unchaas ka scene, bilkul mean — Number 49',50:'Pachaas ka paisa, sabko hai waisa — Number 50',51:'Ikyavan ka ishq, dil hua risk — Number 51',52:'Bawan ka bomb, full on dhamaka — Number 52',53:'Tirpan ka tadka, muh mein chatka — Number 53',54:'Chauvan ka chaska, chhodna mushkil — Number 54',55:'Pachpan ki jodi, dono naughty — Number 55',56:'Chhappan ka chhora, style mein gora — Number 56',57:'Sattavan ka swag, dil mein tag — Number 57',58:'Athavan ka attitude, full-on rude — Number 58',59:'Unsath ka scene, biwi bole clean — Number 59',60:'Saath ka shikari, sab pe bhaari — Number 60',61:'Iksath ka item, ekdum solid — Number 61',62:'Basath ka boss, baaki sab loss — Number 62',63:'Tirsath ka tadka, full masala — Number 63',64:'Chaunsath ka chaska, lag gaya toh gaya — Number 64',65:'Painsath ka pataka, dekho dhamaka — Number 65',66:'Chhiyaasath ki double entry — Number 66',67:'Sadsath ka style, dekh ke smile — Number 67',68:'Adsath ka attitude, bilkul rude — Number 68',69:'Unhattar ka romance, chance pe dance — Number 69',70:'Sattar ka superstar, sabse damdaar — Number 70',71:'Ikhattar ka item, full-time handsome — Number 71',72:'Bahattar ka bhaisaab, kya zabardast hisaab — Number 72',73:'Tihattar ka tadka, mood kare bhadka — Number 73',74:'Chauhattar ka chaska, control kar bhai — Number 74',75:'Pachhattar ka pataka, aaya dhamaka — Number 75',76:'Chihattar ka champion, sabka attention — Number 76',77:'Sattattar double seven, number aaye heaven — Number 77',78:'Athhattar ka attitude, full-on mood — Number 78',79:'Unasi ka ulta-pulta, dimaag gaya hilta — Number 79',80:'Assi ka asli boss, baaki sab loss — Number 80',81:'Ikyasi ka item, full premium — Number 81',82:'Bayasi ka bomb, phir se dhamaka — Number 82',83:'Tirasi ka tadka, sabko bhadka — Number 83',84:'Chaurasi ka chaska, dil mein atka — Number 84',85:'Pachasi ka pataka, final dhamaka — Number 85',86:'Chhiyasi ka champion, full attention — Number 86',87:'Sattasi ka swag, jeb mein tag — Number 87',88:'Atthasi double eight, der mat karna wait — Number 88',89:'Navasi ka nawab, sabse lajawab — Number 89',90:'Nabbey ka nasha, Tambola mein paisa — Number 90'};
-const GAME_START_VOICE="Ladies and gentlemen! Game is on! Get ready... your lucky number is coming!";
-const GAME_OVER_VOICE="Ladies and gentlemen! What a game! All selected prizes are complete. Congratulations to all our winners! Thank you for playing! game over!";
+const NUMBER_CALLS={
+1:"Top of the house, Number 1!",2:"One little duck, Number 2!",3:"Cup of tea, Number 3!",4:"Murgi, Number 4!",5:"Man alive, Number 5!",6:"Half a dozen, Number 6!",7:"Lucky seven, Number 7!",8:"Garden gate, Number 8!",9:"Doctor's orders, Number 9!",10:"Perfect ten, Number 10!",11:"Legs eleven, Number 11!",12:"One dozen, Number 12!",13:"Unlucky for some, Number 13!",14:"Valentine's Day, Number 14!",15:"Young and keen, Number 15!",16:"Sweet sixteen, Number 16!",17:"Dancing queen, Number 17!",18:"Coming of age, Number 18!",19:"Goodbye teens, Number 19!",20:"One score, Number 20!",21:"Key of the door, Number 21!",22:"Two little ducks, Number 22!",23:"Thee and me, Number 23!",24:"Two dozen, Number 24!",25:"Duck and dive, Number 25!",26:"Pick and mix, Number 26!",27:"Gateway to heaven, Number 27!",28:"Overweight, Number 28!",29:"Rise and shine, Number 29!",30:"Dirty Gertie, Number 30!",31:"Get up and run, Number 31!",32:"Buckle my shoe, Number 32!",33:"All the threes, Number 33!",34:"Ask for more, Number 34!",35:"Jump and jive, Number 35!",36:"Three dozen, Number 36!",37:"More than eleven, Number 37!",38:"Christmas cake, Number 38!",39:"Steps, Number 39!",40:"Life begins at forty, Number 40!",41:"Time for fun, Number 41!",42:"Winnie the Pooh, Number 42!",43:"Down on your knees, Number 43!",44:"Droopy drawers, Number 44!",45:"Halfway there, Number 45!",46:"Up to tricks, Number 46!",47:"Four and seven, Number 47!",48:"Four dozen, Number 48!",49:"Rise and shine, Number 49!",50:"Half a century, Number 50!",51:"Tweak of the thumb, Number 51!",52:"Danny La Rue, Number 52!",53:"Stuck in the tree, Number 53!",54:"Clean the floor, Number 54!",55:"Snakes alive, Number 55!",56:"Was she worth it? Number 56!",57:"Heinz varieties, Number 57!",58:"Make them wait, Number 58!",59:"Brighton line, Number 59!",60:"Five dozen, Number 60!",61:"Baker's bun, Number 61!",62:"Turn the screw, Number 62!",63:"Tickle me, Number 63!",64:"Red raw, Number 64!",65:"Old age pension, Number 65!",66:"Clickety click, Number 66!",67:"Stairway to heaven, Number 67!",68:"Saving grace, Number 68!",69:"Either way up, Number 69!",70:"Three score and ten, Number 70!",71:"Bang on the drum, Number 71!",72:"Six dozen, Number 72!",73:"Queen bee, Number 73!",74:"Candy store, Number 74!",75:"Strive and strive, Number 75!",76:"Trombones, Number 76!",77:"Sunset strip, Number 77!",78:"Heaven's gate, Number 78!",79:"One more time, Number 79!",80:"Gandhi's breakfast, Number 80!",81:"Stop and run, Number 81!",82:"Straight on through, Number 82!",83:"Time for tea, Number 83!",84:"Seven dozen, Number 84!",85:"Staying alive, Number 85!",86:"Between the sticks, Number 86!",87:"Torquay in Devon, Number 87!",88:"Two fat ladies, Number 88!",89:"Nearly there, Number 89!",90:"Top of the house, Number 90!"
+};
+const GAME_START_VOICE="Ladies and gentlemen, welcome! The Tambola game is now starting. Get your tickets ready, keep your eyes on the numbers, and let's play!";
+const GAME_OVER_VOICE="Ladies and gentlemen, that's the end of the game! All selected prizes are complete. Congratulations to all our winners! Thank you for playing, and have a wonderful day!";
 
-// ===== SUPABASE LIVE SYNC =====
-const SUPABASE_URL="https://fticnarblyqgjbtlwgff.supabase.co";
-const SUPABASE_KEY="sb_publishable_nvbAiu89F9l6sNiJ0YFtiQ_sLXRrGYO";
-const SUPABASE_STATE_URL=SUPABASE_URL+"/rest/v1/tombola_state?id=eq.1";
-let isAdminSession=false;
-let syncingRemote=false;
-let lastRemoteDrawnCount=drawnNumbers.length;
-let lastRemoteRunning=gameRunning;
-let lastRemoteUpdatedAt="";
-
-function supabaseHeaders(){return {"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"};}
-function currentTicketStore(){return JSON.parse(localStorage.getItem("tombolaTicketNumbers")||"{}");}
-async function saveSharedState(){
-  if(syncingRemote)return;
-  try{
-    const body={settings,ticket_numbers:{visible:getVisibleTicketNumbers(),numbers:currentTicketStore()},bookings,prizes,prize_winners:prizeWinners,drawn_numbers:drawnNumbers,game_running:gameRunning,updated_at:new Date().toISOString()};
-    await fetch(SUPABASE_STATE_URL,{method:"PATCH",headers:{...supabaseHeaders(),"Prefer":"return=minimal"},body:JSON.stringify(body)});
-  }catch(e){console.warn("Supabase sync failed",e);}
-}
-async function loadSharedState(speakRemote=false){
-  try{
-    const res=await fetch(SUPABASE_STATE_URL,{headers:supabaseHeaders(),cache:"no-store"});
-    if(!res.ok)return;
-    const rows=await res.json(); if(!rows.length)return;
-    const st=rows[0];
-    if(!st.updated_at || st.updated_at===lastRemoteUpdatedAt)return;
-    lastRemoteUpdatedAt=st.updated_at;
-    const oldRunning=gameRunning,oldDrawn=drawnNumbers.slice();
-    syncingRemote=true;
-    if(st.settings && Object.keys(st.settings).length) settings=st.settings;
-    if(st.ticket_numbers){
-      if(Array.isArray(st.ticket_numbers.visible)){visibleTicketNumbers=st.ticket_numbers.visible;localStorage.setItem("tombolaVisibleTicketNumbers",JSON.stringify(visibleTicketNumbers));}
-      if(st.ticket_numbers.numbers){localStorage.setItem("tombolaTicketNumbers",JSON.stringify(st.ticket_numbers.numbers));}
-    }
-    if(st.bookings)bookings=st.bookings;
-    if(st.prizes)prizes=st.prizes;
-    if(st.prize_winners)prizeWinners=st.prize_winners;
-    if(Array.isArray(st.drawn_numbers))drawnNumbers=st.drawn_numbers;
-    gameRunning=st.game_running===true;
-    localStorage.setItem("tombolaSettings",JSON.stringify(settings));
-    localStorage.setItem("tombolaBookings",JSON.stringify(bookings));
-    localStorage.setItem("tombolaPrizes",JSON.stringify(prizes));
-    localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners));
-    localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers));
-    localStorage.setItem("tombolaGameRunning",String(gameRunning));
-    syncingRemote=false;
-    renderTickets();updateGameDisplay();renderAdminBookings();renderAdminTicketStatus();renderPlayerPrizes();renderAdminPrizeWinners();renderNumberBoard();updatePlayerGameStatus();
-    if(gameRunning)showGameBoard(true);
-    else if(!isAdminSession)showGameBoard(false);
-    if(speakRemote){
-      if(!oldRunning && gameRunning){clearVoiceQueue();queueSpeak(GAME_START_VOICE,"start");}
-      if(gameRunning && drawnNumbers.length>oldDrawn.length){
-        const newNumbers=drawnNumbers.slice(oldDrawn.length);
-        newNumbers.forEach(n=>queueSpeak(NUMBER_CALLS[n]||("Number "+n)));
-      }
-      if(oldRunning && !gameRunning){
-        const selected=selectedPrizeKeys();
-        const completed=selected.length>0 && selected.every(k=>!!prizeWinners[k]);
-        queueSpeak(completed?GAME_OVER_VOICE:"Game stopped");
-      }
-    }
-    lastRemoteDrawnCount=drawnNumbers.length;lastRemoteRunning=gameRunning;
-  }catch(e){console.warn("Supabase load failed",e);syncingRemote=false;}
-}
-setInterval(()=>loadSharedState(true),1000);
 
 function generateTicketNumbers(ticketNo){
 const key="tombolaTicketNumbers";
@@ -394,125 +330,50 @@ const input=document.getElementById("myTicketNumber");if(input&&input.value)sear
 let femaleVoice=null;
 let voiceQueue=[];
 let voicePlaying=false;
-let voiceGeneration=0;
-
- // Pick the most natural female Hindi/Indian-English voice available on the device.
-// Android Chrome exposes different voice names on different phones, so we score
-// several common Google/Samsung/Microsoft/Indian voice names instead of relying
-// on one exact name.
 function pickFemaleVoice(){
   if(!("speechSynthesis" in window))return null;
   const voices=window.speechSynthesis.getVoices();
-  if(!voices.length)return null;
-
-  const femaleWords=/female|woman|girl|lady|zira|heera|kalpana|veena|neerja|priya|google|samsung|microsoft/i;
-  const naturalWords=/google|natural|neural|wavenet|enhanced|premium|online/i;
-  const hindi=/^hi(-|_)/i;
-  const indianEnglish=/^en-(IN|GB)/i;
-  const score=v=>{
-    let n=0;
-    if(hindi.test(v.lang))n+=70;
-    if(indianEnglish.test(v.lang))n+=45;
-    if(femaleWords.test(v.name))n+=35;
-    if(naturalWords.test(v.name))n+=20;
-    if(/en(-|_)/i.test(v.lang))n+=10;
-    return n;
-  };
-  return voices.slice().sort((a,b)=>score(b)-score(a))[0]||voices[0];
+  const hi=voices.filter(v=>/^hi(-|_)/i.test(v.lang));
+  const candidates=hi.length?hi:voices.filter(v=>/^en(-|_)/i.test(v.lang));
+  return candidates.find(v=>/female|woman|girl|lady/i.test(v.name)) || candidates.find(v=>/Google/i.test(v.name)) || candidates[0] || voices[0] || null;
 }
-
-function cleanVoiceText(text){
-  return String(text)
-    .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u27BF]/gu,"")
-    .replace(/[—–]/g," ... ")
-    .replace(/\s*,\s*/g,", ")
-    .replace(/\s*!\s*/g,"! ")
-    .replace(/\s*\.\.\.\s*/g," ... ")
-    .replace(/\s+/g," ")
-    .trim();
-}
-
-function makeUtterance(text, style="number"){
+function makeUtterance(text){
   femaleVoice=femaleVoice||pickFemaleVoice();
-  const clean=cleanVoiceText(text);
+  const clean=String(text).replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,"");
   const u=new SpeechSynthesisUtterance(clean);
   u.voice=femaleVoice||null;
   u.lang=(femaleVoice&&femaleVoice.lang)||"hi-IN";
-  u.volume=1;
-  const n=Number(clean.match(/\d+\s*$/)?.[0]||0);
-  const wobble=n%7;
-  if(style==="start"){
-    u.rate=.86; u.pitch=1.10;
-  }else if(style==="winner"){
-    u.rate=.88; u.pitch=1.14;
-  }else{
-    u.rate=.79 + wobble*.010;
-    u.pitch=1.06 + (wobble%4)*.018;
-  }
+  u.rate=.86;u.pitch=1.10;u.volume=1;
   return u;
 }
-
-function speak(text,style="normal"){
+function speak(text){
   if(!("speechSynthesis" in window))return;
-  voiceQueue=[];
-  voicePlaying=false;
-  voiceGeneration++;
-  window.speechSynthesis.cancel();
-  const u=makeUtterance(text,style);
-  u.onend=()=>{voicePlaying=false};
-  u.onerror=()=>{voicePlaying=false};
-  window.speechSynthesis.speak(u);
+  voiceQueue=[];voicePlaying=false;window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(makeUtterance(text));
 }
-
-function makeFunnyCallText(text){
-  let t=String(text).trim();
-  // Keep the joke together, then give the number a clear natural beat.
-  t=t.replace(/\s*[—-]\s*(Number\s*\d+)$/i," ... $1");
-  t=t.replace(/\bNumber\s+(\d+)\b/i,"Number ... $1");
-  return t;
-}
-
-function queueSpeak(text,style="number"){
+function queueSpeak(text){
   if(!("speechSynthesis" in window))return;
-  voiceQueue.push({text:makeFunnyCallText(text),style});
+  voiceQueue.push(String(text));
   if(voicePlaying)return;
   playVoiceQueue();
 }
-
 function playVoiceQueue(){
   if(!voiceQueue.length){voicePlaying=false;return;}
   voicePlaying=true;
-  const item=voiceQueue.shift();
-  const u=makeUtterance(item.text,item.style);
-  const generation=voiceGeneration;
-  u.onend=()=>{
-    if(generation!==voiceGeneration)return;
-    // Natural breathing gap between calls; not long enough to feel delayed.
-    setTimeout(()=>{if(generation===voiceGeneration)playVoiceQueue()},360);
-  };
-  u.onerror=()=>{
-    if(generation!==voiceGeneration)return;
-    setTimeout(()=>{if(generation===voiceGeneration)playVoiceQueue()},80);
-  };
+  const u=makeUtterance(voiceQueue.shift());
+  u.onend=()=>playVoiceQueue();
+  u.onerror=()=>playVoiceQueue();
   window.speechSynthesis.speak(u);
 }
-
 function clearVoiceQueue(){
-  voiceQueue=[];
-  voicePlaying=false;
-  voiceGeneration++;
+  voiceQueue=[];voicePlaying=false;
   if("speechSynthesis" in window)window.speechSynthesis.cancel();
 }
-
-if("speechSynthesis" in window){
-  window.speechSynthesis.onvoiceschanged=()=>{femaleVoice=pickFemaleVoice()};
-  setTimeout(()=>{femaleVoice=pickFemaleVoice()},300);
-  setTimeout(()=>{if(!femaleVoice)femaleVoice=pickFemaleVoice()},1200);
-}
+if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged=()=>{femaleVoice=pickFemaleVoice()};
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
-function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers));saveSharedState()}
+function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 
-function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners));saveSharedState()}
+function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
 
 const PRIZE_NAMES={
   firstLine:"🥇 First Line",
@@ -551,7 +412,7 @@ function fourCornersComplete(ticket){
 }
 function fullHouseComplete(ticket){return markedCount(ticket)===15}
 
-function bookedTickets(){
+ function bookedTickets(){
   return Object.keys(bookings).map(Number).filter(n=>bookings[n]&&bookings[n].booked===true).sort((a,b)=>a-b);
 }
 
@@ -597,38 +458,37 @@ function checkPrizeWinners(){
   const selected=selectedPrizeKeys();
   let changed=false;
 
-  // For every prize, ALL tickets that become eligible on the same draw are winners.
-  // This applies to lines, corners, full houses and early prizes alike.
+  // First, normal prizes can be won independently.
   for(const key of selected){
     if(prizeWinners[key]) continue;
-
-    let eligible=bookedTickets().filter(no=>prizeCompleteForTicket(key,no));
-
-    // Second/Third Full House are sequential prizes, but ties within that prize
-    // are still all winners. Exclude tickets that already won an earlier house prize.
-    if(key==="secondFullHouse"){
-      const excluded=[];
-      const first=prizeWinners.fullHouse;
-      if(Array.isArray(first)) first.forEach(w=>excluded.push(Number(w.ticketNo)));
-      else if(first) excluded.push(Number(first.ticketNo));
-      eligible=eligible.filter(no=>!excluded.includes(Number(no)));
-    }
-    if(key==="thirdFullHouse"){
-      const excluded=[];
-      [prizeWinners.fullHouse,prizeWinners.secondFullHouse].forEach(group=>{
-        if(Array.isArray(group)) group.forEach(w=>excluded.push(Number(w.ticketNo)));
-        else if(group) excluded.push(Number(group.ticketNo));
-      });
-      eligible=eligible.filter(no=>!excluded.includes(Number(no)));
-    }
-
-    if(eligible.length){
-      prizeWinners[key]=eligible.map(no=>({
-        ticketNo:no,
-        name:String((bookings[no]&&bookings[no].name)||"Unknown"),
-        markedNumbers:getWinningMarkedNumbers(key,no)
-      }));
+    const no=winnerTicketForPrize(key);
+    if(no!==null){
+      prizeWinners[key]={ticketNo:no,name:String(bookings[no].name||"Unknown"),markedNumbers:getWinningMarkedNumbers(key,no)};
       changed=true;
+      
+    }
+  }
+
+  // Second/third full house must be different winning tickets from earlier full houses.
+  if(selected.includes("secondFullHouse") && !prizeWinners.secondFullHouse){
+    const excluded=[];
+    if(prizeWinners.fullHouse) excluded.push(prizeWinners.fullHouse.ticketNo);
+    const no=winnerTicketForPrize("secondFullHouse",excluded);
+    if(no!==null){
+      prizeWinners.secondFullHouse={ticketNo:no,name:String(bookings[no].name||"Unknown"),markedNumbers:getWinningMarkedNumbers("secondFullHouse",no)};
+      changed=true;
+      
+    }
+  }
+  if(selected.includes("thirdFullHouse") && !prizeWinners.thirdFullHouse){
+    const excluded=[];
+    if(prizeWinners.fullHouse) excluded.push(prizeWinners.fullHouse.ticketNo);
+    if(prizeWinners.secondFullHouse) excluded.push(prizeWinners.secondFullHouse.ticketNo);
+    const no=winnerTicketForPrize("thirdFullHouse",excluded);
+    if(no!==null){
+      prizeWinners.thirdFullHouse={ticketNo:no,name:String(bookings[no].name||"Unknown"),markedNumbers:getWinningMarkedNumbers("thirdFullHouse",no)};
+      changed=true;
+      
     }
   }
 
@@ -637,11 +497,9 @@ function checkPrizeWinners(){
     const announcements=[];
     for(const key of selected){
       const w=prizeWinners[key];
-      if(w && !w._announced){
-        const count=Array.isArray(w)?w.length:1;
-        announcements.push(`${PRIZE_NAMES[key].replace(/^[^\\s]+\\s/,"")} is full correct and done!${count>1?` ${count} winners!`:""}`);
-        if(Array.isArray(w)) w._announced=true;
-        else w._announced=true;
+      if(w && !prizeWinners[key]._announced){
+        announcements.push(`${PRIZE_NAMES[key].replace(/^[^\s]+\s/,"")} is full correct and done!`);
+        w._announced=true;
       }
     }
     savePrizeWinners();
@@ -664,11 +522,10 @@ function renderPlayerPrizes(){
   }
   box.innerHTML=selected.map(key=>{
     const w=prizeWinners[key];
-    const list=Array.isArray(w)?w:(w?[w]:[]);
     return `<div class="playerPrize ${w?"done":"on"}">
       <div>${PRIZE_NAMES[key]}</div>
       <div class="pStatus">${w?"✅ COMPLETED":"🟢 ACTIVE"}</div>
-      ${list.map((x,i)=>`<div class="winner">🏆 Winner ${list.length>1?i+1:""}: ${escapeHtml(x.name)}<br>🎟️ Ticket: ${x.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}',${Number(x.ticketNo)})">👁️ VIEW TICKET</button></div>`).join("")}
+      ${w?`<div class="winner">🏆 Winner: ${escapeHtml(w.name)}<br>🎟️ Ticket: ${w.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}')">👁️ VIEW TICKET</button></div>`:""}
     </div>`;
   }).join("");
   const over=document.getElementById("gameOverBox");
@@ -685,14 +542,12 @@ function renderAdminPrizeWinners(){
   if(!selected.length){box.innerHTML='<div class="small">No prizes selected.</div>';return}
   box.innerHTML=selected.map(key=>{
     const w=prizeWinners[key];
-    const list=Array.isArray(w)?w:(w?[w]:[]);
-    return `<div class="adminWinner"><b>${PRIZE_NAMES[key]}</b><br>${list.length?list.map((x,i)=>`🏆 ${list.length>1?"Winner "+(i+1)+": ":""}${escapeHtml(x.name)} — 🎟️ Ticket ${x.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}',${Number(x.ticketNo)})">👁️ VIEW TICKET</button>`).join("<hr style='border:0;border-top:1px solid #bde8c8;margin:7px 0'>"):"⏳ Winner not decided yet"}</div>`;
+    return `<div class="adminWinner"><b>${PRIZE_NAMES[key]}</b><br>${w?`🏆 ${escapeHtml(w.name)} — 🎟️ Ticket ${w.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}')">👁️ VIEW TICKET</button>`:"⏳ Winner not decided yet"}</div>`;
   }).join("");
 }
 
-function viewWinnerTicket(prizeKey,ticketNoOverride){
-  let w=prizeWinners[prizeKey];
-  if(Array.isArray(w)) w=w.find(x=>Number(x.ticketNo)===Number(ticketNoOverride))||w[0];
+function viewWinnerTicket(prizeKey){
+  const w=prizeWinners[prizeKey];
   if(!w||w.ticketNo===undefined||w.ticketNo===null)return;
   const ticketNo=Number(w.ticketNo);
   const booking=bookings[ticketNo];
@@ -723,15 +578,14 @@ function finishPrizeGame(){
   clearInterval(drawTimer);drawTimer=null;
   gameRunning=false;
   localStorage.setItem("tombolaGameRunning","false");
-  saveSharedState();
   updatePlayerGameStatus();
   renderPlayerPrizes();
   renderAdminPrizeWinners();
-  queueSpeak(GAME_OVER_VOICE,"winner");
+  queueSpeak(GAME_OVER_VOICE);
 }
 function showCenterNumber(n){const el=document.getElementById("centerNumberPopup");if(!el)return;el.textContent=n;el.classList.add("show");clearTimeout(window.centerNumberTimer);window.centerNumberTimer=setTimeout(()=>{el.classList.remove("show")},4000)}
 function drawNextNumber(){if(!gameRunning)return;if(drawnNumbers.length>=90){finishGame();return}const a=[];for(let i=1;i<=90;i++)if(!drawnNumbers.includes(i))a.push(i);const n=a[Math.floor(Math.random()*a.length)];drawnNumbers.push(n);saveDrawnNumbers();renderNumberBoard();showCenterNumber(n);queueSpeak(NUMBER_CALLS[n]||(`Number ${n}`));checkPrizeWinners();if(gameRunning&&drawnNumbers.length>=90)finishGame()}
-function finishGame(){clearInterval(drawTimer);drawTimer=null;gameRunning=false;localStorage.setItem("tombolaGameRunning","false");saveSharedState();renderNumberBoard();updatePlayerGameStatus();speak("Game over")}
+function finishGame(){clearInterval(drawTimer);drawTimer=null;gameRunning=false;localStorage.setItem("tombolaGameRunning","false");renderNumberBoard();updatePlayerGameStatus();speak("Game over")}
 function renderTickets(){
 const box=document.getElementById("tickets");box.innerHTML="";
 const ticketNumbers=getVisibleTicketNumbers();
@@ -753,68 +607,88 @@ function searchMyTicket(){
 
   const visibleSet=getVisibleTicketNumbers();
   const raw=String(input.value||"").trim();
-  if(!raw){result.innerHTML='<div class="noTicket">Please enter at least one ticket number.</div>';return;}
 
-   const requested=[...new Set(raw.split(/[\s,]+/).map(x=>parseInt(x,10)).filter(n=>!isNaN(n)))];
-  if(!requested.length){result.innerHTML='<div class="noTicket">Please enter valid ticket numbers.</div>';return;}
-
-  const invalid=requested.filter(n=>!visibleSet.includes(n));
-  if(invalid.length){
-    result.innerHTML='<div class="noTicket">Invalid ticket number: '+invalid.join(", ")+"<br>Visible ticket numbers are: "+visibleSet.join(', ')+'.</div>';
+  if(!raw){
+    result.innerHTML='<div class="noTicket">Please enter at least one ticket number.</div>';
     return;
   }
 
-  // If any searched ticket is booked, show ALL booked tickets belonging to the same customer name.
-  // This means a customer who booked 10 tickets can search any one of those 10 and see all 10.
-  const targetNames=new Set();
+  const requested=[...new Set(raw.split(/[\s,]+/).map(x=>parseInt(x,10)).filter(n=>!isNaN(n)))];
+
+  if(!requested.length){
+    result.innerHTML='<div class="noTicket">Please enter valid ticket numbers.</div>';
+    return;
+  }
+
+  const invalid=requested.filter(n=>!visibleSet.includes(n));
+  if(invalid.length){
+    result.innerHTML='<div class="noTicket">Invalid ticket number: '+invalid.join(", ")+'<br>Visible ticket numbers are: '+visibleSet.join(', ')+'.</div>';
+    return;
+  }
+
+  const customerGroups={};
   const notBooked=[];
+
   requested.forEach(ticketNo=>{
     const booking=bookings[ticketNo];
-    if(!booking||booking.booked!==true){
-      notBooked.push(ticketNo);
-      return;
-    }
-    const nameKey=String(booking.name||"").trim().toLowerCase();
-    if(nameKey) targetNames.add(nameKey);
+    if(!booking||booking.booked!==true){notBooked.push(ticketNo);return;}
+
+    const name=String(booking.name||"").trim()||"Unknown";
+    const key=name.toLowerCase();
+    if(!customerGroups[key]) customerGroups[key]={name:name,sourceTickets:[],allTickets:[]};
+    customerGroups[key].sourceTickets.push(ticketNo);
   });
 
-  const matchedTickets=[];
-  if(targetNames.size){
-    Object.keys(bookings).map(Number).sort((a,b)=>a-b).forEach(ticketNo=>{
-      const booking=bookings[ticketNo];
-      if(!booking||booking.booked!==true)return;
-      const nameKey=String(booking.name||"").trim().toLowerCase();
-      if(targetNames.has(nameKey)) matchedTickets.push(ticketNo);
-    });
+  const groups=Object.values(customerGroups);
+
+  if(!groups.length){
+    result.innerHTML='<div class="noTicket">None of the entered tickets are booked.</div>';
+    return;
   }
 
   let html="";
-  matchedTickets.forEach(ticketNo=>{
-    const booking=bookings[ticketNo];
-    const name=String(booking.name||"").trim()||"Unknown";
-    const numbers=generateTicketNumbers(ticketNo);
-    let cells="";
-    for(let r=0;r<3;r++){
-      for(let c=0;c<9;c++){
-        const value=numbers[r][c];
-        const marked=value!==""&&drawnNumbers.includes(Number(value));
-        cells+=`<div class="cell ${value===""?"empty":""} ${marked?"markedCell":""}">${value}</div>`;
-      }
-    }
 
-    html+=`<div class="ticket">
-      <div class="ticketHead">
-        <div class="ticketNo">${ticketNo}</div>
-        <div class="ticketName">${escapeHtml(name)}</div>
-      </div>
-      <div class="ticketGrid">${cells}</div>
+  groups.forEach(group=>{
+    visibleSet.forEach(i=>{
+      if(bookings[i]&&bookings[i].booked===true&&String(bookings[i].name||"").trim().toLowerCase()===group.name.toLowerCase()){
+        group.allTickets.push(i);
+      }
+    });
+
+    group.allTickets.sort((a,b)=>a-b);
+    group.sourceTickets.sort((a,b)=>a-b);
+
+    html+=`<div class="myTicketFound">
+      <b>👤 ${group.name}</b>
     </div>`;
+
+        group.allTickets.forEach(no=>{
+      const numbers=generateTicketNumbers(no);
+      let cells="";
+
+      for(let r=0;r<3;r++){
+        for(let c=0;c<9;c++){
+          const value=numbers[r][c];
+          const marked=value!==""&&drawnNumbers.includes(Number(value));
+          cells+=`<div class="cell ${value===""?"empty":""} ${marked?"markedCell":""}">${value}</div>`;
+        }
+      }
+
+      html+=`<div class="ticket">
+        <div class="ticketHead">
+          <div class="ticketNo">${no}</div>
+          <div class="ticketName">${group.name}</div>
+        </div>
+        <div class="ticketGrid">${cells}</div>
+      </div>`;
+    });
   });
 
   if(notBooked.length){
-    html='<div class="noTicket" style="margin-bottom:10px">⚠️ Not booked: '+notBooked.join(", ")+'</div>'+html;
+    html=`<div class="noTicket" style="margin-bottom:10px">⚠️ Not booked: ${notBooked.join(", ")}</div>`+html;
   }
-  result.innerHTML=html||'<div class="noTicket">None of the entered tickets are booked.</div>';
+
+  result.innerHTML=html;
 }
 
 function updatePlayerGameStatus(){
@@ -826,8 +700,7 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 }
 
 function setGameStatus(status){
-if(!isAdminSession){alert("Admin login required.");return}
-if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");saveSharedState();updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE,"start");clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. First number 8 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");saveSharedState();clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
+if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,6000);alert("🟢 Game is now RUNNING. First number 6 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
 function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
@@ -840,7 +713,6 @@ saveDrawnNumbers();
 prizeWinners={};
 savePrizeWinners();
 localStorage.setItem("tombolaGameRunning","false");
-saveSharedState();
 updatePlayerGameStatus();
 renderNumberBoard();
 showGameBoard(false);
@@ -853,7 +725,7 @@ function loginAdmin(){
 const user=document.getElementById("username").value.trim(),pass=document.getElementById("password").value;
 if(user===ADMIN_USERNAME&&pass===ADMIN_PASSWORD){
 document.getElementById("username").value="";document.getElementById("password").value="";
-closeModal("loginModal");isAdminSession=true;openAdminPanel();if(gameRunning){clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);}
+closeModal("loginModal");openAdminPanel();
 }else alert("Wrong username or password.");
 }
 
@@ -880,7 +752,6 @@ function savePrizes(){
 const names=["firstLine","secondLine","thirdLine","fourCorners","fullHouse","secondFullHouse","thirdFullHouse","early5","early7"];
 names.forEach(name=>prizes[name]=document.getElementById("prize_"+name).checked);
 localStorage.setItem("tombolaPrizes",JSON.stringify(prizes));
-saveSharedState();
 Object.keys(prizeWinners).forEach(k=>{if(!prizes[k])delete prizeWinners[k]});
 savePrizeWinners();
 renderPlayerPrizes();
@@ -896,7 +767,6 @@ if(!name){alert("Please enter customer name.");return}
 if(bookings[ticketNo]&&bookings[ticketNo].booked===true){alert("This ticket is already booked.");return}
 bookings[ticketNo]={booked:true,name:name,time:new Date().toISOString()};
 localStorage.setItem("tombolaBookings",JSON.stringify(bookings));
-saveSharedState();
 document.getElementById("adminTicketNumber").value="";document.getElementById("adminCustomerName").value="";
 renderTickets();renderAdminBookings();renderAdminTicketStatus();
 alert("Ticket "+ticketNo+" booked for "+name);
@@ -940,7 +810,6 @@ const name=newName.trim();
 if(!name){alert("Customer name cannot be empty.");return;}
 bookings[ticketNo].name=name;
 localStorage.setItem("tombolaBookings",JSON.stringify(bookings));
-saveSharedState();
 renderTickets();
 renderAdminBookings();
 renderAdminTicketStatus();
@@ -971,7 +840,6 @@ function saveSettings(){
  settings.gameDate=document.getElementById("gameDate").value;
  settings.gameTime=document.getElementById("gameTime").value;
  localStorage.setItem("tombolaSettings",JSON.stringify(settings));
- saveSharedState();
  renderTickets();updateGameDisplay();renderAdminBookings();renderAdminTicketStatus();
  alert("Settings saved successfully!");
  closeModal("adminModal");
@@ -1029,7 +897,7 @@ function showAnnouncement(){
 function startGame(){
 // Ensure a valid random ticket set exists before rendering.
 getVisibleTicketNumbers();
-renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();if(gameRunning){showGameBoard(true);if(isAdminSession){clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000)}}else{showGameBoard(false)}loadSharedState(false);setInterval(updateCountdown,1000);
+renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();if(gameRunning){showGameBoard(true);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,6000)}else{showGameBoard(false)}setInterval(updateCountdown,1000);
 }
 
 window.addEventListener("click",function(event){
