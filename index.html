@@ -278,9 +278,6 @@ let prizeWinners=JSON.parse(localStorage.getItem("tombolaPrizeWinners")||"{}");
 let gameRunning=localStorage.getItem("tombolaGameRunning")==="true";
 let drawnNumbers=JSON.parse(localStorage.getItem("tombolaDrawnNumbers")||"[]");
 let drawTimer=null;
-const NUMBER_CALLS={
-1:"Top of the house, Number 1!",2:"One little duck, Number 2!",3:"Cup of tea, Number 3!",4:"Murgi, Number 4!",5:"Man alive, Number 5!",6:"Half a dozen, Number 6!",7:"Lucky seven, Number 7!",8:"Garden gate, Number 8!",9:"Doctor's orders, Number 9!",10:"Perfect ten, Number 10!",11:"Legs eleven, Number 11!",12:"One dozen, Number 12!",13:"Unlucky for some, Number 13!",14:"Valentine's Day, Number 14!",15:"Young and keen, Number 15!",16:"Sweet sixteen, Number 16!",17:"Dancing queen, Number 17!",18:"Coming of age, Number 18!",19:"Goodbye teens, Number 19!",20:"One score, Number 20!",21:"Key of the door, Number 21!",22:"Two little ducks, Number 22!",23:"Thee and me, Number 23!",24:"Two dozen, Number 24!",25:"Duck and dive, Number 25!",26:"Pick and mix, Number 26!",27:"Gateway to heaven, Number 27!",28:"Overweight, Number 28!",29:"Rise and shine, Number 29!",30:"Dirty Gertie, Number 30!",31:"Get up and run, Number 31!",32:"Buckle my shoe, Number 32!",33:"All the threes, Number 33!",34:"Ask for more, Number 34!",35:"Jump and jive, Number 35!",36:"Three dozen, Number 36!",37:"More than eleven, Number 37!",38:"Christmas cake, Number 38!",39:"Steps, Number 39!",40:"Life begins at forty, Number 40!",41:"Time for fun, Number 41!",42:"Winnie the Pooh, Number 42!",43:"Down on your knees, Number 43!",44:"Droopy drawers, Number 44!",45:"Halfway there, Number 45!",46:"Up to tricks, Number 46!",47:"Four and seven, Number 47!",48:"Four dozen, Number 48!",49:"Rise and shine, Number 49!",50:"Half a century, Number 50!",51:"Tweak of the thumb, Number 51!",52:"Danny La Rue, Number 52!",53:"Stuck in the tree, Number 53!",54:"Clean the floor, Number 54!",55:"Snakes alive, Number 55!",56:"Was she worth it? Number 56!",57:"Heinz varieties, Number 57!",58:"Make them wait, Number 58!",59:"Brighton line, Number 59!",60:"Five dozen, Number 60!",61:"Baker's bun, Number 61!",62:"Turn the screw, Number 62!",63:"Tickle me, Number 63!",64:"Red raw, Number 64!",65:"Old age pension, Number 65!",66:"Clickety click, Number 66!",67:"Stairway to heaven, Number 67!",68:"Saving grace, Number 68!",69:"Either way up, Number 69!",70:"Three score and ten, Number 70!",71:"Bang on the drum, Number 71!",72:"Six dozen, Number 72!",73:"Queen bee, Number 73!",74:"Candy store, Number 74!",75:"Strive and strive, Number 75!",76:"Trombones, Number 76!",77:"Sunset strip, Number 77!",78:"Heaven's gate, Number 78!",79:"One more time, Number 79!",80:"Gandhi's breakfast, Number 80!",81:"Stop and run, Number 81!",82:"Straight on through, Number 82!",83:"Time for tea, Number 83!",84:"Seven dozen, Number 84!",85:"Staying alive, Number 85!",86:"Between the sticks, Number 86!",87:"Torquay in Devon, Number 87!",88:"Two fat ladies, Number 88!",89:"Nearly there, Number 89!",90:"Top of the house, Number 90!"
-};
 const GAME_START_VOICE="Ladies and gentlemen, are you ready? Game start! Get your tickets ready and let's play!";
 const GAME_OVER_VOICE="Ladies and gentlemen, that's the end of the game! All selected prizes are complete. Congratulations to all our winners! Thank you for playing, and have a wonderful day!";
 
@@ -390,9 +387,9 @@ function stopNumberRecording(){
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 
-function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
+ function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
 
- const PRIZE_NAMES={
+const PRIZE_NAMES={
   firstLine:"🥇 First Line",
   secondLine:"🥈 Second Line",
   thirdLine:"🥉 Third Line",
@@ -515,7 +512,7 @@ function checkPrizeWinners(){
     for(const key of selected){
       const w=prizeWinners[key];
       if(w && !prizeWinners[key]._announced){
-        announcements.push(`${PRIZE_NAMES[key].replace(/^[^\s]+\s/,"")} is full correct and done!`);
+        announcements.push(`${PRIZE_NAMES[key].replace(/^[^\s]+\s/,"")} correct and done!`);
         w._announced=true;
       }
     }
@@ -525,8 +522,7 @@ function checkPrizeWinners(){
   renderPlayerPrizes();
   renderAdminPrizeWinners();
 
-  // If Full House is selected, stop immediately when its winner is confirmed.
-  if(selected.includes("fullHouse") && prizeWinners.fullHouse){finishPrizeGame();return;}
+  // Stop drawing only after every selected prize has a confirmed winner.
   const allDone=selected.length>0 && selected.every(k=>!!prizeWinners[k]);
   if(allDone) finishPrizeGame();
 }
@@ -594,7 +590,9 @@ function escapeHtml(value){
 }
 
 function finishPrizeGame(){
+  if(!gameRunning)return;
   clearInterval(drawTimer);drawTimer=null;
+  stopNumberRecording();
   gameRunning=false;
   localStorage.setItem("tombolaGameRunning","false");
   updatePlayerGameStatus();
