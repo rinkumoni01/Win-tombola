@@ -278,8 +278,8 @@ let prizeWinners=JSON.parse(localStorage.getItem("tombolaPrizeWinners")||"{}");
 let gameRunning=localStorage.getItem("tombolaGameRunning")==="true";
 let drawnNumbers=JSON.parse(localStorage.getItem("tombolaDrawnNumbers")||"[]");
 let drawTimer=null;
-const GAME_START_VOICE="Ladies and gentlemen, are you ready? Game start! Get your tickets ready and let's play!";
-const GAME_OVER_VOICE="Ladies and gentlemen, that's the end of the game! All selected prizes are complete. Congratulations to all our winners! Thank you for playing, and have a wonderful day!";
+const GAME_START_VOICE="Ladies and gentlemen, are you ready? Game start!";
+const GAME_OVER_VOICE="Game over. Congratulations to winners!";
 
 
 function generateTicketNumbers(ticketNo){
@@ -324,23 +324,26 @@ for(let i=1;i<=90;i++){const d=document.createElement("div");d.className="drawNu
 const list=document.getElementById("calledList");if(list){list.innerHTML="";drawnNumbers.forEach(n=>{const chip=document.createElement("div");chip.className="calledChip";chip.textContent=n;list.appendChild(chip)})}
 const input=document.getElementById("myTicketNumber");if(input&&input.value)searchMyTicket();
 }
-let femaleVoice=null;
+let maleVoice=null;
 let voiceQueue=[];
 let voicePlaying=false;
-function pickFemaleVoice(){
+function pickMaleVoice(){
   if(!("speechSynthesis" in window))return null;
   const voices=window.speechSynthesis.getVoices();
   const hi=voices.filter(v=>/^hi(-|_)/i.test(v.lang));
-  const candidates=hi.length?hi:voices.filter(v=>/^en(-|_)/i.test(v.lang));
-  return candidates.find(v=>/female|woman|girl|lady/i.test(v.name)) || candidates.find(v=>/Google/i.test(v.name)) || candidates[0] || voices[0] || null;
+  const en=voices.filter(v=>/^en(-|_)/i.test(v.lang));
+  const candidates=[...hi,...en,...voices.filter(v=>!hi.includes(v)&&!en.includes(v))];
+  return candidates.find(v=>/male|man|boy|david|mark|guy|daniel|ravi|hemant|amit|aarav/i.test(v.name))
+    || candidates.find(v=>!/female|woman|girl|lady|zira|samantha|karen|susan|victoria/i.test(v.name))
+    || candidates[0] || voices[0] || null;
 }
 function makeUtterance(text){
-  femaleVoice=femaleVoice||pickFemaleVoice();
+  maleVoice=maleVoice||pickMaleVoice();
   const clean=String(text).replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,"");
   const u=new SpeechSynthesisUtterance(clean);
-  u.voice=femaleVoice||null;
-  u.lang=(femaleVoice&&femaleVoice.lang)||"hi-IN";
-  u.rate=.86;u.pitch=1.10;u.volume=1;
+  u.voice=maleVoice||null;
+  u.lang=(maleVoice&&maleVoice.lang)||"en-IN";
+  u.rate=.88;u.pitch=.88;u.volume=1;
   return u;
 }
 function speak(text){
@@ -366,10 +369,10 @@ function clearVoiceQueue(){
   voiceQueue=[];voicePlaying=false;
   if("speechSynthesis" in window)window.speechSynthesis.cancel();
 }
-if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged=()=>{femaleVoice=pickFemaleVoice()};
+if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged=()=>{maleVoice=pickMaleVoice()};
 let numberAudioPlayer=null;
 function playNumberRecording(n){
-  // The uploaded recordings are stored in the GitHub repository audio folder.
+  // The uploaded recordings are stored in the repository root as "number 1.aac" ... "number 90.aac".
   if(numberAudioPlayer){numberAudioPlayer.pause();numberAudioPlayer.currentTime=0;}
   const fileUrl=encodeURI(`number ${Number(n)}.aac`);
   numberAudioPlayer=new Audio(fileUrl);
@@ -387,7 +390,7 @@ function stopNumberRecording(){
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 
- function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
+function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
 
 const PRIZE_NAMES={
   firstLine:"🥇 First Line",
@@ -425,7 +428,7 @@ function fourCornersComplete(ticket){
   return corners.every(n=>drawnNumbers.includes(Number(n)));
 }
 function fullHouseComplete(ticket){return markedCount(ticket)===15}
-
+ 
 function bookedTickets(){
   return Object.keys(bookings).map(Number).filter(n=>bookings[n]&&bookings[n].booked===true).sort((a,b)=>a-b);
 }
@@ -522,7 +525,6 @@ function checkPrizeWinners(){
   renderPlayerPrizes();
   renderAdminPrizeWinners();
 
-  // Stop drawing only after every selected prize has a confirmed winner.
   const allDone=selected.length>0 && selected.every(k=>!!prizeWinners[k]);
   if(allDone) finishPrizeGame();
 }
@@ -590,19 +592,21 @@ function escapeHtml(value){
 }
 
 function finishPrizeGame(){
-  if(!gameRunning)return;
   clearInterval(drawTimer);drawTimer=null;
   stopNumberRecording();
   gameRunning=false;
   localStorage.setItem("tombolaGameRunning","false");
   updatePlayerGameStatus();
+  renderNumberBoard();
   renderPlayerPrizes();
   renderAdminPrizeWinners();
+  // Keep the final game board and winning-ticket details visible after stopping.
+  showGameBoard(true);
   queueSpeak(GAME_OVER_VOICE);
 }
-function showCenterNumber(n){const el=document.getElementById("centerNumberPopup");if(!el)return;el.textContent=n;el.classList.add("show");clearTimeout(window.centerNumberTimer);window.centerNumberTimer=setTimeout(()=>{el.classList.remove("show")},6000)}
+function showCenterNumber(n){const el=document.getElementById("centerNumberPopup");if(!el)return;el.textContent=n;el.classList.add("show");clearTimeout(window.centerNumberTimer);window.centerNumberTimer=setTimeout(()=>{el.classList.remove("show")},4000)}
 function drawNextNumber(){if(!gameRunning)return;if(drawnNumbers.length>=90){finishGame();return}const a=[];for(let i=1;i<=90;i++)if(!drawnNumbers.includes(i))a.push(i);const n=a[Math.floor(Math.random()*a.length)];drawnNumbers.push(n);saveDrawnNumbers();renderNumberBoard();showCenterNumber(n);playNumberRecording(n);checkPrizeWinners();if(gameRunning&&drawnNumbers.length>=90)finishGame()}
-function finishGame(){clearInterval(drawTimer);drawTimer=null;stopNumberRecording();gameRunning=false;localStorage.setItem("tombolaGameRunning","false");updatePlayerGameStatus();renderNumberBoard();speak(GAME_OVER_VOICE)}
+function finishGame(){clearInterval(drawTimer);drawTimer=null;stopNumberRecording();gameRunning=false;localStorage.setItem("tombolaGameRunning","false");renderNumberBoard();updatePlayerGameStatus();renderPlayerPrizes();renderAdminPrizeWinners();showGameBoard(true);queueSpeak(GAME_OVER_VOICE)}
 function renderTickets(){
 const box=document.getElementById("tickets");box.innerHTML="";
 const ticketNumbers=getVisibleTicketNumbers();
@@ -650,7 +654,7 @@ function searchMyTicket(){
     const booking=bookings[ticketNo];
     if(!booking||booking.booked!==true){notBooked.push(ticketNo);return;}
 
-    const name=String(booking.name||"").trim()||"Unknown";
+     const name=String(booking.name||"").trim()||"Unknown";
     const key=name.toLowerCase();
     if(!customerGroups[key]) customerGroups[key]={name:name,sourceTickets:[],allTickets:[]};
     customerGroups[key].sourceTickets.push(ticketNo);
@@ -719,7 +723,7 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 function setGameStatus(status){
 if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. Har 8 seconds mein agla number aur aapki recording aayegi.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;stopNumberRecording();updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
- function cancelGame(){
+function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
 gameRunning=false;
 clearVoiceQueue();
@@ -928,4 +932,4 @@ startGame();
 showAnnouncement();
 </script>
 </body>
-</html>
+</html>                   
