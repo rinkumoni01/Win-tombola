@@ -176,8 +176,8 @@ button,input{font-family:inherit}
 <button class="cancelGameBtn" onclick="cancelGame()">❌ CANCEL GAME</button>
 <div class="currentGameStatus" id="adminGameStatus">🔴 GAME STOPPED</div>
 </div>
-
- <div class="adminCard">
+ 
+<div class="adminCard">
 <label>🎟️ Visible Tickets</label>
 <input class="input" id="visibleTickets" type="number" min="1" max="600" placeholder="Example: 100">
 <div class="small">Player ko yahan jitne tickets set karenge, utne random tickets 1–600 me se dikhenge. Example: 100 = 100 random tickets.</div>
@@ -327,19 +327,6 @@ for(let i=1;i<=90;i++){const d=document.createElement("div");d.className="drawNu
 const list=document.getElementById("calledList");if(list){list.innerHTML="";drawnNumbers.forEach(n=>{const chip=document.createElement("div");chip.className="calledChip";chip.textContent=n;list.appendChild(chip)})}
 const input=document.getElementById("myTicketNumber");if(input&&input.value)searchMyTicket();
 }
-let activeNumberAudio=null;
-function playNumberRecording(number){
-  if(activeNumberAudio){activeNumberAudio.pause();activeNumberAudio.currentTime=0;}
-  // Recordings are uploaded in the repository root with names such as "number 1.aac".
-  const audioUrl=encodeURI(`number ${Number(number)}.aac`);
-  activeNumberAudio=new Audio(audioUrl);
-  activeNumberAudio.preload="auto";
-  activeNumberAudio.volume=1;
-  activeNumberAudio.play().catch(()=>{
-    // If the recording cannot be loaded, use the existing spoken number as a fallback.
-    queueSpeak(NUMBER_CALLS[Number(number)]||(`Number ${number}`));
-  });
-}
 let femaleVoice=null;
 let voiceQueue=[];
 let voicePlaying=false;
@@ -381,9 +368,25 @@ function playVoiceQueue(){
 function clearVoiceQueue(){
   voiceQueue=[];voicePlaying=false;
   if("speechSynthesis" in window)window.speechSynthesis.cancel();
-  if(activeNumberAudio){activeNumberAudio.pause();activeNumberAudio.currentTime=0;activeNumberAudio=null;}
 }
 if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged=()=>{femaleVoice=pickFemaleVoice()};
+let numberAudioPlayer=null;
+function playNumberRecording(n){
+  // The uploaded recordings are stored in the repository root as "number 1.aac" ... "number 90.aac".
+  if(numberAudioPlayer){numberAudioPlayer.pause();numberAudioPlayer.currentTime=0;}
+  const fileUrl=encodeURI(`number ${Number(n)}.aac`);
+  numberAudioPlayer=new Audio(fileUrl);
+  numberAudioPlayer.preload="auto";
+  numberAudioPlayer.volume=1;
+  numberAudioPlayer.play().catch(err=>{
+    console.warn("Could not play recording for number",n,err);
+    // Keep the game moving; if a recording fails to load, announce the number with browser speech.
+    queueSpeak(`Number ${n}`);
+  });
+}
+function stopNumberRecording(){
+  if(numberAudioPlayer){numberAudioPlayer.pause();numberAudioPlayer.currentTime=0;numberAudioPlayer=null;}
+}
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 
@@ -599,7 +602,7 @@ function finishPrizeGame(){
 }
 function showCenterNumber(n){const el=document.getElementById("centerNumberPopup");if(!el)return;el.textContent=n;el.classList.add("show");clearTimeout(window.centerNumberTimer);window.centerNumberTimer=setTimeout(()=>{el.classList.remove("show")},4000)}
 function drawNextNumber(){if(!gameRunning)return;if(drawnNumbers.length>=90){finishGame();return}const a=[];for(let i=1;i<=90;i++)if(!drawnNumbers.includes(i))a.push(i);const n=a[Math.floor(Math.random()*a.length)];drawnNumbers.push(n);saveDrawnNumbers();renderNumberBoard();showCenterNumber(n);playNumberRecording(n);checkPrizeWinners();if(gameRunning&&drawnNumbers.length>=90)finishGame()}
-function finishGame(){clearInterval(drawTimer);drawTimer=null;gameRunning=false;localStorage.setItem("tombolaGameRunning","false");renderNumberBoard();updatePlayerGameStatus();speak("Game over")}
+function finishGame(){clearInterval(drawTimer);drawTimer=null;stopNumberRecording();gameRunning=false;localStorage.setItem("tombolaGameRunning","false");renderNumberBoard();updatePlayerGameStatus();speak("Game over")}
 function renderTickets(){
 const box=document.getElementById("tickets");box.innerHTML="";
 const ticketNumbers=getVisibleTicketNumbers();
@@ -714,12 +717,13 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 }
 
 function setGameStatus(status){
-if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,6000);alert("🟢 Game is now RUNNING. First number 6 seconds baad aayega.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
+if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. Har 8 seconds mein agla number aur aapki recording aayegi.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;stopNumberRecording();updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
  function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
 gameRunning=false;
 clearVoiceQueue();
+stopNumberRecording();
 clearInterval(drawTimer);
 drawTimer=null;
 drawnNumbers=[];
@@ -911,7 +915,7 @@ function showAnnouncement(){
 function startGame(){
 // Ensure a valid random ticket set exists before rendering.
 getVisibleTicketNumbers();
-renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();if(gameRunning){showGameBoard(true);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,6000)}else{showGameBoard(false)}setInterval(updateCountdown,1000);
+renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();if(gameRunning){showGameBoard(true);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000)}else{showGameBoard(false)}setInterval(updateCountdown,1000);
 }
 
 window.addEventListener("click",function(event){
