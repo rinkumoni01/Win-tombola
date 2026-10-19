@@ -177,7 +177,7 @@ button,input{font-family:inherit}
 <div class="currentGameStatus" id="adminGameStatus">🔴 GAME STOPPED</div>
 </div>
 
-<div class="adminCard">
+ <div class="adminCard">
 <label>🎟️ Visible Tickets</label>
 <input class="input" id="visibleTickets" type="number" min="1" max="600" placeholder="Example: 100">
 <div class="small">Player ko yahan jitne tickets set karenge, utne random tickets 1–600 me se dikhenge. Example: 100 = 100 random tickets.</div>
@@ -358,7 +358,8 @@ function speak(text){
   window.speechSynthesis.speak(makeUtterance(text));
 }
 function queueSpeak(text){
-  if(!("speechSynthesis" in window))return;
+  if(!( "speechSynthesis" in window))return;
+  if(numberRecordingPlaying){delayedVoiceAnnouncements.push(String(text));return;}
   voiceQueue.push(String(text));
   if(voicePlaying)return;
   playVoiceQueue();
@@ -377,6 +378,13 @@ function clearVoiceQueue(){
 }
 if("speechSynthesis" in window){window.speechSynthesis.onvoiceschanged=()=>{maleVoice=pickMaleVoice()};setTimeout(()=>{maleVoice=pickMaleVoice()},500);}
 let numberAudioPlayer=null;
+let numberRecordingPlaying=false;
+let delayedVoiceAnnouncements=[];
+function flushDelayedVoiceAnnouncements(){
+  numberRecordingPlaying=false;
+  const pending=delayedVoiceAnnouncements.splice(0);
+  pending.forEach(message=>queueSpeak(message));
+}
 function playNumberRecording(n){
   // The uploaded recordings are stored in the repository root as "number 1.aac" ... "number 90.aac".
   if(numberAudioPlayer){numberAudioPlayer.pause();numberAudioPlayer.currentTime=0;}
@@ -384,13 +392,22 @@ function playNumberRecording(n){
   numberAudioPlayer=new Audio(fileUrl);
   numberAudioPlayer.preload="auto";
   numberAudioPlayer.volume=1;
+  numberRecordingPlaying=true;
+  numberAudioPlayer.onended=flushDelayedVoiceAnnouncements;
+  numberAudioPlayer.onerror=()=>{
+    flushDelayedVoiceAnnouncements();
+    queueSpeak(`Number ${n}`);
+  };
   numberAudioPlayer.play().catch(err=>{
     console.warn("Could not play recording for number",n,err);
+    flushDelayedVoiceAnnouncements();
     // Keep the game moving; if a recording fails to load, announce the number with browser speech.
     queueSpeak(`Number ${n}`);
   });
 }
 function stopNumberRecording(){
+  numberRecordingPlaying=false;
+  delayedVoiceAnnouncements=[];
   if(numberAudioPlayer){numberAudioPlayer.pause();numberAudioPlayer.currentTime=0;numberAudioPlayer=null;}
 }
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
@@ -486,7 +503,8 @@ function checkPrizeWinners(){
     if(prizeWinners[key]) continue;
     const no=winnerTicketForPrize(key);
     if(no!==null){
-      prizeWinners[key]={ticketNo:no,name:String(bookings[no].name||"Unknown"),markedNumbers:getWinningMarkedNumbers(key,no)};
+
+prizeWinners[key]={ticketNo:no,name:String(bookings[no].name||"Unknown"),markedNumbers:getWinningMarkedNumbers(key,no)};
       changed=true;
       
     }
@@ -509,8 +527,7 @@ function checkPrizeWinners(){
     if(prizeWinners.secondFullHouse) excluded.push(prizeWinners.secondFullHouse.ticketNo);
     const no=winnerTicketForPrize("thirdFullHouse",excluded);
     if(no!==null){
-
-  prizeWinners.thirdFullHouse={ticketNo:no,name:String(bookings[no].name||"Unknown"),markedNumbers:getWinningMarkedNumbers("thirdFullHouse",no)};
+      prizeWinners.thirdFullHouse={ticketNo:no,name:String(bookings[no].name||"Unknown"),markedNumbers:getWinningMarkedNumbers("thirdFullHouse",no)};
       changed=true;
       
     }
@@ -821,7 +838,7 @@ if(!keys.length){box.innerHTML='<div class="small">No booked tickets.</div>';ret
 let html=`<table class="adminBookingTable">
 <thead><tr><th>No.</th><th>Customer Name</th><th>S</th><th>EDT</th></tr></thead><tbody>`;
 
- keys.forEach(ticketNo=>{
+keys.forEach(ticketNo=>{
 let name=escapeHtml(bookings[ticketNo].name||"");
 html+=`<tr><td>${ticketNo}</td><td>${name}</td><td>S</td><td><button class="adminEditBtn" onclick="editBooking(${ticketNo})">EDT</button></td></tr>`;
 });
@@ -939,4 +956,4 @@ startGame();
 showAnnouncement();
 </script>
 </body>
-</html>
+</html> 
