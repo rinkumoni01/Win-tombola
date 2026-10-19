@@ -330,20 +330,26 @@ let voicePlaying=false;
 function pickMaleVoice(){
   if(!("speechSynthesis" in window))return null;
   const voices=window.speechSynthesis.getVoices();
-  const hi=voices.filter(v=>/^hi(-|_)/i.test(v.lang));
-  const en=voices.filter(v=>/^en(-|_)/i.test(v.lang));
-  const candidates=[...hi,...en,...voices.filter(v=>!hi.includes(v)&&!en.includes(v))];
-  return candidates.find(v=>/male|man|boy|david|mark|guy|daniel|ravi|hemant|amit|aarav/i.test(v.name))
-    || candidates.find(v=>!/female|woman|girl|lady|zira|samantha|karen|susan|victoria/i.test(v.name))
-    || candidates[0] || voices[0] || null;
+  // Prefer voices explicitly identified as male, especially English voices for these announcements.
+  const english=voices.filter(v=>/^en(-|_)/i.test(v.lang));
+  const hindi=voices.filter(v=>/^hi(-|_)/i.test(v.lang));
+  const candidates=[...english,...hindi,...voices.filter(v=>!english.includes(v)&&!hindi.includes(v))];
+  const maleNames=/\b(male|man|boy|david|mark|guy|daniel|aaron|alex|fred|james|john|michael|tom|ravi|hemant|amit|aarav)\b/i;
+  const femaleNames=/female|woman|girl|lady|zira|samantha|karen|susan|victoria|aria|jenny|sara|heera/i;
+  return candidates.find(v=>maleNames.test(v.name))
+    || candidates.find(v=>!femaleNames.test(v.name) && /^en(-|_)/i.test(v.lang))
+    || candidates.find(v=>!femaleNames.test(v.name))
+    || null;
 }
 function makeUtterance(text){
-  maleVoice=maleVoice||pickMaleVoice();
+  const voices=("speechSynthesis" in window)?window.speechSynthesis.getVoices():[];
+  if(!maleVoice || !voices.includes(maleVoice)) maleVoice=pickMaleVoice();
   const clean=String(text).replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,"");
   const u=new SpeechSynthesisUtterance(clean);
-  u.voice=maleVoice||null;
+  if(maleVoice)u.voice=maleVoice;
   u.lang=(maleVoice&&maleVoice.lang)||"en-IN";
-  u.rate=.88;u.pitch=.88;u.volume=1;
+  // Lower pitch and normal speaking speed give a deeper, clearer announcement.
+  u.rate=0.96;u.pitch=0.65;u.volume=1.0;
   return u;
 }
 function speak(text){
@@ -369,7 +375,7 @@ function clearVoiceQueue(){
   voiceQueue=[];voicePlaying=false;
   if("speechSynthesis" in window)window.speechSynthesis.cancel();
 }
-if("speechSynthesis" in window) window.speechSynthesis.onvoiceschanged=()=>{maleVoice=pickMaleVoice()};
+if("speechSynthesis" in window){window.speechSynthesis.onvoiceschanged=()=>{maleVoice=pickMaleVoice()};setTimeout(()=>{maleVoice=pickMaleVoice()},500);}
 let numberAudioPlayer=null;
 function playNumberRecording(n){
   // The uploaded recordings are stored in the repository root as "number 1.aac" ... "number 90.aac".
@@ -392,7 +398,7 @@ function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stri
 
 function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
 
-const PRIZE_NAMES={
+ const PRIZE_NAMES={
   firstLine:"🥇 First Line",
   secondLine:"🥈 Second Line",
   thirdLine:"🥉 Third Line",
@@ -428,7 +434,7 @@ function fourCornersComplete(ticket){
   return corners.every(n=>drawnNumbers.includes(Number(n)));
 }
 function fullHouseComplete(ticket){return markedCount(ticket)===15}
- 
+
 function bookedTickets(){
   return Object.keys(bookings).map(Number).filter(n=>bookings[n]&&bookings[n].booked===true).sort((a,b)=>a-b);
 }
@@ -654,7 +660,7 @@ function searchMyTicket(){
     const booking=bookings[ticketNo];
     if(!booking||booking.booked!==true){notBooked.push(ticketNo);return;}
 
-     const name=String(booking.name||"").trim()||"Unknown";
+    const name=String(booking.name||"").trim()||"Unknown";
     const key=name.toLowerCase();
     if(!customerGroups[key]) customerGroups[key]={name:name,sourceTickets:[],allTickets:[]};
     customerGroups[key].sourceTickets.push(ticketNo);
@@ -723,7 +729,7 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 function setGameStatus(status){
 if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. Har 8 seconds mein agla number aur aapki recording aayegi.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;stopNumberRecording();updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
-function cancelGame(){
+ function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
 gameRunning=false;
 clearVoiceQueue();
@@ -932,4 +938,4 @@ startGame();
 showAnnouncement();
 </script>
 </body>
-</html>                   
+</html>
