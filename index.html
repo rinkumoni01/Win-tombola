@@ -177,7 +177,7 @@ button,input{font-family:inherit}
 <div class="currentGameStatus" id="adminGameStatus">🔴 GAME STOPPED</div>
 </div>
 
- <div class="adminCard">
+<div class="adminCard">
 <label>🎟️ Visible Tickets</label>
 <input class="input" id="visibleTickets" type="number" min="1" max="600" placeholder="Example: 100">
 <div class="small">Player ko yahan jitne tickets set karenge, utne random tickets 1–600 me se dikhenge. Example: 100 = 100 random tickets.</div>
@@ -415,7 +415,7 @@ function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stri
 
 function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
 
-const PRIZE_NAMES={
+ const PRIZE_NAMES={
   firstLine:"🥇 First Line",
   secondLine:"🥈 Second Line",
   thirdLine:"🥉 Third Line",
@@ -503,8 +503,7 @@ function checkPrizeWinners(){
     if(prizeWinners[key]) continue;
     const no=winnerTicketForPrize(key);
     if(no!==null){
-
-prizeWinners[key]={ticketNo:no,name:String(bookings[no].name||"Unknown"),markedNumbers:getWinningMarkedNumbers(key,no)};
+      prizeWinners[key]={ticketNo:no,name:String(bookings[no].name||"Unknown"),markedNumbers:getWinningMarkedNumbers(key,no)};
       changed=true;
       
     }
@@ -617,6 +616,7 @@ function escapeHtml(value){
 
 function finishPrizeGame(){
   clearInterval(drawTimer);drawTimer=null;
+  // Do not draw or play another number after the final prize is completed.
   stopNumberRecording();
   gameRunning=false;
   localStorage.setItem("tombolaGameRunning","false");
@@ -629,7 +629,25 @@ function finishPrizeGame(){
   queueSpeak(GAME_OVER_VOICE);
 }
 function showCenterNumber(n){const el=document.getElementById("centerNumberPopup");if(!el)return;el.textContent=n;el.classList.add("show");clearTimeout(window.centerNumberTimer);window.centerNumberTimer=setTimeout(()=>{el.classList.remove("show")},7500)}
-function drawNextNumber(){if(!gameRunning)return;if(drawnNumbers.length>=90){finishGame();return}const a=[];for(let i=1;i<=90;i++)if(!drawnNumbers.includes(i))a.push(i);const n=a[Math.floor(Math.random()*a.length)];drawnNumbers.push(n);saveDrawnNumbers();renderNumberBoard();showCenterNumber(n);playNumberRecording(n);checkPrizeWinners();if(gameRunning&&drawnNumbers.length>=90)finishGame()}
+let drawInProgress=false;
+async function drawNextNumber(){
+  if(!gameRunning||drawInProgress)return;
+  if(drawnNumbers.length>=90){finishGame();return;}
+  drawInProgress=true;
+  const available=[];
+  for(let i=1;i<=90;i++)if(!drawnNumbers.includes(i))available.push(i);
+  const n=available[Math.floor(Math.random()*available.length)];
+  drawnNumbers.push(n);
+  saveDrawnNumbers();
+  renderNumberBoard();
+  showCenterNumber(n);
+  await playNumberRecording(n);
+  // Check prizes after the number recording, so "Full House correct and done!"
+  // and other prize announcements are heard after the final number, not over it.
+  if(gameRunning)checkPrizeWinners();
+  if(gameRunning&&drawnNumbers.length>=90)finishGame();
+  drawInProgress=false;
+}
 function finishGame(){clearInterval(drawTimer);drawTimer=null;stopNumberRecording();gameRunning=false;localStorage.setItem("tombolaGameRunning","false");renderNumberBoard();updatePlayerGameStatus();renderPlayerPrizes();renderAdminPrizeWinners();showGameBoard(true);queueSpeak(GAME_OVER_VOICE)}
 function renderTickets(){
 const box=document.getElementById("tickets");box.innerHTML="";
@@ -747,7 +765,7 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 function setGameStatus(status){
 if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. Har 8 seconds mein agla number aur aapki recording aayegi.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;stopNumberRecording();updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
-function cancelGame(){
+ function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
 gameRunning=false;
 clearVoiceQueue();
@@ -956,4 +974,4 @@ startGame();
 showAnnouncement();
 </script>
 </body>
-</html> 
+</html>
