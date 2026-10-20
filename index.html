@@ -420,7 +420,7 @@ function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stri
 
 function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
 
- const PRIZE_NAMES={
+const PRIZE_NAMES={
   firstLine:"🥇 First Line",
   secondLine:"🥈 Second Line",
   thirdLine:"🥉 Third Line",
@@ -1022,8 +1022,7 @@ async function loadCloudState(){
     gameRunning=st.gameRunning===true;
     localStorage.setItem("tombolaGameRunning",String(gameRunning));
     cloudApplying=false;
-
-renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();
+    renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();
     if(gameRunning)showGameBoard(true);
     else if(drawnNumbers.length===0)showGameBoard(false);
   }catch(error){cloudApplying=false;console.warn("Supabase sync error:",error);}
