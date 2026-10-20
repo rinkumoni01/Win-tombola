@@ -278,6 +278,7 @@ let prizeWinners=JSON.parse(localStorage.getItem("tombolaPrizeWinners")||"{}");
 let gameRunning=localStorage.getItem("tombolaGameRunning")==="true";
 let drawnNumbers=JSON.parse(localStorage.getItem("tombolaDrawnNumbers")||"[]");
 let drawTimer=null;
+let gameOverAnnounced=false;
 const GAME_START_VOICE="Ladies and gentlemen, are you ready? Game start!";
 const GAME_OVER_VOICE="Game over. Congratulations to winners!";
 
@@ -349,7 +350,7 @@ function makeUtterance(text){
   if(maleVoice)u.voice=maleVoice;
   u.lang=(maleVoice&&maleVoice.lang)||"en-IN";
   // Lower pitch and normal speaking speed give a deeper, clearer announcement.
-  u.rate=0.96;u.pitch=0.65;u.volume=1.0;
+  u.rate=0.90;u.pitch=0.72;u.volume=1.0;
   return u;
 }
 function speak(text){
@@ -386,23 +387,27 @@ function flushDelayedVoiceAnnouncements(){
   pending.forEach(message=>queueSpeak(message));
 }
 function playNumberRecording(n){
-  // The uploaded recordings are stored in the repository root as "number 1.aac" ... "number 90.aac".
-  if(numberAudioPlayer){numberAudioPlayer.pause();numberAudioPlayer.currentTime=0;}
-  const fileUrl=encodeURI(`number ${Number(n)}.aac`);
-  numberAudioPlayer=new Audio(fileUrl);
-  numberAudioPlayer.preload="auto";
-  numberAudioPlayer.volume=1;
-  numberRecordingPlaying=true;
-  numberAudioPlayer.onended=flushDelayedVoiceAnnouncements;
-  numberAudioPlayer.onerror=()=>{
-    flushDelayedVoiceAnnouncements();
-    queueSpeak(`Number ${n}`);
-  };
-  numberAudioPlayer.play().catch(err=>{
-    console.warn("Could not play recording for number",n,err);
-    flushDelayedVoiceAnnouncements();
-    // Keep the game moving; if a recording fails to load, announce the number with browser speech.
-    queueSpeak(`Number ${n}`);
+  // Recordings are in the repository root as "number 1.aac" ... "number 90.aac".
+  return new Promise(resolve=>{
+    if(numberAudioPlayer){numberAudioPlayer.pause();numberAudioPlayer.currentTime=0;}
+    const fileUrl=encodeURI(`number ${Number(n)}.aac`);
+    numberAudioPlayer=new Audio(fileUrl);
+    numberAudioPlayer.preload="auto";
+    numberAudioPlayer.volume=1.0;
+    numberRecordingPlaying=true;
+    let settled=false;
+    const finish=()=>{if(settled)return;settled=true;flushDelayedVoiceAnnouncements();resolve();};
+    numberAudioPlayer.onended=finish;
+    numberAudioPlayer.onerror=()=>{
+      finish();
+      // Use browser speech if the uploaded recording cannot be played.
+      queueSpeak(`Number ${n}`);
+    };
+    numberAudioPlayer.play().catch(err=>{
+      console.warn("Could not play recording for number",n,err);
+      finish();
+      queueSpeak(`Number ${n}`);
+    });
   });
 }
 function stopNumberRecording(){
@@ -415,7 +420,7 @@ function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stri
 
 function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
 
- const PRIZE_NAMES={
+const PRIZE_NAMES={
   firstLine:"🥇 First Line",
   secondLine:"🥈 Second Line",
   thirdLine:"🥉 Third Line",
@@ -615,6 +620,7 @@ function escapeHtml(value){
 }
 
 function finishPrizeGame(){
+  if(!gameRunning)return;
   clearInterval(drawTimer);drawTimer=null;
   // Do not draw or play another number after the final prize is completed.
   stopNumberRecording();
@@ -626,7 +632,7 @@ function finishPrizeGame(){
   renderAdminPrizeWinners();
   // Keep the final game board and winning-ticket details visible after stopping.
   showGameBoard(true);
-  queueSpeak(GAME_OVER_VOICE);
+  if(!gameOverAnnounced){gameOverAnnounced=true;queueSpeak(GAME_OVER_VOICE);}
 }
 function showCenterNumber(n){const el=document.getElementById("centerNumberPopup");if(!el)return;el.textContent=n;el.classList.add("show");clearTimeout(window.centerNumberTimer);window.centerNumberTimer=setTimeout(()=>{el.classList.remove("show")},7500)}
 let drawInProgress=false;
@@ -648,7 +654,7 @@ async function drawNextNumber(){
   if(gameRunning&&drawnNumbers.length>=90)finishGame();
   drawInProgress=false;
 }
-function finishGame(){clearInterval(drawTimer);drawTimer=null;stopNumberRecording();gameRunning=false;localStorage.setItem("tombolaGameRunning","false");renderNumberBoard();updatePlayerGameStatus();renderPlayerPrizes();renderAdminPrizeWinners();showGameBoard(true);queueSpeak(GAME_OVER_VOICE)}
+function finishGame(){if(!gameRunning)return;clearInterval(drawTimer);drawTimer=null;stopNumberRecording();gameRunning=false;localStorage.setItem("tombolaGameRunning","false");renderNumberBoard();updatePlayerGameStatus();renderPlayerPrizes();renderAdminPrizeWinners();showGameBoard(true);if(!gameOverAnnounced){gameOverAnnounced=true;queueSpeak(GAME_OVER_VOICE)}}
 function renderTickets(){
 const box=document.getElementById("tickets");box.innerHTML="";
 const ticketNumbers=getVisibleTicketNumbers();
@@ -668,7 +674,7 @@ function searchMyTicket(){
   const result=document.getElementById("myTicketResult");
   if(!input||!result)return;
 
-  const visibleSet=getVisibleTicketNumbers();
+ const visibleSet=getVisibleTicketNumbers();
   const raw=String(input.value||"").trim();
 
   if(!raw){
@@ -763,11 +769,12 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 }
 
 function setGameStatus(status){
-if(status){if(gameRunning){alert("Game is already running.");return}clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. Har 8 seconds mein agla number aur aapki recording aayegi.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;stopNumberRecording();updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
+if(status){if(gameRunning){alert("Game is already running.");return}gameOverAnnounced=false;clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. Har 8 seconds mein agla number aur aapki recording aayegi.")}else{gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;stopNumberRecording();updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
- function cancelGame(){
+function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
 gameRunning=false;
+gameOverAnnounced=false;
 clearVoiceQueue();
 stopNumberRecording();
 clearInterval(drawTimer);
@@ -974,4 +981,4 @@ startGame();
 showAnnouncement();
 </script>
 </body>
-</html>
+</html> 
