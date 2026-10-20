@@ -420,7 +420,7 @@ function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stri
 
 function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
 
- const PRIZE_NAMES={
+const PRIZE_NAMES={
   firstLine:"🥇 First Line",
   secondLine:"🥈 Second Line",
   thirdLine:"🥉 Third Line",
@@ -637,12 +637,16 @@ async function drawNextNumber(){
   saveDrawnNumbers();
   renderNumberBoard();
   showCenterNumber(n);
-  await playNumberRecording(n);
-  // Check prizes after the number recording, so "Full House correct and done!"
-  // and other prize announcements are heard after the final number, not over it.
-  if(gameRunning)checkPrizeWinners();
-  if(gameRunning&&drawnNumbers.length>=90)finishGame();
-  drawInProgress=false;
+  try{
+    await playNumberRecording(n);
+    // Check prizes after the number recording, so announcements do not overlap it.
+    if(gameRunning)checkPrizeWinners();
+    if(gameRunning&&drawnNumbers.length>=90)finishGame();
+  }catch(error){
+    console.warn("Number draw processing error:",error);
+  }finally{
+    drawInProgress=false;
+  }
 }
 function finishGame(){if(!gameRunning)return;clearInterval(drawTimer);drawTimer=null;stopNumberRecording();gameRunning=false;localStorage.setItem("tombolaGameRunning","false");renderNumberBoard();updatePlayerGameStatus();renderPlayerPrizes();renderAdminPrizeWinners();showGameBoard(true);if(!gameOverAnnounced){gameOverAnnounced=true;queueSpeak(GAME_OVER_VOICE)}}
 function renderTickets(){
@@ -664,7 +668,7 @@ function searchMyTicket(){
   const result=document.getElementById("myTicketResult");
   if(!input||!result)return;
 
-  const visibleSet=getVisibleTicketNumbers();
+ const visibleSet=getVisibleTicketNumbers();
   const raw=String(input.value||"").trim();
 
   if(!raw){
@@ -846,7 +850,7 @@ box.appendChild(div);
 }
 }
 
-function renderAdminBookings(){
+ function renderAdminBookings(){
 const box=document.getElementById("adminBookings");box.innerHTML="";
 let keys=Object.keys(bookings).map(Number).filter(n=>bookings[n]&&bookings[n].booked).sort((a,b)=>a-b);
 if(!keys.length){box.innerHTML='<div class="small">No booked tickets.</div>';return}
@@ -1021,6 +1025,13 @@ async function loadCloudState(){
     const rows=await response.json();
     if(!rows.length || !rows[0].state || !Object.keys(rows[0].state).length)return;
     const row=rows[0];
+    // The admin device that started the game is authoritative. Never let its
+    // own polling loop replace fresh local numbers with an older cloud snapshot.
+    // Player devices still load the shared state below.
+    if(cloudController){
+      if(row.updated_at) cloudLastUpdated=row.updated_at;
+      return;
+    }
     if(row.updated_at && row.updated_at===cloudLastUpdated)return;
     cloudLastUpdated=row.updated_at||"";
     const st=row.state;
