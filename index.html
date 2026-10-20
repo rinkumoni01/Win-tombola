@@ -177,7 +177,7 @@ button,input{font-family:inherit}
 <div class="currentGameStatus" id="adminGameStatus">🔴 GAME STOPPED</div>
 </div>
 
- <div class="adminCard">
+<div class="adminCard">
 <label>🎟️ Visible Tickets</label>
 <input class="input" id="visibleTickets" type="number" min="1" max="600" placeholder="Example: 100">
 <div class="small">Player ko yahan jitne tickets set karenge, utne random tickets 1–600 me se dikhenge. Example: 100 = 100 random tickets.</div>
@@ -420,7 +420,7 @@ function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stri
 
 function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
 
-const PRIZE_NAMES={
+ const PRIZE_NAMES={
   firstLine:"🥇 First Line",
   secondLine:"🥈 Second Line",
   thirdLine:"🥉 Third Line",
@@ -511,7 +511,7 @@ function checkPrizeWinners(){
   let changed=false;
   const newlyWon=[];
 
- // Early 5 and Full House allow every ticket that completes on the same draw to win.
+  // Early 5 and Full House allow every ticket that completes on the same draw to win.
   for(const key of selected){
     if(prizeWinners[key]) continue;
     if(key==="early5"||key==="fullHouse"){
@@ -759,10 +759,11 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 }
 
 function setGameStatus(status){
-if(status){if(gameRunning){alert("Game is already running.");return}gameOverAnnounced=false;clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. Har 8 seconds mein agla number aur aapki recording aayegi.")}else{cloudController=false;gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;stopNumberRecording();updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
+if(status){cloudController=true;if(gameRunning){alert("Game is already running.");return}gameOverAnnounced=false;clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. Har 8 seconds mein agla number aur aapki recording aayegi.")}else{cloudController=true;gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;stopNumberRecording();updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
 function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
+cloudController=true;
 gameRunning=false;
 gameOverAnnounced=false;
 clearVoiceQueue();
@@ -930,7 +931,7 @@ document.getElementById("gameDateDisplay").textContent=formatGameDate(settings.g
 document.getElementById("gameTimeDisplay").textContent=formatGameTime(settings.gameTime);
 }
 
- function updateCountdown(){
+function updateCountdown(){
 const el=document.getElementById("countdown");
 if(!settings.gameDate||!settings.gameTime){el.textContent="00:00:00";return}
 const target=new Date(settings.gameDate+"T"+settings.gameTime+":00"),now=new Date();
@@ -993,7 +994,9 @@ function cloudSnapshot(){
   };
 }
 async function saveCloudState(){
-  if(cloudApplying)return;
+  // Only the device that starts/stops the game (controller) may write shared state.
+  // Player devices must never overwrite the live game with stale local state.
+  if(cloudApplying || !cloudController)return;
   try{
     const response = await fetch(`${SUPABASE_URL}/rest/v1/game_state?on_conflict=id`, {
       method:"POST",
@@ -1005,7 +1008,7 @@ async function saveCloudState(){
   }catch(error){console.warn("Supabase connection error:",error);}
 }
 function queueCloudSave(){
-  if(cloudApplying)return;
+  if(cloudApplying || !cloudController)return;
   clearTimeout(cloudSaveTimer);
   cloudSaveTimer=setTimeout(saveCloudState,350);
 }
