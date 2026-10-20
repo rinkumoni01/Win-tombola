@@ -511,7 +511,7 @@ function checkPrizeWinners(){
   let changed=false;
   const newlyWon=[];
 
-  // Early 5 and Full House allow every ticket that completes on the same draw to win.
+ // Early 5 and Full House allow every ticket that completes on the same draw to win.
   for(const key of selected){
     if(prizeWinners[key]) continue;
     if(key==="early5"||key==="fullHouse"){
@@ -930,7 +930,7 @@ document.getElementById("gameDateDisplay").textContent=formatGameDate(settings.g
 document.getElementById("gameTimeDisplay").textContent=formatGameTime(settings.gameTime);
 }
 
-function updateCountdown(){
+ function updateCountdown(){
 const el=document.getElementById("countdown");
 if(!settings.gameDate||!settings.gameTime){el.textContent="00:00:00";return}
 const target=new Date(settings.gameDate+"T"+settings.gameTime+":00"),now=new Date();
@@ -970,6 +970,16 @@ let cloudApplying = false;
 let cloudLastUpdated = "";
 let cloudSaveTimer = null;
 let cloudController = false;
+// Mobile browsers require a user gesture before remote audio can autoplay.
+let cloudAudioUnlocked = false;
+let cloudAudioBaselineReady = false;
+let cloudPreviousNumbers = [];
+let cloudPreviousRunning = null;
+window.addEventListener("pointerdown", function unlockCloudAudio(){
+  cloudAudioUnlocked = true;
+  // Resume speech synthesis after the user has interacted with this page.
+  if ("speechSynthesis" in window) { try { window.speechSynthesis.getVoices(); } catch(e) {} }
+}, {once:true, passive:true});
 function cloudSnapshot(){
   return {
     settings: JSON.parse(localStorage.getItem("tombolaSettings") || '{}'),
@@ -1011,6 +1021,15 @@ async function loadCloudState(){
     if(row.updated_at && row.updated_at===cloudLastUpdated)return;
     cloudLastUpdated=row.updated_at||"";
     const st=row.state;
+    const incomingNumbers=Array.isArray(st.drawnNumbers)?st.drawnNumbers:[];
+    const incomingRunning=st.gameRunning===true;
+    // First successful load only establishes a baseline; don't replay old numbers.
+    const isSubsequentCloudUpdate=cloudAudioBaselineReady;
+    const oldNumbers=cloudPreviousNumbers.slice();
+    const oldRunning=cloudPreviousRunning;
+    cloudPreviousNumbers=incomingNumbers.slice();
+    cloudPreviousRunning=incomingRunning;
+    cloudAudioBaselineReady=true;
     cloudApplying=true;
     if(st.settings){settings=st.settings;localStorage.setItem("tombolaSettings",JSON.stringify(settings));}
     if(st.visibleTicketNumbers){visibleTicketNumbers=st.visibleTicketNumbers;localStorage.setItem("tombolaVisibleTicketNumbers",JSON.stringify(visibleTicketNumbers));}
@@ -1025,6 +1044,22 @@ async function loadCloudState(){
     renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();
     if(gameRunning)showGameBoard(true);
     else if(drawnNumbers.length===0)showGameBoard(false);
+    // A second device hears the live announcements when shared state changes.
+    // The user must tap the page once first, as required by mobile browser autoplay rules.
+    if(isSubsequentCloudUpdate && cloudAudioUnlocked){
+      if(oldRunning!==true && incomingRunning===true){
+        speak(GAME_START_VOICE);
+      } else if(oldRunning===true && incomingRunning===false){
+        queueSpeak(GAME_OVER_VOICE);
+      }
+      if(incomingNumbers.length>oldNumbers.length){
+        const newlyCalled=incomingNumbers.filter(n=>!oldNumbers.includes(n));
+        if(newlyCalled.length){
+          const latestNumber=newlyCalled[newlyCalled.length-1];
+          playNumberRecording(latestNumber);
+        }
+      }
+    }
   }catch(error){cloudApplying=false;console.warn("Supabase sync error:",error);}
 }
 const originalStorageSetItem=Storage.prototype.setItem;
@@ -1043,4 +1078,4 @@ startGame();
 showAnnouncement();
 </script>
 </body>
-</html> 
+</html>
