@@ -177,7 +177,7 @@ button,input{font-family:inherit}
 <div class="currentGameStatus" id="adminGameStatus">🔴 GAME STOPPED</div>
 </div>
 
-<div class="adminCard">
+ <div class="adminCard">
 <label>🎟️ Visible Tickets</label>
 <input class="input" id="visibleTickets" type="number" min="1" max="600" placeholder="Example: 100">
 <div class="small">Player ko yahan jitne tickets set karenge, utne random tickets 1–600 me se dikhenge. Example: 100 = 100 random tickets.</div>
@@ -418,7 +418,7 @@ function stopNumberRecording(){
 function showGameBoard(show){const b=document.getElementById("gameBoard"),t=document.getElementById("ticketPage");if(show){b.classList.add("active");t.style.display="none"}else{b.classList.remove("active");t.style.display="block"}}
 function saveDrawnNumbers(){localStorage.setItem("tombolaDrawnNumbers",JSON.stringify(drawnNumbers))}
 
-function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
+ function savePrizeWinners(){localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners))}
 
 const PRIZE_NAMES={
   firstLine:"🥇 First Line",
@@ -493,7 +493,14 @@ function winnerTicketForPrize(key,excludeTickets=[]){
   }
   return null;
 }
-
+function getPrizeWinnerList(key){
+  const value=prizeWinners[key];
+  if(!value)return [];
+  return Array.isArray(value)?value:[value];
+}
+function makeWinnerRecord(key,no){
+  return {ticketNo:no,name:String((bookings[no]&&bookings[no].name)||"Unknown"),markedNumbers:getWinningMarkedNumbers(key,no)};
+}
 function selectedPrizeKeys(){
   return Object.keys(PRIZE_NAMES).filter(k=>prizes[k]===true);
 }
@@ -502,57 +509,46 @@ function checkPrizeWinners(){
   if(!gameRunning) return;
   const selected=selectedPrizeKeys();
   let changed=false;
+  const newlyWon=[];
 
-  // First, normal prizes can be won independently.
+  // Early 5 and Full House allow every ticket that completes on the same draw to win.
   for(const key of selected){
     if(prizeWinners[key]) continue;
-    const no=winnerTicketForPrize(key);
-    if(no!==null){
-      prizeWinners[key]={ticketNo:no,name:String(bookings[no].name||"Unknown"),markedNumbers:getWinningMarkedNumbers(key,no)};
-      changed=true;
-      
+    if(key==="early5"||key==="fullHouse"){
+      const qualifying=bookedTickets().filter(no=>prizeCompleteForTicket(key,no));
+      if(qualifying.length){
+        prizeWinners[key]=qualifying.map(no=>makeWinnerRecord(key,no));
+        changed=true;
+        newlyWon.push(key);
+      }
+    }else{
+      const no=winnerTicketForPrize(key);
+      if(no!==null){
+        prizeWinners[key]=makeWinnerRecord(key,no);
+        changed=true;
+        newlyWon.push(key);
+      }
     }
   }
 
-  // Second/third full house must be different winning tickets from earlier full houses.
+  // Second/third full house prizes must use tickets not already awarded a full-house prize.
   if(selected.includes("secondFullHouse") && !prizeWinners.secondFullHouse){
-    const excluded=[];
-    if(prizeWinners.fullHouse) excluded.push(prizeWinners.fullHouse.ticketNo);
+    const excluded=getPrizeWinnerList("fullHouse").map(w=>Number(w.ticketNo));
     const no=winnerTicketForPrize("secondFullHouse",excluded);
-    if(no!==null){
-      prizeWinners.secondFullHouse={ticketNo:no,name:String(bookings[no].name||"Unknown"),markedNumbers:getWinningMarkedNumbers("secondFullHouse",no)};
-      changed=true;
-      
-    }
+    if(no!==null){prizeWinners.secondFullHouse=makeWinnerRecord("secondFullHouse",no);changed=true;newlyWon.push("secondFullHouse");}
   }
   if(selected.includes("thirdFullHouse") && !prizeWinners.thirdFullHouse){
-    const excluded=[];
-    if(prizeWinners.fullHouse) excluded.push(prizeWinners.fullHouse.ticketNo);
-    if(prizeWinners.secondFullHouse) excluded.push(prizeWinners.secondFullHouse.ticketNo);
+    const excluded=[...getPrizeWinnerList("fullHouse"),...getPrizeWinnerList("secondFullHouse")].map(w=>Number(w.ticketNo));
     const no=winnerTicketForPrize("thirdFullHouse",excluded);
-    if(no!==null){
-      prizeWinners.thirdFullHouse={ticketNo:no,name:String(bookings[no].name||"Unknown"),markedNumbers:getWinningMarkedNumbers("thirdFullHouse",no)};
-      changed=true;
-      
-    }
+    if(no!==null){prizeWinners.thirdFullHouse=makeWinnerRecord("thirdFullHouse",no);changed=true;newlyWon.push("thirdFullHouse");}
   }
 
   if(changed){
     savePrizeWinners();
-    const announcements=[];
-    for(const key of selected){
-      const w=prizeWinners[key];
-      if(w && !prizeWinners[key]._announced){
-        announcements.push(`${PRIZE_NAMES[key].replace(/^[^\s]+\s/,"")} correct and done!`);
-        w._announced=true;
-      }
-    }
-    savePrizeWinners();
-    if(announcements.length) announcements.forEach(a=>queueSpeak(a));
+    newlyWon.forEach(key=>queueSpeak(`${PRIZE_NAMES[key].replace(/^[^\s]+\s/,"")} correct and done!`));
   }
   renderPlayerPrizes();
   renderAdminPrizeWinners();
-
   const allDone=selected.length>0 && selected.every(k=>!!prizeWinners[k]);
   if(allDone) finishPrizeGame();
 }
@@ -561,38 +557,32 @@ function renderPlayerPrizes(){
   const box=document.getElementById("playerPrizeList");
   if(!box)return;
   const selected=selectedPrizeKeys();
-  if(!selected.length){
-    box.innerHTML='<div class="small" style="text-align:center">No prizes selected yet.</div>';
-    return;
-  }
+  if(!selected.length){box.innerHTML='<div class="small" style="text-align:center">No prizes selected yet.</div>';return;}
   box.innerHTML=selected.map(key=>{
-    const w=prizeWinners[key];
-    return `<div class="playerPrize ${w?"done":"on"}">
-      <div>${PRIZE_NAMES[key]}</div>
-      <div class="pStatus">${w?"✅ COMPLETED":"🟢 ACTIVE"}</div>
-      ${w?`<div class="winner">🏆 Winner: ${escapeHtml(w.name)}<br>🎟️ Ticket: ${w.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}')">👁️ VIEW TICKET</button></div>`:""}
-    </div>`;
+    const winners=getPrizeWinnerList(key);
+    const done=winners.length>0;
+    const winnerHtml=winners.map(w=>`<div class="winner">🏆 Winner: ${escapeHtml(w.name)}<br>🎟️ Ticket: ${w.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}',${Number(w.ticketNo)})">👁️ VIEW TICKET ${w.ticketNo}</button></div>`).join('');
+    return `<div class="playerPrize ${done?"done":"on"}"><div>${PRIZE_NAMES[key]}</div><div class="pStatus">${done?"✅ COMPLETED":"🟢 ACTIVE"}</div>${winnerHtml}</div>`;
   }).join("");
   const over=document.getElementById("gameOverBox");
-  if(over){
-    const done=selected.length>0 && selected.every(k=>!!prizeWinners[k]);
-    over.style.display=done?"block":"none";
-  }
+  if(over){const done=selected.length>0&&selected.every(k=>getPrizeWinnerList(k).length>0);over.style.display=done?"block":"none";}
 }
 
 function renderAdminPrizeWinners(){
   const box=document.getElementById("adminPrizeWinners");
   if(!box)return;
   const selected=selectedPrizeKeys();
-  if(!selected.length){box.innerHTML='<div class="small">No prizes selected.</div>';return}
+  if(!selected.length){box.innerHTML='<div class="small">No prizes selected.</div>';return;}
   box.innerHTML=selected.map(key=>{
-    const w=prizeWinners[key];
-    return `<div class="adminWinner"><b>${PRIZE_NAMES[key]}</b><br>${w?`🏆 ${escapeHtml(w.name)} — 🎟️ Ticket ${w.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}')">👁️ VIEW TICKET</button>`:"⏳ Winner not decided yet"}</div>`;
+    const winners=getPrizeWinnerList(key);
+    const winnerHtml=winners.map(w=>`<div>🏆 ${escapeHtml(w.name)} — 🎟️ Ticket ${w.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}',${Number(w.ticketNo)})">👁️ VIEW TICKET ${w.ticketNo}</button></div>`).join('');
+    return `<div class="adminWinner"><b>${PRIZE_NAMES[key]}</b><br>${winners.length?winnerHtml:"⏳ Winner not decided yet"}</div>`;
   }).join("");
 }
 
-function viewWinnerTicket(prizeKey){
-  const w=prizeWinners[prizeKey];
+function viewWinnerTicket(prizeKey,selectedTicketNo){
+  const winners=getPrizeWinnerList(prizeKey);
+  const w=selectedTicketNo!==undefined?winners.find(item=>Number(item.ticketNo)===Number(selectedTicketNo)):winners[0];
   if(!w||w.ticketNo===undefined||w.ticketNo===null)return;
   const ticketNo=Number(w.ticketNo);
   const booking=bookings[ticketNo];
@@ -602,7 +592,7 @@ function viewWinnerTicket(prizeKey){
   for(let r=0;r<3;r++){
     for(let c=0;c<9;c++){
       const value=numbers[r][c];
-      const winningMarked=Array.isArray(w.markedNumbers) ? w.markedNumbers : drawnNumbers.filter(n=>numbers.some(row=>row.includes(n)));
+      const winningMarked=Array.isArray(w.markedNumbers)?w.markedNumbers:drawnNumbers.filter(n=>numbers.some(row=>row.includes(n)));
       const marked=value!==""&&winningMarked.includes(Number(value));
       cells+=`<div class="cell ${value===""?"empty":""} ${marked?"markedCell":""}">${value}</div>`;
     }
@@ -674,7 +664,7 @@ function searchMyTicket(){
   const result=document.getElementById("myTicketResult");
   if(!input||!result)return;
 
- const visibleSet=getVisibleTicketNumbers();
+  const visibleSet=getVisibleTicketNumbers();
   const raw=String(input.value||"").trim();
 
   if(!raw){
@@ -891,7 +881,7 @@ renderAdminPrizeWinners();
 function cancelBooking(ticketNo){
 if(!confirm("Cancel booking for Ticket "+ticketNo+"?"))return;
 delete bookings[ticketNo];localStorage.setItem("tombolaBookings",JSON.stringify(bookings));
-Object.keys(prizeWinners).forEach(k=>{if(prizeWinners[k]&&prizeWinners[k].ticketNo===ticketNo)delete prizeWinners[k]});
+Object.keys(prizeWinners).forEach(k=>{const value=prizeWinners[k];if(Array.isArray(value)){const remaining=value.filter(w=>Number(w.ticketNo)!==Number(ticketNo));if(!remaining.length)delete prizeWinners[k];else prizeWinners[k]=remaining;}else if(value&&Number(value.ticketNo)===Number(ticketNo))delete prizeWinners[k];});
 savePrizeWinners();
 renderTickets();renderAdminBookings();renderAdminTicketStatus();renderPlayerPrizes();renderAdminPrizeWinners();alert("Ticket "+ticketNo+" is now UNSOLD.");
 }
