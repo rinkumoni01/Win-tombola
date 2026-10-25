@@ -29,6 +29,8 @@ button,input{font-family:inherit}
 .announcementText{background:transparent;color:#000;border-radius:0;padding:0;text-align:center;font-size:clamp(14px,3.6vw,19px);line-height:1.45;font-weight:800}
 .acceptBtn{display:block;width:150px;margin:7% auto 0;background:#ff1010;color:#fff;border:0;border-radius:12px;padding:11px 10px;font-size:18px;font-weight:900;cursor:pointer;box-shadow:none}
 .acceptBtn:active{transform:scale(.98)}
+.certificateLink{color:#003cff;text-decoration:underline;font-weight:900;cursor:pointer;white-space:nowrap}.certificateLink:focus{outline:2px solid #003cff;outline-offset:2px}
+.certificateBox{text-align:center;border:5px double #c99a22;background:#fffdf2;padding:22px;border-radius:8px;color:#172554}.certificateBox h2{color:#173b8f;margin:0 0 12px}.certificateSeal{display:inline-block;border:3px solid #c99a22;border-radius:50%;padding:12px;margin:10px;font-weight:900;color:#9a6b00}.certificateNote{font-size:12px;color:#555;margin-top:14px;line-height:1.4}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100;padding:20px;overflow:auto}
 .modalBox{max-width:500px;margin:30px auto;background:white;border-radius:15px;padding:20px}.modalBox h2{margin-top:0;color:#ed005f}
 .input{width:100%;padding:13px;margin:7px 0 12px;border:1px solid #ccc;border-radius:8px;font-size:16px}
@@ -99,9 +101,23 @@ button,input{font-family:inherit}
       Tambola is a legal game in India and falls under a skill-based game.<br><br>
       In case of any system failure during the game, a re-game will be conducted.<br><br>
       In case of a re-game, the ticket cannot be cancelled.<br><br>
-      All results will be determined based on the numbers announced during the game.
+      All results will be determined based on the numbers announced during the game.<br><br>
+      Check certificate by clicking <a class="certificateLink" href="#" onclick="openCertificate(event)">here</a>.
     </div>
     <button class="acceptBtn" onclick="acceptAnnouncement()">🔴 I ACCEPT</button>
+  </div>
+</div>
+
+<div class="modal" id="certificateModal" style="z-index:500">
+  <div class="modalBox certificateBox">
+    <div style="font-size:13px;letter-spacing:3px;font-weight:bold">WIN TAMBOLA</div>
+    <h2>FAIR PLAY &amp; TRANSPARENCY</h2>
+    <div class="certificateSeal">FAIR PLAY</div>
+    <p><strong>Game Information Certificate</strong></p>
+    <p>This notice explains the intended fair-play principles of Win Tambola. Numbers are selected by the game's random-number process, and results are based on the numbers announced during the game.</p>
+    <p>Players should follow the published game rules. In case of a system failure, a re-game may be conducted according to the announcement.</p>
+    <div class="certificateNote">This is an informational certificate created for Win Tambola. It is not a government licence, independent audit, or third-party certification.</div>
+    <button class="closeBtn" onclick="closeModal('certificateModal')">CLOSE</button>
   </div>
 </div>
 
@@ -177,7 +193,7 @@ button,input{font-family:inherit}
 <div class="currentGameStatus" id="adminGameStatus">🔴 GAME STOPPED</div>
 </div>
 
-<div class="adminCard">
+ <div class="adminCard">
 <label>🎟️ Visible Tickets</label>
 <input class="input" id="visibleTickets" type="number" min="1" max="600" placeholder="Example: 100">
 <div class="small">Player ko yahan jitne tickets set karenge, utne random tickets 1–600 me se dikhenge. Example: 100 = 100 random tickets.</div>
@@ -668,7 +684,7 @@ function searchMyTicket(){
   const result=document.getElementById("myTicketResult");
   if(!input||!result)return;
 
- const visibleSet=getVisibleTicketNumbers();
+  const visibleSet=getVisibleTicketNumbers();
   const raw=String(input.value||"").trim();
 
   if(!raw){
@@ -850,7 +866,7 @@ box.appendChild(div);
 }
 }
 
- function renderAdminBookings(){
+function renderAdminBookings(){
 const box=document.getElementById("adminBookings");box.innerHTML="";
 let keys=Object.keys(bookings).map(Number).filter(n=>bookings[n]&&bookings[n].booked).sort((a,b)=>a-b);
 if(!keys.length){box.innerHTML='<div class="small">No booked tickets.</div>';return}
@@ -919,6 +935,7 @@ renderTickets();renderAdminBookings();renderAdminTicketStatus();renderPlayerPriz
 }
 
 function closeModal(id){document.getElementById(id).style.display="none"}
+function openCertificate(event){if(event)event.preventDefault();const modal=document.getElementById("certificateModal");if(modal)modal.style.display="block"}
 
 function formatGameDate(dateString){
 if(!dateString)return"--/--/----";let parts=dateString.split("-");if(parts.length!==3)return"--/--/----";
