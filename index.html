@@ -30,7 +30,7 @@ button,input{font-family:inherit}
 .acceptBtn{display:block;width:150px;margin:7% auto 0;background:#ff1010;color:#fff;border:0;border-radius:12px;padding:11px 10px;font-size:18px;font-weight:900;cursor:pointer;box-shadow:none}
 .acceptBtn:active{transform:scale(.98)}
 .certificateLink{color:#003cff;text-decoration:underline;font-weight:900;cursor:pointer;white-space:nowrap}.certificateLink:focus{outline:2px solid #003cff;outline-offset:2px}
-.certificateBox{text-align:center;border:7px double #c99a22;background:linear-gradient(135deg,#fffdf2,#fff8d9);padding:clamp(14px,4vw,26px);border-radius:10px;color:#172554;box-shadow:0 0 0 4px #fff,0 8px 30px #0005;max-width:620px;margin:8px auto}.certificateBox h2{color:#173b8f;margin:8px 0 12px;font-size:clamp(23px,5vw,32px)}.certificateTop{font-size:clamp(20px,5vw,28px);font-weight:900;color:#9a6b00;text-shadow:1px 1px #fff;line-height:1.25}.certificateSubtitle{font-weight:900;color:#a16207;letter-spacing:1px;font-size:clamp(14px,3.5vw,19px)}.certificateSeal{display:inline-block;border:4px double #c99a22;border-radius:50%;padding:13px;margin:12px 4px;font-weight:900;color:#9a6b00;background:#fff;box-shadow:0 2px 6px #0002}.certificateCopy{font-size:15px;line-height:1.55;text-align:left;margin:12px 0}.certificateFacts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}.certificateFact{border:1px solid #d6b65e;border-radius:8px;background:#fff;padding:10px 6px;font-weight:900;font-size:13px;color:#173b8f}.certificateFact strong{display:block;color:#9a6b00;font-size:16px;margin-bottom:4px}.certificateLink{color:#003cff;text-decoration:underline;font-weight:900;cursor:pointer;white-space:nowrap}.certificateNote{font-size:11px;color:#555;margin-top:14px;line-height:1.4}.certificateWhatsApp{display:block;width:100%;margin-top:10px;background:#25d366;color:#073b1a;text-decoration:none;border:0;border-radius:8px;padding:12px;font-weight:900;cursor:pointer}.certificateCodeInfo{display:none;background:#eef5ff;border:1px solid #9dbbf7;border-radius:8px;padding:10px;font-size:13px;line-height:1.45;margin:10px 0;text-align:left}
+.certificateBox{text-align:center;border:7px double #c99a22;background:linear-gradient(135deg,#fffdf2,#fff8d9);padding:clamp(14px,4vw,26px);border-radius:10px;color:#172554;box-shadow:0 0 0 4px #fff,0 8px 30px #0005;max-width:620px;margin:8px auto}.certificateBox h2{color:#173b8f;margin:8px 0 12px;font-size:clamp(23px,5vw,32px)}.certificateTop{font-size:clamp(20px,5vw,28px);font-weight:900;color:#9a6b00;text-shadow:1px 1px #fff;line-height:1.25}.certificateSubtitle{font-weight:900;color:#a16207;letter-spacing:1px;font-size:clamp(14px,3.5vw,19px)}.certificateSeal{display:inline-block;border:4px double #c99a22;border-radius:50%;padding:13px;margin:12px 4px;font-weight:900;color:#9a6b00;background:#fff;box-shadow:0 2px 6px #0002}.certificateCopy{font-size:15px;line-height:1.55;text-align:left;margin:12px 0}.certificateFacts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}.certificateFact{border:1px solid #d6b65e;border-radius:8px;background:#fff;padding:10px 6px;font-weight:900;font-size:13px;color:#173b8f}.certificateFact strong{display:block;color:#9a6b00;font-size:16px;margin-bottom:4px}.certificateLink{color:#003cff;text-decoration:underline;font-weight:900;cursor:pointer;white-space:nowrap}.certificateNote{font-size:11px;color:#555;margin-top:14px;line-height:1.4}.certificateWhatsApp{display:block;width:100%;margin-top:10px;background:#25d366;color:#073b1a;text-decoration:none;border:0;border-radius:8px;padding:12px;font-weight:900;cursor:pointer}.certificateCodeInfo{display:none;background:#eef5ff;border:1px solid #9dbbf7;border-radius:8px;padding:10px;font-size:13px;line-height:1.45;margin:10px 0;text-align:left}.certificateCodeBlock{white-space:pre-wrap;overflow-wrap:anywhere;max-height:55vh;overflow:auto;background:#101827;color:#f3f4f6;padding:12px;border-radius:8px;text-align:left;font-size:12px;line-height:1.45}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100;padding:20px;overflow:auto}
 .modalBox{max-width:500px;margin:30px auto;background:white;border-radius:15px;padding:20px}.modalBox h2{margin-top:0;color:#ed005f}
 .input{width:100%;padding:13px;margin:7px 0 12px;border:1px solid #ccc;border-radius:8px;font-size:16px}
@@ -94,7 +94,7 @@ button,input{font-family:inherit}
 </head>
 <body>
 
- <div class="announcementModal" id="announcementModal">
+<div class="announcementModal" id="announcementModal">
   <div class="announcementBox">
     <div class="announcementTitle">!! ANNOUNCEMENT !!</div>
     <div class="announcementText">
@@ -116,7 +116,43 @@ button,input{font-family:inherit}
     <div class="certificateSeal">🏆<br>FAIR PLAY</div>
     <div class="certificateCopy">This website <strong>wintambola.com</strong> aims to follow a fair and transparent system. The game is designed to be automated, with numbers selected from 1 to 90 by the computer system. Winner selection is based on the numbers called during the game.</div>
     <div class="certificateCopy">The game rules state that results should not be manually changed or fixed. You can review the game code and system details by clicking <a class="certificateLink" href="#" onclick="showCertificateCode(event)">here</a>.</div>
-    <div class="certificateCodeInfo" id="certificateCodeInfo">Game transparency information: numbers are drawn from the available numbers between 1 and 90, and results are based on the numbers announced during the game. This page does not itself provide an independent audit of the running system.</div>
+    <div class="certificateCodeInfo" id="certificateCodeInfo" aria-hidden="true"><strong>WIN TAMBOLA — drawNextNumber() CODE</strong><pre class="certificateCodeBlock"><code>async function drawNextNumber() {
+  if (!gameRunning || drawInProgress) return;
+
+  if (drawnNumbers.length >= 90) {
+    finishGame();
+    return;
+  }
+
+  drawInProgress = true;
+
+  const available = [];
+
+  for (let i = 1; i <= 90; i++) {
+    if (!drawnNumbers.includes(i)) {
+      available.push(i);
+    }
+  }
+
+  const n = available[
+    Math.floor(Math.random() * available.length)
+  ];
+
+  drawnNumbers.push(n);
+  saveDrawnNumbers();
+  renderNumberBoard();
+  showCenterNumber(n);
+
+  await playNumberRecording(n);
+
+  if (gameRunning) checkPrizeWinners();
+
+  if (gameRunning && drawnNumbers.length >= 90) {
+    finishGame();
+  }
+
+  drawInProgress = false;
+}</code></pre></div>
     <div class="certificateFacts">
       <div class="certificateFact"><strong>🎯 RANDOM NUMBER SELECTION</strong>1–90</div>
       <div class="certificateFact"><strong>🛡️ NO WINNER FIXING</strong>FAIR PLAY INTENT</div>
@@ -124,8 +160,7 @@ button,input{font-family:inherit}
       <div class="certificateFact"><strong>👥 TRANSPARENT GAME RULES</strong>SAME RULES FOR PLAYERS</div>
     </div>
     <div class="certificateCopy">For further information or to clear up any doubts, contact the developer using WhatsApp.</div>
-    <button class="certificateWhatsApp" type="button" onclick="alert('Please use the WhatsApp contact provided by the game developer. A contact number has not been configured on this certificate yet.')">WhatsApp Now</button>
-    <div class="certificateNote">This is an informational certificate created by Win Tambola. It is not a government licence or an independent/third-party certification. Fairness claims should be verified against the actual deployed code and system.</div>
+    <a class="certificateWhatsApp" href="https://wa.me/916002951408" target="_blank" rel="noopener noreferrer">WhatsApp Now</a>
     <button class="closeBtn" onclick="closeModal('certificateModal')">CLOSE</button>
   </div>
 </div>
@@ -282,8 +317,7 @@ function getVisibleTicketNumbers(){
   const expected=Array.from({length:count},(_,i)=>i+1);
   if(JSON.stringify(visibleTicketNumbers)!==JSON.stringify(expected)){
     visibleTicketNumbers=expected;
-
- localStorage.setItem("tombolaVisibleTicketNumbers",JSON.stringify(visibleTicketNumbers));
+    localStorage.setItem("tombolaVisibleTicketNumbers",JSON.stringify(visibleTicketNumbers));
   }
   return visibleTicketNumbers;
 }
@@ -633,7 +667,7 @@ function viewWinnerTicket(prizeKey,selectedTicketNo){
 
 function escapeHtml(value){
   return String(value).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
- }
+}
 
 function finishPrizeGame(){
   if(!gameRunning)return;
@@ -718,7 +752,7 @@ function searchMyTicket(){
   const customerGroups={};
   const notBooked=[];
 
-  requested.forEach(ticketNo=>{
+requested.forEach(ticketNo=>{
     const booking=bookings[ticketNo];
     if(!booking||booking.booked!==true){notBooked.push(ticketNo);return;}
 
@@ -921,7 +955,7 @@ function saveSettings(){
  let visible=parseInt(document.getElementById("visibleTickets").value);
  if(isNaN(visible)||visible<1||visible>600){alert("Visible Tickets 1 se 600 ke beech hona chahiye.");return}
 
- // Date/Time save karne par existing ticket set ko change nahi karna.
+// Date/Time save karne par existing ticket set ko change nahi karna.
  // Sirf Visible Tickets ki quantity change hone par naya ticket set generate hoga.
  const oldVisible=Number(settings.visibleTickets)||0;
  settings.visibleTickets=visible;
@@ -946,7 +980,7 @@ renderTickets();renderAdminBookings();renderAdminTicketStatus();renderPlayerPriz
 
 function closeModal(id){document.getElementById(id).style.display="none"}
 function openCertificate(event){if(event)event.preventDefault();const modal=document.getElementById("certificateModal");if(modal)modal.style.display="block"}
-function showCertificateCode(event){if(event)event.preventDefault();const panel=document.getElementById("certificateCodeInfo");if(panel)panel.style.display=panel.style.display==="block"?"none":"block"}
+function showCertificateCode(event){if(event)event.preventDefault();const panel=document.getElementById("certificateCodeInfo");if(panel){panel.style.display="block";panel.setAttribute("aria-hidden","false");panel.scrollIntoView({behavior:"smooth",block:"nearest"})}}
 
 function formatGameDate(dateString){
 if(!dateString)return"--/--/----";let parts=dateString.split("-");if(parts.length!==3)return"--/--/----";
@@ -993,6 +1027,7 @@ function startGame(){
 getVisibleTicketNumbers();
 renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();if(gameRunning){showGameBoard(true)}else{showGameBoard(false)}setInterval(updateCountdown,1000);
 }
+
 
 // Supabase shared-state sync for WIN TAMBOLA.
 // Public publishable key only; access is controlled by the database RLS policies.
