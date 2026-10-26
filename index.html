@@ -88,13 +88,13 @@ button,input{font-family:inherit}
 .logo{font-size:23px}.sub{font-size:12px}.gameInfo{gap:4px}.gameBox{min-height:58px;padding:4px 2px;border-width:3px;font-size:14px}
 #gameDateDisplay{font-size:13px}#countdown{font-size:14px}#gameTimeDisplay{font-size:13px}.gameStatus{font-size:14px}
 .cell{min-height:43px;font-size:18px}.ticketNo{width:48px;height:48px;font-size:18px}.ticketName{font-size:16px;padding:12px 6px}
-.ticketStatusGrid{grid-template-columns:repeat(5,1fr);gap:5px}.statusTicket{min-height:48px;font-size:17px;border-width:2px}
+.ticketStatusGrid{grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}.statusTicket{min-height:48px;font-size:17px;border-width:2px}
 }
 </style>
 </head>
 <body>
 
-<div class="announcementModal" id="announcementModal">
+ <div class="announcementModal" id="announcementModal">
   <div class="announcementBox">
     <div class="announcementTitle">!! ANNOUNCEMENT !!</div>
     <div class="announcementText">
@@ -566,7 +566,7 @@ function checkPrizeWinners(){
   let changed=false;
   const newlyWon=[];
 
-   // Early 5 and Full House allow every ticket that completes on the same draw to win.
+  // Early 5 and Full House allow every ticket that completes on the same draw to win.
   for(const key of selected){
     if(prizeWinners[key]) continue;
     if(key==="early5"||key==="fullHouse"){
@@ -773,7 +773,7 @@ function searchMyTicket(){
       }
     });
 
-    group.allTickets.sort((a,b)=>a-b);
+      group.allTickets.sort((a,b)=>a-b);
     group.sourceTickets.sort((a,b)=>a-b);
 
     html+=`<div class="myTicketFound">
@@ -960,9 +960,16 @@ function saveSettings(){
 
  settings.gameDate=document.getElementById("gameDate").value;
  settings.gameTime=document.getElementById("gameTime").value;
+ // Persist the selected ticket quantity locally before refreshing the UI.
  localStorage.setItem("tombolaSettings",JSON.stringify(settings));
+ const expectedTickets=Array.from({length:visible},(_,i)=>i+1);
+ visibleTicketNumbers=expectedTickets;
+ localStorage.setItem("tombolaVisibleTicketNumbers",JSON.stringify(expectedTickets));
  renderTickets();updateGameDisplay();renderAdminBookings();renderAdminTicketStatus();
- alert("Settings saved successfully!");
+ // Push the saved quantity to Supabase immediately so a refresh or another
+ // mobile device cannot restore an older ticket count from a stale snapshot.
+ if(typeof saveCloudState==="function") saveCloudState();
+ alert("Settings saved successfully! Visible tickets: "+visible);
  closeModal("adminModal");
 }
 
