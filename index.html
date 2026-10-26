@@ -726,7 +726,7 @@ function searchMyTicket(){
   const visibleSet=getVisibleTicketNumbers();
   const raw=String(input.value||"").trim();
 
-  if(!raw){
+if(!raw){
     result.innerHTML='<div class="noTicket">Please enter at least one ticket number.</div>';
     return;
   }
@@ -773,7 +773,7 @@ function searchMyTicket(){
       }
     });
 
-      group.allTickets.sort((a,b)=>a-b);
+    group.allTickets.sort((a,b)=>a-b);
     group.sourceTickets.sort((a,b)=>a-b);
 
     html+=`<div class="myTicketFound">
@@ -954,6 +954,8 @@ function saveSettings(){
  // Sirf Visible Tickets ki quantity change hone par naya ticket set generate hoga.
  const oldVisible=Number(settings.visibleTickets)||0;
  settings.visibleTickets=visible;
+ // Admin settings save makes this device the authoritative writer for shared ticket quantity.
+ cloudController=true;
  if(visible!==oldVisible){
    regenerateVisibleTicketNumbers();
  }
@@ -1109,8 +1111,21 @@ async function loadCloudState(){
     cloudPreviousRunning=incomingRunning;
     cloudAudioBaselineReady=true;
     cloudApplying=true;
-    if(st.settings){settings=st.settings;localStorage.setItem("tombolaSettings",JSON.stringify(settings));}
-    if(st.visibleTicketNumbers){visibleTicketNumbers=st.visibleTicketNumbers;localStorage.setItem("tombolaVisibleTicketNumbers",JSON.stringify(visibleTicketNumbers));}
+    if(st.settings){
+      settings={...settings,...st.settings};
+      const savedCount=Math.min(600,Math.max(1,parseInt(settings.visibleTickets,10)||15));
+      settings.visibleTickets=savedCount;
+      localStorage.setItem("tombolaSettings",JSON.stringify(settings));
+    }
+    // The configured quantity is authoritative; never let an old cloud array of 5 tickets override it.
+    const configuredCount=Math.min(600,Math.max(1,parseInt(settings.visibleTickets,10)||15));
+    const expectedVisibleTickets=Array.from({length:configuredCount},(_,i)=>i+1);
+    if(!Array.isArray(st.visibleTicketNumbers) || st.visibleTicketNumbers.length!==configuredCount || st.visibleTicketNumbers.some((n,i)=>Number(n)!==i+1)){
+      visibleTicketNumbers=expectedVisibleTickets;
+    }else{
+      visibleTicketNumbers=st.visibleTicketNumbers;
+    }
+    localStorage.setItem("tombolaVisibleTicketNumbers",JSON.stringify(visibleTicketNumbers));
     if(st.bookings){bookings=st.bookings;localStorage.setItem("tombolaBookings",JSON.stringify(bookings));}
     if(st.prizes){prizes=st.prizes;localStorage.setItem("tombolaPrizes",JSON.stringify(prizes));}
     if(st.prizeWinners){prizeWinners=st.prizeWinners;localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners));}
