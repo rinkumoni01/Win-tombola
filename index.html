@@ -94,7 +94,7 @@ button,input{font-family:inherit}
 </head>
 <body>
 
- <div class="announcementModal" id="announcementModal">
+<div class="announcementModal" id="announcementModal">
   <div class="announcementBox">
     <div class="announcementTitle">!! ANNOUNCEMENT !!</div>
     <div class="announcementText">
@@ -302,7 +302,7 @@ button,input{font-family:inherit}
 <script>
 const ADMIN_USERNAME="gyandeep";
 const ADMIN_PASSWORD="785673";
-
+ 
 let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
 if(!Number.isInteger(Number(settings.visibleTickets))||Number(settings.visibleTickets)<1||Number(settings.visibleTickets)>600){settings.visibleTickets=15;}
 let visibleTicketNumbers=JSON.parse(localStorage.getItem("tombolaVisibleTicketNumbers")||"null");
@@ -726,7 +726,7 @@ function searchMyTicket(){
   const visibleSet=getVisibleTicketNumbers();
   const raw=String(input.value||"").trim();
 
-if(!raw){
+   if(!raw){
     result.innerHTML='<div class="noTicket">Please enter at least one ticket number.</div>';
     return;
   }
@@ -950,7 +950,7 @@ function saveSettings(){
  let visible=parseInt(document.getElementById("visibleTickets").value);
  if(isNaN(visible)||visible<1||visible>600){alert("Visible Tickets 1 se 600 ke beech hona chahiye.");return}
 
- // Date/Time save karne par existing ticket set ko change nahi karna.
+// Date/Time save karne par existing ticket set ko change nahi karna.
  // Sirf Visible Tickets ki quantity change hone par naya ticket set generate hoga.
  const oldVisible=Number(settings.visibleTickets)||0;
  settings.visibleTickets=visible;
@@ -1134,23 +1134,28 @@ async function loadCloudState(){
     gameRunning=st.gameRunning===true;
     localStorage.setItem("tombolaGameRunning",String(gameRunning));
     cloudApplying=false;
-    renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();
+
+renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();
     if(gameRunning)showGameBoard(true);
     else if(drawnNumbers.length===0)showGameBoard(false);
-    // A second device hears the live announcements when shared state changes.
-    // The user must tap the page once first, as required by mobile browser autoplay rules.
+
+    // Show the same center number on every device, not only the controller.
+    // On a newly opened player device, display the latest live number too.
+    const newlyCalled=incomingNumbers.filter(n=>!oldNumbers.includes(n));
+    if(incomingNumbers.length>0 && (newlyCalled.length>0 || !isSubsequentCloudUpdate)){
+      const latestNumber=newlyCalled.length ? newlyCalled[newlyCalled.length-1] : incomingNumbers[incomingNumbers.length-1];
+      if(gameRunning)showCenterNumber(latestNumber);
+    }
+
+    // Mobile browsers require a user tap before remote audio can play.
     if(isSubsequentCloudUpdate && cloudAudioUnlocked){
       if(oldRunning!==true && incomingRunning===true){
         speak(GAME_START_VOICE);
       } else if(oldRunning===true && incomingRunning===false){
         queueSpeak(GAME_OVER_VOICE);
       }
-      if(incomingNumbers.length>oldNumbers.length){
-        const newlyCalled=incomingNumbers.filter(n=>!oldNumbers.includes(n));
-        if(newlyCalled.length){
-          const latestNumber=newlyCalled[newlyCalled.length-1];
-          playNumberRecording(latestNumber);
-        }
+      if(newlyCalled.length){
+        playNumberRecording(newlyCalled[newlyCalled.length-1]);
       }
     }
   }catch(error){cloudApplying=false;console.warn("Supabase sync error:",error);}
