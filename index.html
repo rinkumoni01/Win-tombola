@@ -196,9 +196,6 @@ button,input{font-family:inherit}
 
 <div class="calledList" id="calledList"></div>
 
-<div class="prizeBoard" id="playerPrizeBoard">
-  <div id="playerPrizeList"></div>
-</div>
 <div class="gameOverBox" id="gameOverBox">🎉 GAME OVER 🎉</div>
 
 <div class="myTicketBox">
@@ -207,6 +204,10 @@ button,input{font-family:inherit}
 
 <div class="myTicketResult" id="myTicketResult"></div>
 </div>
+<div class="prizeBoard" id="playerPrizeBoard">
+  <div id="playerPrizeList"></div>
+</div>
+<div class="gameOverBox" id="gameOverBox">🎉 GAME OVER 🎉</div>
 </div>
 </div>
 
@@ -301,7 +302,7 @@ button,input{font-family:inherit}
 <script>
 const ADMIN_USERNAME="gyandeep";
 const ADMIN_PASSWORD="785673";
- 
+
 let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
 if(!Number.isInteger(Number(settings.visibleTickets))||Number(settings.visibleTickets)<1||Number(settings.visibleTickets)>600){settings.visibleTickets=15;}
 let visibleTicketNumbers=JSON.parse(localStorage.getItem("tombolaVisibleTicketNumbers")||"null");
@@ -565,7 +566,7 @@ function checkPrizeWinners(){
   let changed=false;
   const newlyWon=[];
 
-  // Early 5 and Full House allow every ticket that completes on the same draw to win.
+ // Early 5 and Full House allow every ticket that completes on the same draw to win.
   for(const key of selected){
     if(prizeWinners[key]) continue;
     if(key==="early5"||key==="fullHouse"){
@@ -616,7 +617,7 @@ function renderPlayerPrizes(){
     const winners=getPrizeWinnerList(key);
     const done=winners.length>0;
     const winnerHtml=winners.map(w=>`<div class="winner">🏆 Winner: ${escapeHtml(w.name)}<br>🎟️ Ticket: ${w.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}',${Number(w.ticketNo)})">👁️ VIEW TICKET ${w.ticketNo}</button></div>`).join('');
-    return `<div class="playerPrize ${done?"done":"on"}"><div>${PRIZE_NAMES[key]}</div><div class="pStatus">${done?"✅ COMPLETED":"🟢 ACTIVE"}</div>${winnerHtml}</div>`;
+    return `<div class="playerPrize ${done?"done":"on"}"><div>${PRIZE_NAMES[key]}</div><div class="pStatus">${done?"✅ COMPLETED":""}</div>${winnerHtml}</div>`;
   }).join("");
   const over=document.getElementById("gameOverBox");
   if(over){const done=selected.length>0&&selected.every(k=>getPrizeWinnerList(k).length>0);over.style.display=done?"block":"none";}
