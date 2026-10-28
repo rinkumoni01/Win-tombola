@@ -302,7 +302,7 @@ button,input{font-family:inherit}
 <script>
 const ADMIN_USERNAME="gyandeep";
 const ADMIN_PASSWORD="785673";
- 
+
 let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
 if(!Number.isInteger(Number(settings.visibleTickets))||Number(settings.visibleTickets)<1||Number(settings.visibleTickets)>600){settings.visibleTickets=15;}
 let visibleTicketNumbers=JSON.parse(localStorage.getItem("tombolaVisibleTicketNumbers")||"null");
@@ -723,10 +723,10 @@ function searchMyTicket(){
   const result=document.getElementById("myTicketResult");
   if(!input||!result)return;
 
-  const visibleSet=getVisibleTicketNumbers();
+ const visibleSet=getVisibleTicketNumbers();
   const raw=String(input.value||"").trim();
 
-   if(!raw){
+  if(!raw){
     result.innerHTML='<div class="noTicket">Please enter at least one ticket number.</div>';
     return;
   }
@@ -878,9 +878,10 @@ savePrizeWinners();
 renderPlayerPrizes();
 renderAdminPrizeWinners();
 alert("Prize settings saved successfully!");
-}
+ }
 
 function adminBookTicket(){
+cloudController=true;
 let ticketNo=parseInt(document.getElementById("adminTicketNumber").value),name=document.getElementById("adminCustomerName").value.trim();
 const visibleSet=getVisibleTicketNumbers();
 if(isNaN(ticketNo)||!visibleSet.includes(ticketNo)){alert("Please enter one of the currently visible random ticket numbers: "+visibleSet.join(", "));return}
@@ -890,6 +891,7 @@ bookings[ticketNo]={booked:true,name:name,time:new Date().toISOString()};
 localStorage.setItem("tombolaBookings",JSON.stringify(bookings));
 document.getElementById("adminTicketNumber").value="";document.getElementById("adminCustomerName").value="";
 renderTickets();renderAdminBookings();renderAdminTicketStatus();
+if(typeof saveCloudState==="function")saveCloudState();
 alert("Ticket "+ticketNo+" booked for "+name);
 }
 
@@ -923,6 +925,7 @@ box.innerHTML=html;
 }
 
 function editBooking(ticketNo){
+cloudController=true;
 const booking=bookings[ticketNo];
 if(!booking||booking.booked!==true)return;
 const newName=prompt("Customer Name:",booking.name||"");
@@ -936,21 +939,23 @@ renderAdminBookings();
 renderAdminTicketStatus();
 renderPlayerPrizes();
 renderAdminPrizeWinners();
+if(typeof saveCloudState==="function")saveCloudState();
 }
 
 function cancelBooking(ticketNo){
+cloudController=true;
 if(!confirm("Cancel booking for Ticket "+ticketNo+"?"))return;
 delete bookings[ticketNo];localStorage.setItem("tombolaBookings",JSON.stringify(bookings));
 Object.keys(prizeWinners).forEach(k=>{const value=prizeWinners[k];if(Array.isArray(value)){const remaining=value.filter(w=>Number(w.ticketNo)!==Number(ticketNo));if(!remaining.length)delete prizeWinners[k];else prizeWinners[k]=remaining;}else if(value&&Number(value.ticketNo)===Number(ticketNo))delete prizeWinners[k];});
 savePrizeWinners();
-renderTickets();renderAdminBookings();renderAdminTicketStatus();renderPlayerPrizes();renderAdminPrizeWinners();alert("Ticket "+ticketNo+" is now UNSOLD.");
+renderTickets();renderAdminBookings();renderAdminTicketStatus();renderPlayerPrizes();renderAdminPrizeWinners();if(typeof saveCloudState==="function")saveCloudState();alert("Ticket "+ticketNo+" is now UNSOLD.");
 }
 
 function saveSettings(){
  let visible=parseInt(document.getElementById("visibleTickets").value);
  if(isNaN(visible)||visible<1||visible>600){alert("Visible Tickets 1 se 600 ke beech hona chahiye.");return}
 
-// Date/Time save karne par existing ticket set ko change nahi karna.
+ // Date/Time save karne par existing ticket set ko change nahi karna.
  // Sirf Visible Tickets ki quantity change hone par naya ticket set generate hoga.
  const oldVisible=Number(settings.visibleTickets)||0;
  settings.visibleTickets=visible;
@@ -976,10 +981,11 @@ function saveSettings(){
 }
 
 function resetBookings(){
+cloudController=true;
 if(!confirm("Are you sure you want to reset ALL bookings?"))return;
 bookings={};localStorage.setItem("tombolaBookings",JSON.stringify(bookings));
 prizeWinners={};savePrizeWinners();
-renderTickets();renderAdminBookings();renderAdminTicketStatus();renderPlayerPrizes();renderAdminPrizeWinners();alert("All bookings reset.");
+renderTickets();renderAdminBookings();renderAdminTicketStatus();renderPlayerPrizes();renderAdminPrizeWinners();if(typeof saveCloudState==="function")saveCloudState();alert("All bookings reset.");
 }
 
 function closeModal(id){document.getElementById(id).style.display="none"}
@@ -1124,8 +1130,9 @@ async function loadCloudState(){
       visibleTicketNumbers=expectedVisibleTickets;
     }else{
       visibleTicketNumbers=st.visibleTicketNumbers;
-    }
-    localStorage.setItem("tombolaVisibleTicketNumbers",JSON.stringify(visibleTicketNumbers));
+ }
+
+localStorage.setItem("tombolaVisibleTicketNumbers",JSON.stringify(visibleTicketNumbers));
     if(st.bookings){bookings=st.bookings;localStorage.setItem("tombolaBookings",JSON.stringify(bookings));}
     if(st.prizes){prizes=st.prizes;localStorage.setItem("tombolaPrizes",JSON.stringify(prizes));}
     if(st.prizeWinners){prizeWinners=st.prizeWinners;localStorage.setItem("tombolaPrizeWinners",JSON.stringify(prizeWinners));}
@@ -1134,8 +1141,7 @@ async function loadCloudState(){
     gameRunning=st.gameRunning===true;
     localStorage.setItem("tombolaGameRunning",String(gameRunning));
     cloudApplying=false;
-
-renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();
+    renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();
     if(gameRunning)showGameBoard(true);
     else if(drawnNumbers.length===0)showGameBoard(false);
 
