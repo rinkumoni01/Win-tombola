@@ -6,7 +6,7 @@
 <title>Win Tombola</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#07145e url("https://raw.githubusercontent.com/rinkumoni01/Win-tombola/81002449b3df62f4b3fa94a1ea9de69470f312fb/file_00000000a2b88208b329f959db54ea80.png") center top/cover fixed no-repeat;color:#222}
+body{margin:0;font-family:Arial,sans-serif;background:#ff69b4;color:#222}
 button,input{font-family:inherit}
 .header{background:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08)),url("https://raw.githubusercontent.com/rinkumoni01/Win-tombola/65a36f3b47ffa8ebb3b47126d74ebac0a6fae374/win_tombola_background_1536x678.png") center/cover no-repeat;color:white;padding:15px 10px;text-align:center;position:sticky;top:0;z-index:20;box-shadow:0 2px 8px #a00045}
 .logo{font-size:30px;font-weight:900;letter-spacing:2px;text-shadow:2px 2px 0 #07145e,0 0 8px rgba(255,255,255,.8)}.sub{font-size:13px;margin-top:4px}
@@ -566,7 +566,7 @@ function checkPrizeWinners(){
   let changed=false;
   const newlyWon=[];
 
- // Early 5 and Full House allow every ticket that completes on the same draw to win.
+   // Early 5 and Full House allow every ticket that completes on the same draw to win.
   for(const key of selected){
     if(prizeWinners[key]) continue;
     if(key==="early5"||key==="fullHouse"){
