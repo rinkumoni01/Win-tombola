@@ -193,17 +193,16 @@ button,input{font-family:inherit}
 <div id="ticketPage"><div class="info">🎟️ Available Tickets: <span id="visibleCount">0</span></div><div id="tickets"></div></div>
 <div id="gameBoard" class="gameBoard">
 <div class="numberGridWrap"><div class="numberGrid" id="numberGrid"></div><div id="centerNumberPopup" class="centerNumberPopup"></div></div>
-<div class="calledListTitle">Called Numbers</div>
+
 <div class="calledList" id="calledList"></div>
 
 <div class="prizeBoard" id="playerPrizeBoard">
-  <div class="prizeBoardTitle">🏆 GAME PRIZES</div>
   <div id="playerPrizeList"></div>
 </div>
 <div class="gameOverBox" id="gameOverBox">🎉 GAME OVER 🎉</div>
 
 <div class="myTicketBox">
-<div class="myTicketTitle">🎟️ Search Tickets</div>
+
 <div class="myTicketRow"><input class="myTicketInput" id="myTicketNumber" type="text" inputmode="numeric" placeholder="Example: 25, 80"><button class="myTicketBtn" onclick="searchMyTicket()">SEARCH</button></div>
 
 <div class="myTicketResult" id="myTicketResult"></div>
@@ -286,7 +285,6 @@ button,input{font-family:inherit}
 <div class="adminCard">
 <h3>📋 Booked Tickets</h3>
 <div id="adminBookings" class="adminList"></div>
-<button class="saveBtn" type="button" style="margin-top:12px;width:100%" onclick="shareAllBookedTickets()">📤 SHARE ALL BOOKED TICKETS</button>
 </div>
 
 <div class="adminCard">
@@ -303,7 +301,7 @@ button,input{font-family:inherit}
 <script>
 const ADMIN_USERNAME="gyandeep";
 const ADMIN_PASSWORD="785673";
-
+ 
 let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
 if(!Number.isInteger(Number(settings.visibleTickets))||Number(settings.visibleTickets)<1||Number(settings.visibleTickets)>600){settings.visibleTickets=15;}
 let visibleTicketNumbers=JSON.parse(localStorage.getItem("tombolaVisibleTicketNumbers")||"null");
@@ -634,7 +632,7 @@ function renderAdminPrizeWinners(){
     const winnerHtml=winners.map(w=>`<div>🏆 ${escapeHtml(w.name)} — 🎟️ Ticket ${w.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}',${Number(w.ticketNo)})">👁️ VIEW TICKET ${w.ticketNo}</button></div>`).join('');
     return `<div class="adminWinner"><b>${PRIZE_NAMES[key]}</b><br>${winners.length?winnerHtml:"⏳ Winner not decided yet"}</div>`;
   }).join("");
- }
+}
 
 function viewWinnerTicket(prizeKey,selectedTicketNo){
   const winners=getPrizeWinnerList(prizeKey);
@@ -923,38 +921,6 @@ html+=`<tr><td>${ticketNo}</td><td>${name}</td><td>S</td><td><button class="admi
 
 html+=`</tbody></table>`;
 box.innerHTML=html;
-}
-
-function shareAllBookedTickets(){
-  const keys=Object.keys(bookings).map(Number)
-    .filter(n=>bookings[n]&&bookings[n].booked===true)
-    .sort((a,b)=>a-b);
-  if(!keys.length){alert("There are no booked tickets to share.");return;}
-  const lines=["🎟️ WIN TAMBOLA — BOOKED TICKETS", "Total Booked Tickets: "+keys.length, ""];
-  keys.forEach((ticketNo,index)=>{
-    const name=(bookings[ticketNo].name||"").trim();
-    lines.push((index+1)+". Ticket No: "+ticketNo+(name?" | Name: "+name:""));
-  });
-  const message=lines.join("\n");
-  if(navigator.share){
-    navigator.share({title:"WIN TAMBOLA — Booked Tickets",text:message}).catch(err=>{
-      if(err&&err.name!=="AbortError")copyBookedTicketsText(message);
-    });
-  }else{
-    copyBookedTicketsText(message);
-  }
-}
-
-function copyBookedTicketsText(message){
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(message).then(()=>alert("All booked tickets copied. Paste the list into WhatsApp or another app to share."))
-      .catch(()=>showBookedTicketsCopyPrompt(message));
-  }else{
-    showBookedTicketsCopyPrompt(message);
-  }
-}
-function showBookedTicketsCopyPrompt(message){
-  window.prompt("Copy the complete booked tickets list:",message);
 }
 
 function editBooking(ticketNo){
