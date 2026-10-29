@@ -151,7 +151,7 @@ button,input{font-family:inherit}
     finishGame();
   }
 
-  drawInProgress = false;
+ drawInProgress = false;
 }</code></pre></div>
     <div class="certificateFacts">
       <div class="certificateFact"><strong>🎯 RANDOM NUMBER SELECTION</strong>1–90</div>
@@ -566,7 +566,7 @@ function checkPrizeWinners(){
   let changed=false;
   const newlyWon=[];
 
-   // Early 5 and Full House allow every ticket that completes on the same draw to win.
+  // Early 5 and Full House allow every ticket that completes on the same draw to win.
   for(const key of selected){
     if(prizeWinners[key]) continue;
     if(key==="early5"||key==="fullHouse"){
@@ -928,6 +928,19 @@ function editBooking(ticketNo){
 cloudController=true;
 const booking=bookings[ticketNo];
 if(!booking||booking.booked!==true)return;
+
+// First let the admin choose whether to edit the name or cancel this booking.
+const action=prompt("Ticket "+ticketNo+" — enter EDIT to change customer name, or CANCEL to make this ticket available again.","EDIT");
+if(action===null)return;
+const choice=action.trim().toUpperCase();
+if(choice==="CANCEL"){
+  cancelBooking(ticketNo);
+  return;
+}
+if(choice!=="EDIT"){
+  alert("Please enter EDIT or CANCEL.");
+  return;
+}
 const newName=prompt("Customer Name:",booking.name||"");
 if(newName===null)return;
 const name=newName.trim();
