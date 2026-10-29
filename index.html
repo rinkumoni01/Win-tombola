@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
 <title>Win Tombola</title>
 <style>
 *{box-sizing:border-box}
@@ -90,6 +90,71 @@ button,input{font-family:inherit}
 .cell{min-height:43px;font-size:18px}.ticketNo{width:48px;height:48px;font-size:18px}.ticketName{font-size:16px;padding:12px 6px}
 .ticketStatusGrid{grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}.statusTicket{min-height:48px;font-size:17px;border-width:2px}
 }
+
+/* Responsive layout refinements for Android, iPhone, tablets and desktop */
+html{width:100%;min-width:0;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{width:100%;min-width:0;overflow-x:hidden}
+.container{width:100%;max-width:900px;padding-left:clamp(6px,2.5vw,12px);padding-right:clamp(6px,2.5vw,12px)}
+.ticket,.ticketHead,.ticketGrid,.gameBoard,.prizeBoard,.modalBox{min-width:0;max-width:100%}
+.ticketName{min-width:0;overflow-wrap:anywhere;word-break:break-word}
+.ticketGrid{grid-template-columns:repeat(9,minmax(0,1fr));border-width:clamp(2px,1vw,6px)}
+.cell{min-width:0;min-height:clamp(29px,5.5vw,58px);font-size:clamp(12px,2.55vw,23px);padding:0 1px;overflow:hidden}
+.numberGrid{grid-template-columns:repeat(10,minmax(0,1fr));gap:clamp(2px,0.8vw,5px)}
+.drawNumber{min-width:0;font-size:clamp(10px,2.3vw,20px);border-width:clamp(1px,.4vw,2px)}
+.adminList{max-width:100%;overflow-x:auto}
+.adminBookingTable{min-width:280px}
+.modal{padding:clamp(6px,2.5vw,20px)}
+.modalBox{width:100%;padding:clamp(12px,3.5vw,20px)}
+@media (min-width:601px) and (max-width:1024px){
+ .container{max-width:900px;padding:12px}
+ .cell{min-height:clamp(42px,5vw,58px);font-size:clamp(17px,2.2vw,23px)}
+ .gameBox{font-size:clamp(15px,2vw,20px)}
+}
+@media (max-width:600px){
+ .header{padding:12px 7px}
+ .logo{font-size:clamp(19px,5.7vw,23px);letter-spacing:1px;overflow-wrap:anywhere}
+ .headerActions{gap:clamp(8px,3vw,18px)}
+ .headerIconBtn{width:clamp(38px,11vw,46px);height:clamp(38px,11vw,46px);font-size:clamp(19px,5.5vw,23px)}
+ .gameInfo{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .gameBox{min-width:0;overflow-wrap:anywhere;line-height:1.2}
+ .gameStatus{line-height:1.35;overflow-wrap:anywhere}
+ .ticketHead{gap:5px}
+ .ticketNo{width:clamp(36px,12vw,48px);height:clamp(36px,12vw,48px);font-size:clamp(15px,4.5vw,18px)}
+ .ticketName{padding:clamp(7px,2.5vw,12px) 5px;font-size:clamp(12px,4vw,16px);line-height:1.2}
+ .ticketGrid{border-radius:8px}
+ .cell{min-height:clamp(30px,8.3vw,43px);font-size:clamp(12px,3.5vw,18px)}
+ .numberGrid{gap:3px}
+ .drawNumber{border-radius:5px}
+ .calledChip{width:clamp(34px,10vw,44px);height:clamp(34px,10vw,44px);min-width:clamp(34px,10vw,44px);font-size:clamp(14px,4vw,17px)}
+ .myTicketRow{flex-wrap:wrap}
+ .myTicketInput{width:100%;flex-basis:100%}
+ .myTicketBtn{width:100%}
+ .certificateFacts{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .adminBookingTable th,.adminBookingTable td{padding:7px 5px;font-size:14px}
+ .prizeRow{gap:6px;padding:8px;font-size:14px}
+ .announcementModal{padding:8px}
+ .announcementBox{max-height:94dvh;overflow-y:auto}
+}
+@media (max-width:380px){
+ .container{padding-left:5px;padding-right:5px}
+ .logo{font-size:19px;letter-spacing:.5px}
+ .gameBox{font-size:12px;padding:4px 1px;border-width:2px}
+ #gameDateDisplay,#gameTimeDisplay,#countdown{font-size:12px}
+ .ticketHead{gap:4px}
+ .ticketNo{width:34px;height:34px;font-size:14px}
+ .ticketName{font-size:12px;padding:7px 3px}
+ .cell{min-height:29px;font-size:12px}
+ .numberGrid{gap:2px}
+ .drawNumber{font-size:10px;padding:0}
+ .modalBox{padding:12px}
+ .certificateBox{border-width:4px;padding:12px}
+}
+@media (max-width:330px){
+ .headerActions{gap:6px}
+ .gameStatus{font-size:12px}
+ .cell{min-height:26px;font-size:11px}
+ .ticketNo{width:30px;height:30px}
+}
 </style>
 </head>
 <body>
@@ -151,7 +216,7 @@ button,input{font-family:inherit}
     finishGame();
   }
 
- drawInProgress = false;
+  drawInProgress = false;
 }</code></pre></div>
     <div class="certificateFacts">
       <div class="certificateFact"><strong>🎯 RANDOM NUMBER SELECTION</strong>1–90</div>
@@ -277,7 +342,7 @@ button,input{font-family:inherit}
 <div class="adminCard">
 <h3>🎟️ Ticket Booking</h3>
 <label>Ticket Number</label>
-<input class="input" id="adminTicketNumber" type="number" min="1" max="600" placeholder="Example: 25">
+<input class="input" id="adminTicketNumber" type="text" inputmode="numeric" placeholder="Example: 25, 26, 27">
 <label>👤 Customer Name</label>
 <input class="input" id="adminCustomerName" type="text" placeholder="Customer name">
 <button class="saveBtn" onclick="adminBookTicket()">🎟️ BOOK TICKET</button>
@@ -566,7 +631,7 @@ function checkPrizeWinners(){
   let changed=false;
   const newlyWon=[];
 
-  // Early 5 and Full House allow every ticket that completes on the same draw to win.
+// Early 5 and Full House allow every ticket that completes on the same draw to win.
   for(const key of selected){
     if(prizeWinners[key]) continue;
     if(key==="early5"||key==="fullHouse"){
@@ -806,7 +871,7 @@ function searchMyTicket(){
     html=`<div class="noTicket" style="margin-bottom:10px">⚠️ Not booked: ${notBooked.join(", ")}</div>`+html;
   }
 
-  result.innerHTML=html;
+ result.innerHTML=html;
 }
 
 function updatePlayerGameStatus(){
@@ -882,17 +947,25 @@ alert("Prize settings saved successfully!");
 
 function adminBookTicket(){
 cloudController=true;
-let ticketNo=parseInt(document.getElementById("adminTicketNumber").value),name=document.getElementById("adminCustomerName").value.trim();
+const rawTicketNumbers=document.getElementById("adminTicketNumber").value.trim();
+const name=document.getElementById("adminCustomerName").value.trim();
 const visibleSet=getVisibleTicketNumbers();
-if(isNaN(ticketNo)||!visibleSet.includes(ticketNo)){alert("Please enter one of the currently visible random ticket numbers: "+visibleSet.join(", "));return}
+if(!rawTicketNumbers){alert("Please enter ticket number(s).");return}
+const ticketNumbers=rawTicketNumbers.split(/[\s,;]+/).filter(Boolean).map(v=>Number(v));
+if(!ticketNumbers.length||ticketNumbers.some(n=>!Number.isInteger(n))){alert("Please enter valid ticket numbers separated by commas, e.g. 25, 26, 27.");return}
+if(new Set(ticketNumbers).size!==ticketNumbers.length){alert("Please do not enter the same ticket number more than once.");return}
+const invalid=ticketNumbers.filter(n=>!visibleSet.includes(n));
+if(invalid.length){alert("Please enter only currently visible ticket numbers. Invalid: "+invalid.join(", "));return}
 if(!name){alert("Please enter customer name.");return}
-if(bookings[ticketNo]&&bookings[ticketNo].booked===true){alert("This ticket is already booked.");return}
-bookings[ticketNo]={booked:true,name:name,time:new Date().toISOString()};
+const alreadyBooked=ticketNumbers.filter(n=>bookings[n]&&bookings[n].booked===true);
+if(alreadyBooked.length){alert("These ticket(s) are already booked: "+alreadyBooked.join(", "));return}
+const time=new Date().toISOString();
+ticketNumbers.forEach(ticketNo=>{bookings[ticketNo]={booked:true,name:name,time:time};});
 localStorage.setItem("tombolaBookings",JSON.stringify(bookings));
 document.getElementById("adminTicketNumber").value="";document.getElementById("adminCustomerName").value="";
 renderTickets();renderAdminBookings();renderAdminTicketStatus();
 if(typeof saveCloudState==="function")saveCloudState();
-alert("Ticket "+ticketNo+" booked for "+name);
+alert("Ticket(s) "+ticketNumbers.join(", ")+" booked for "+name);
 }
 
 function renderAdminTicketStatus(){
@@ -928,19 +1001,6 @@ function editBooking(ticketNo){
 cloudController=true;
 const booking=bookings[ticketNo];
 if(!booking||booking.booked!==true)return;
-
-// First let the admin choose whether to edit the name or cancel this booking.
-const action=prompt("Ticket "+ticketNo+" — enter EDIT to change customer name, or CANCEL to make this ticket available again.","EDIT");
-if(action===null)return;
-const choice=action.trim().toUpperCase();
-if(choice==="CANCEL"){
-  cancelBooking(ticketNo);
-  return;
-}
-if(choice!=="EDIT"){
-  alert("Please enter EDIT or CANCEL.");
-  return;
-}
 const newName=prompt("Customer Name:",booking.name||"");
 if(newName===null)return;
 const name=newName.trim();
@@ -968,7 +1028,7 @@ function saveSettings(){
  let visible=parseInt(document.getElementById("visibleTickets").value);
  if(isNaN(visible)||visible<1||visible>600){alert("Visible Tickets 1 se 600 ke beech hona chahiye.");return}
 
- // Date/Time save karne par existing ticket set ko change nahi karna.
+// Date/Time save karne par existing ticket set ko change nahi karna.
  // Sirf Visible Tickets ki quantity change hone par naya ticket set generate hoga.
  const oldVisible=Number(settings.visibleTickets)||0;
  settings.visibleTickets=visible;
