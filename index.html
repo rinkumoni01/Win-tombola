@@ -158,7 +158,7 @@ body{width:100%;min-width:0;overflow-x:hidden}
 </style>
 </head>
 <body>
-
+ 
 <div class="announcementModal" id="announcementModal">
   <div class="announcementBox">
     <div class="announcementTitle">!! ANNOUNCEMENT !!</div>
@@ -519,14 +519,13 @@ function playNumberRecording(n){
     const finish=()=>{if(settled)return;settled=true;flushDelayedVoiceAnnouncements();resolve();};
     numberAudioPlayer.onended=finish;
     numberAudioPlayer.onerror=()=>{
+      // Do not add a synthesized "Number n" over the user's recordings.
       finish();
-      // Use browser speech if the uploaded recording cannot be played.
-      queueSpeak(`Number ${n}`);
     };
     numberAudioPlayer.play().catch(err=>{
       console.warn("Could not play recording for number",n,err);
+      // Keep the user's recording as the only number call; no speech fallback.
       finish();
-      queueSpeak(`Number ${n}`);
     });
   });
 }
@@ -698,7 +697,7 @@ function renderAdminPrizeWinners(){
     const winnerHtml=winners.map(w=>`<div>🏆 ${escapeHtml(w.name)} — 🎟️ Ticket ${w.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}',${Number(w.ticketNo)})">👁️ VIEW TICKET ${w.ticketNo}</button></div>`).join('');
     return `<div class="adminWinner"><b>${PRIZE_NAMES[key]}</b><br>${winners.length?winnerHtml:"⏳ Winner not decided yet"}</div>`;
   }).join("");
-}
+                         }
 
 function viewWinnerTicket(prizeKey,selectedTicketNo){
   const winners=getPrizeWinnerList(prizeKey);
@@ -1111,6 +1110,7 @@ getVisibleTicketNumbers();
 renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();if(gameRunning){showGameBoard(true)}else{showGameBoard(false)}setInterval(updateCountdown,1000);
 }
 
+
 // Supabase shared-state sync for WIN TAMBOLA.
 // Public publishable key only; access is controlled by the database RLS policies.
 const SUPABASE_URL = "https://fticnarblyqgjbtlwgff.supabase.co";
@@ -1253,4 +1253,4 @@ startGame();
 showAnnouncement();
 </script>
 </body>
-</html>  
+</html> 
