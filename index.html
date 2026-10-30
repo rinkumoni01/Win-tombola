@@ -158,7 +158,7 @@ body{width:100%;min-width:0;overflow-x:hidden}
 </style>
 </head>
 <body>
- 
+
 <div class="announcementModal" id="announcementModal">
   <div class="announcementBox">
     <div class="announcementTitle">!! ANNOUNCEMENT !!</div>
@@ -630,9 +630,13 @@ function checkPrizeWinners(){
   let changed=false;
   const newlyWon=[];
 
-  // Early 5 and Full House allow every ticket that completes on the same draw to win.
+  // Early 5 may have multiple winners on the same draw.
+  // Full House prizes are processed separately below so one ticket cannot
+  // receive Full House, Second Full House and Third Full House together.
   for(const key of selected){
     if(prizeWinners[key]) continue;
+    if(key==="secondFullHouse"||key==="thirdFullHouse") continue;
+
     if(key==="early5"||key==="fullHouse"){
       const qualifying=bookedTickets().filter(no=>prizeCompleteForTicket(key,no));
       if(qualifying.length){
@@ -650,16 +654,28 @@ function checkPrizeWinners(){
     }
   }
 
-  // Second/third full house prizes must use tickets not already awarded a full-house prize.
+  // Second and third Full House must go to different tickets from all
+  // tickets already awarded any earlier Full House prize.
   if(selected.includes("secondFullHouse") && !prizeWinners.secondFullHouse){
     const excluded=getPrizeWinnerList("fullHouse").map(w=>Number(w.ticketNo));
     const no=winnerTicketForPrize("secondFullHouse",excluded);
-    if(no!==null){prizeWinners.secondFullHouse=makeWinnerRecord("secondFullHouse",no);changed=true;newlyWon.push("secondFullHouse");}
+    if(no!==null){
+      prizeWinners.secondFullHouse=makeWinnerRecord("secondFullHouse",no);
+      changed=true;
+      newlyWon.push("secondFullHouse");
+    }
   }
   if(selected.includes("thirdFullHouse") && !prizeWinners.thirdFullHouse){
-    const excluded=[...getPrizeWinnerList("fullHouse"),...getPrizeWinnerList("secondFullHouse")].map(w=>Number(w.ticketNo));
+    const excluded=[
+      ...getPrizeWinnerList("fullHouse"),
+      ...getPrizeWinnerList("secondFullHouse")
+    ].map(w=>Number(w.ticketNo));
     const no=winnerTicketForPrize("thirdFullHouse",excluded);
-    if(no!==null){prizeWinners.thirdFullHouse=makeWinnerRecord("thirdFullHouse",no);changed=true;newlyWon.push("thirdFullHouse");}
+    if(no!==null){
+      prizeWinners.thirdFullHouse=makeWinnerRecord("thirdFullHouse",no);
+      changed=true;
+      newlyWon.push("thirdFullHouse");
+    }
   }
 
   if(changed){
@@ -697,7 +713,7 @@ function renderAdminPrizeWinners(){
     const winnerHtml=winners.map(w=>`<div>🏆 ${escapeHtml(w.name)} — 🎟️ Ticket ${w.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}',${Number(w.ticketNo)})">👁️ VIEW TICKET ${w.ticketNo}</button></div>`).join('');
     return `<div class="adminWinner"><b>${PRIZE_NAMES[key]}</b><br>${winners.length?winnerHtml:"⏳ Winner not decided yet"}</div>`;
   }).join("");
-                         }
+}
 
 function viewWinnerTicket(prizeKey,selectedTicketNo){
   const winners=getPrizeWinnerList(prizeKey);
@@ -787,7 +803,7 @@ function searchMyTicket(){
   const result=document.getElementById("myTicketResult");
   if(!input||!result)return;
 
-  const visibleSet=getVisibleTicketNumbers();
+ const visibleSet=getVisibleTicketNumbers();
   const raw=String(input.value||"").trim();
 
   if(!raw){
@@ -1012,7 +1028,7 @@ renderAdminTicketStatus();
 renderPlayerPrizes();
 renderAdminPrizeWinners();
 if(typeof saveCloudState==="function")saveCloudState();
-}
+                                                  }
 
 function cancelBooking(ticketNo){
 cloudController=true;
