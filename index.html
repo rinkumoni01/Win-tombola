@@ -183,7 +183,7 @@ body{width:100%;min-width:0;overflow-x:hidden}
   </div>
 </div>
 
-<div class="modal" id="certificateModal" style="z-index:500">
+ <div class="modal" id="certificateModal" style="z-index:500">
   <div class="modalBox certificateBox">
     <div class="certificateTop">🏆 FAIR PLAY CERTIFIED 🏆</div>
     <h2>WIN TAMBOLA</h2>
@@ -707,7 +707,7 @@ function renderPlayerPrizes(){
   box.innerHTML=selected.map(key=>{
     const winners=getPrizeWinnerList(key);
     const done=winners.length>0;
-    const winnerHtml=winners.map(w=>`<div class="winner">🏆 Winner: ${escapeHtml(w.name)}<br>🎟️ Ticket: ${w.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}',${Number(w.ticketNo)})">👁️ VIEW TICKET ${w.ticketNo}</button></div>`).join('');
+    const winnerHtml=winners.map(w=>key==="fullHouse"?`<div class="winner">TNO: ${w.ticketNo} (${escapeHtml(w.name)})<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}',${Number(w.ticketNo)})">👁️ VIEW</button></div>`:`<div class="winner">🏆 Winner: ${escapeHtml(w.name)}<br>🎟️ Ticket: ${w.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}',${Number(w.ticketNo)})">👁️ VIEW TICKET ${w.ticketNo}</button></div>`).join('');
     return `<div class="playerPrize ${done?"done":"on"}"><div>${PRIZE_NAMES[key]}</div><div class="pStatus">${done?"✅ COMPLETED":""}</div>${winnerHtml}</div>`;
   }).join("");
   const over=document.getElementById("gameOverBox");
@@ -721,7 +721,7 @@ function renderAdminPrizeWinners(){
   if(!selected.length){box.innerHTML='<div class="small">No prizes selected.</div>';return;}
   box.innerHTML=selected.map(key=>{
     const winners=getPrizeWinnerList(key);
-    const winnerHtml=winners.map(w=>`<div>🏆 ${escapeHtml(w.name)} — 🎟️ Ticket ${w.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}',${Number(w.ticketNo)})">👁️ VIEW TICKET ${w.ticketNo}</button></div>`).join('');
+    const winnerHtml=winners.map(w=>key==="fullHouse"?`<div>TNO: ${w.ticketNo} (${escapeHtml(w.name)})<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}',${Number(w.ticketNo)})">👁️ VIEW</button></div>`:`<div>🏆 ${escapeHtml(w.name)} — 🎟️ Ticket ${w.ticketNo}<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}',${Number(w.ticketNo)})">👁️ VIEW TICKET ${w.ticketNo}</button></div>`).join('');
     return `<div class="adminWinner"><b>${PRIZE_NAMES[key]}</b><br>${winners.length?winnerHtml:"⏳ Winner not decided yet"}</div>`;
   }).join("");
 }
@@ -838,7 +838,7 @@ function searchMyTicket(){
   const customerGroups={};
   const notBooked=[];
 
- requested.forEach(ticketNo=>{
+  requested.forEach(ticketNo=>{
     const booking=bookings[ticketNo];
     if(!booking||booking.booked!==true){notBooked.push(ticketNo);return;}
 
@@ -1099,7 +1099,7 @@ return parts[2]+"/"+parts[1]+"/"+parts[0];
 function formatGameTime(timeString){
 if(!timeString)return"--:-- --";let parts=timeString.split(":"),hour=parseInt(parts[0]),minute=parts[1],ampm=hour>=12?"PM":"AM";
 hour=hour%12;if(hour===0)hour=12;return String(hour).padStart(2,"0")+":"+minute+" "+ampm;
- }
+}
 
 function updateGameDisplay(){
 document.getElementById("gameDateDisplay").textContent=formatGameDate(settings.gameDate);
