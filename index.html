@@ -8,7 +8,7 @@
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,sans-serif;background:#ff69b4;color:#222}
 button,input{font-family:inherit}
-.header{background:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08)),url("https://raw.githubusercontent.com/rinkumoni01/Win-tombola/65a36f3b47ffa8ebb3b47126d74ebac0a6fae374/win_tombola_background_1536x678.png") center/cover no-repeat;color:white;padding:15px 10px;text-align:center;position:sticky;top:0;z-index:20;box-shadow:0 2px 8px #a00045}
+.header{background:transparent;color:white;padding:15px 10px;text-align:center;position:sticky;top:0;z-index:20;box-shadow:0 2px 8px #a00045}
 .logo{font-size:30px;font-weight:900;letter-spacing:2px;text-shadow:2px 2px 0 #07145e,0 0 8px rgba(255,255,255,.8)}.sub{font-size:13px;margin-top:4px}
 .gameInfo{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-top:10px}
 .gameBox{background:#07145e;color:white;border:4px solid #e9f900;border-radius:10px;min-height:60px;display:flex;justify-content:center;align-items:center;text-align:center;padding:5px;font-size:20px;font-weight:bold;box-shadow:0 0 5px #fff}
@@ -803,7 +803,7 @@ function searchMyTicket(){
   const result=document.getElementById("myTicketResult");
   if(!input||!result)return;
 
- const visibleSet=getVisibleTicketNumbers();
+  const visibleSet=getVisibleTicketNumbers();
   const raw=String(input.value||"").trim();
 
   if(!raw){
@@ -1028,7 +1028,7 @@ renderAdminTicketStatus();
 renderPlayerPrizes();
 renderAdminPrizeWinners();
 if(typeof saveCloudState==="function")saveCloudState();
-                                                  }
+}
 
 function cancelBooking(ticketNo){
 cloudController=true;
