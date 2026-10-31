@@ -641,7 +641,7 @@ function checkPrizeWinners(){
   let changed=false;
   const newlyWon=[];
 
- // Early 5 may have multiple winners on the same draw.
+// Early 5 may have multiple winners on the same draw.
   // Full House prizes are processed separately below so one ticket cannot
   // receive Full House, Second Full House and Third Full House together.
   for(const key of selected){
@@ -838,7 +838,7 @@ function searchMyTicket(){
   const customerGroups={};
   const notBooked=[];
 
-  requested.forEach(ticketNo=>{
+ requested.forEach(ticketNo=>{
     const booking=bookings[ticketNo];
     if(!booking||booking.booked!==true){notBooked.push(ticketNo);return;}
 
@@ -909,7 +909,7 @@ if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPP
 }
 
 function setGameStatus(status){
-if(status){cloudController=true;if(gameRunning){alert("Game is already running.");return}gameOverAnnounced=false;clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. Har 8 seconds mein agla number aur aapki recording aayegi.")}else{cloudController=true;gameRunning=false;localStorage.setItem("tombolaGameRunning","false");clearInterval(drawTimer);drawTimer=null;stopNumberRecording();updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
+if(status){cloudController=true;if(gameRunning){alert("Game is already running.");return}gameOverAnnounced=false;clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updateCountdown();updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. Har 8 seconds mein agla number aur aapki recording aayegi.")}else{cloudController=true;gameRunning=false;localStorage.setItem("tombolaGameRunning","false");updateCountdown();clearInterval(drawTimer);drawTimer=null;stopNumberRecording();updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
 
 function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
@@ -1054,7 +1054,7 @@ function saveSettings(){
  let visible=parseInt(document.getElementById("visibleTickets").value);
  if(isNaN(visible)||visible<1||visible>600){alert("Visible Tickets 1 se 600 ke beech hona chahiye.");return}
 
-// Date/Time save karne par existing ticket set ko change nahi karna.
+ // Date/Time save karne par existing ticket set ko change nahi karna.
  // Sirf Visible Tickets ki quantity change hone par naya ticket set generate hoga.
  const oldVisible=Number(settings.visibleTickets)||0;
  settings.visibleTickets=visible;
@@ -1099,7 +1099,7 @@ return parts[2]+"/"+parts[1]+"/"+parts[0];
 function formatGameTime(timeString){
 if(!timeString)return"--:-- --";let parts=timeString.split(":"),hour=parseInt(parts[0]),minute=parts[1],ampm=hour>=12?"PM":"AM";
 hour=hour%12;if(hour===0)hour=12;return String(hour).padStart(2,"0")+":"+minute+" "+ampm;
-}
+ }
 
 function updateGameDisplay(){
 document.getElementById("gameDateDisplay").textContent=formatGameDate(settings.gameDate);
@@ -1108,6 +1108,12 @@ document.getElementById("gameTimeDisplay").textContent=formatGameTime(settings.g
 
 function updateCountdown(){
 const el=document.getElementById("countdown");
+if(gameRunning){
+  el.textContent="GAME IS LIVE";
+  el.style.fontSize="clamp(12px,3.2vw,18px)";
+  return;
+}
+el.style.fontSize="";
 if(!settings.gameDate||!settings.gameTime){el.textContent="00:00:00";return}
 const target=new Date(settings.gameDate+"T"+settings.gameTime+":00"),now=new Date();
 let diff=target.getTime()-now.getTime();
