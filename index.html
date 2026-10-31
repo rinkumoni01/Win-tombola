@@ -6,7 +6,7 @@
 <title>Win Tombola</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#ff69b4;color:#222}
+body{margin:0;font-family:Arial,sans-serif;background:#ff69b4 url('file_0000000057848211a003b76819179a03.png') center center / cover fixed no-repeat;color:#222}
 button,input{font-family:inherit}
 .header{background:transparent;color:white;padding:15px 10px;text-align:center;position:sticky;top:0;z-index:20;box-shadow:0 2px 8px #a00045}
 .logo{font-size:30px;font-weight:900;letter-spacing:2px;text-shadow:2px 2px 0 #07145e,0 0 8px rgba(255,255,255,.8)}.sub{font-size:13px;margin-top:4px}
@@ -159,7 +159,7 @@ body{width:100%;min-width:0;overflow-x:hidden}
 </head>
 <body>
 
-<div class="announcementModal" id="announcementModal">
+ <div class="announcementModal" id="announcementModal">
   <div class="announcementBox">
     <div class="announcementTitle">!! ANNOUNCEMENT !!</div>
     <div class="announcementText">
@@ -368,7 +368,7 @@ body{width:100%;min-width:0;overflow-x:hidden}
 const ADMIN_USERNAME="gyandeep";
 const ADMIN_PASSWORD="785673";
 
-let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
+ let settings=JSON.parse(localStorage.getItem("tombolaSettings"))||{visibleTickets:15,gameDate:"",gameTime:""};
 if(!Number.isInteger(Number(settings.visibleTickets))||Number(settings.visibleTickets)<1||Number(settings.visibleTickets)>600){settings.visibleTickets=15;}
 let visibleTicketNumbers=JSON.parse(localStorage.getItem("tombolaVisibleTicketNumbers")||"null");
 function getVisibleTicketNumbers(){
@@ -630,7 +630,7 @@ function checkPrizeWinners(){
   let changed=false;
   const newlyWon=[];
 
-  // Early 5 may have multiple winners on the same draw.
+// Early 5 may have multiple winners on the same draw.
   // Full House prizes are processed separately below so one ticket cannot
   // receive Full House, Second Full House and Third Full House together.
   for(const key of selected){
@@ -827,7 +827,7 @@ function searchMyTicket(){
   const customerGroups={};
   const notBooked=[];
 
-  requested.forEach(ticketNo=>{
+   requested.forEach(ticketNo=>{
     const booking=bookings[ticketNo];
     if(!booking||booking.booked!==true){notBooked.push(ticketNo);return;}
 
