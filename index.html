@@ -66,7 +66,7 @@ button,input{font-family:inherit}
 .currentGameStatus{text-align:center;padding:10px;border-radius:8px;background:#07145e;color:white;font-weight:bold;margin-top:10px}
 .gameBoard{display:none;position:relative;background:rgba(255,255,255,.10);border-radius:15px;padding:12px;margin-top:12px;box-shadow:0 2px 10px rgba(0,0,0,.18)}.gameBoard.active{display:block}.boardTitle{text-align:center;font-size:22px;font-weight:bold;color:#ed005f;margin:5px 0 12px}.numberGrid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}.drawNumber{aspect-ratio:1/1;border-radius:8px;border:2px solid #aaa;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:bold}.drawNumber.called{background:#18c957;color:#fff;border-color:#078b35}
 .numberGridWrap{position:relative}.centerNumberPopup{position:absolute;left:50%;top:0;transform:translate(-50%,0) scale(.72);width:82px;height:82px;border-radius:50%;background:#ffe900;color:#111;display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:900;border:4px solid #07145e;box-shadow:0 0 0 3px #e9f900,0 4px 12px rgba(0,0,0,.28);z-index:20;opacity:0;pointer-events:none;transition:top .45s ease,transform .45s ease,opacity .2s ease}
-.centerNumberPopup.show{opacity:1;top:50%;transform:translate(-50%,-50%) scale(1)}.calledListTitle{text-align:center;font-weight:bold;color:#ed005f;margin:12px 0 7px}.calledList{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:4px}.calledChip{background:#000;color:#fff;border:3px solid #e9f900;border-radius:50%;width:44px;height:44px;min-width:44px;padding:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:17px;font-weight:bold;box-shadow:0 2px 5px rgba(0,0,0,.25)}.myTicketBox{margin-top:14px;background:rgba(247,247,247,.14);border-radius:10px;padding:12px;border:2px solid #ddd}.myTicketTitle{text-align:center;font-size:19px;font-weight:bold;color:#ed005f;margin-bottom:8px}.myTicketRow{display:flex;gap:7px}.myTicketInput{flex:1;min-width:0;padding:12px;border:2px solid #aaa;border-radius:8px;font-size:17px}.myTicketBtn{background:#ed005f;color:#fff;border:0;border-radius:8px;padding:12px 15px;font-size:16px;font-weight:bold}.myTicketFound{background:#fff;border:3px solid #ff684e;border-radius:10px;padding:10px;margin:10px 0;text-align:center;font-size:17px;color:#07145e}\n.myTicketResult{margin-top:10px}.myTicketResult .ticket{margin:0}.markedCell{background:#18c957!important;color:#fff!important;border-color:#078b35!important}.noTicket{text-align:center;background:#fff0f0;color:#d00;padding:10px;border-radius:8px;font-weight:bold}.voiceNote{text-align:center;font-size:12px;color:#666;margin-top:8px}
+.centerNumberPopup.show{opacity:1;top:50%;transform:translate(-50%,-50%) scale(1)}.calledListTitle{text-align:center;font-weight:bold;color:#ed005f;margin:12px 0 7px}.calledList{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:4px}.calledChip{background:#000;color:#fff;border:3px solid #e9f900;border-radius:50%;width:44px;height:44px;min-width:44px;padding:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:17px;font-weight:bold;box-shadow:0 2px 5px rgba(0,0,0,.25)}.myTicketBox{margin-top:14px;background:rgba(247,247,247,.14);border-radius:10px;padding:12px;border:2px solid #ddd}.myTicketTitle{text-align:center;font-size:19px;font-weight:bold;color:#ed005f;margin-bottom:8px}.myTicketRow{display:flex;gap:7px}.myTicketInput{flex:1;min-width:0;padding:12px;border:0;border-radius:8px;font-size:17px;text-align:center}.myTicketBtn{background:#ed005f;color:#fff;border:0;border-radius:8px;padding:12px 15px;font-size:16px;font-weight:bold}.myTicketFound{background:#fff;border:3px solid #ff684e;border-radius:10px;padding:10px;margin:10px 0;text-align:center;font-size:17px;color:#07145e}\n.myTicketResult{margin-top:10px}.myTicketResult .ticket{margin:0}.markedCell{background:#18c957!important;color:#fff!important;border-color:#078b35!important}.noTicket{text-align:center;background:#fff0f0;color:#d00;padding:10px;border-radius:8px;font-weight:bold}.voiceNote{text-align:center;font-size:12px;color:#666;margin-top:8px}
 .prizeBoard{margin-top:14px;background:transparent;border:0;border-radius:12px;padding:12px}
 .prizeBoardTitle{text-align:center;color:#ed005f;font-size:20px;font-weight:bold;margin-bottom:10px}
 .playerPrize{background:#ffeb00;border:0;border-radius:9px;padding:9px 10px;margin-bottom:7px;font-weight:bold;text-align:center}
@@ -173,7 +173,7 @@ body{width:100%;min-width:0;overflow-x:hidden}
 </head>
 <body>
 
-<div class="announcementModal" id="announcementModal">
+ <div class="announcementModal" id="announcementModal">
   <div class="announcementBox">
     <div class="announcementTitle">!! ANNOUNCEMENT !!</div>
     <div class="announcementText">
@@ -255,12 +255,12 @@ body{width:100%;min-width:0;overflow-x:hidden}
   <img class="topHeaderImage" src="file_00000000f54c8211a2b4c2732e5533b4.png" alt="WIN TAMBOLA Header">
 </div>
 <div class="headerControls">
-<div class="gameStatus" id="playerGameStatus" style="display:none">🔴 GAME STOPPED</div>
 <div class="gameInfo">
 <div class="gameBox" id="gameDateDisplay">--/--/----</div>
 <div class="gameBox" id="countdown">00:00:00</div>
 <div class="gameBox" id="gameTimeDisplay">--:-- --</div>
 </div>
+<div class="gameStatus" id="playerGameStatus" style="display:block;text-align:center;font-size:clamp(22px,5vw,34px);font-weight:900;letter-spacing:1px;padding:12px 8px;margin:10px 12px 0;width:calc(100% - 24px)">🔴 GAME STOPPED</div>
 <div class="headerActions">
   <button class="headerIconBtn adminBtn" onclick="openAdminLogin()" aria-label="Admin" title="Admin">🔐</button>
   <button class="headerIconBtn whatsappBtn" aria-label="WhatsApp" title="WhatsApp"><svg viewBox="0 0 32 32" width="29" height="29" aria-hidden="true"><path fill="currentColor" d="M16 2.5A13.2 13.2 0 0 0 4.7 22.5L3 29l6.7-1.7A13.3 13.3 0 1 0 16 2.5Zm0 23.8a10.5 10.5 0 0 1-5.3-1.4l-.4-.2-3.9 1 1-3.8-.3-.4A10.5 10.5 0 1 1 16 26.3Zm5.8-7.9c-.3-.2-1.8-.9-2.1-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7.1a8.6 8.6 0 0 1-2.5-1.5 9.4 9.4 0 0 1-1.7-2.1c-.2-.3 0-.5.2-.7l.5-.6.3-.5c.1-.2 0-.4 0-.6l-1-2.3c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4s-1.2 1.2-1.2 2.8 1.2 3.2 1.4 3.4a12.8 12.8 0 0 0 4.9 4.3c.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.6-.1 1.8-.7 2.1-1.4s.3-1.3.2-1.4-.2-.3-.5-.4Z"/></svg></button>
@@ -413,6 +413,7 @@ let prizeWinners=JSON.parse(localStorage.getItem("tombolaPrizeWinners")||"{}");
 let gameRunning=localStorage.getItem("tombolaGameRunning")==="true";
 let drawnNumbers=JSON.parse(localStorage.getItem("tombolaDrawnNumbers")||"[]");
 let drawTimer=null;
+let gameStartCountdownTimer=null;
 let gameOverAnnounced=false;
 const GAME_START_VOICE="Ladies and gentlemen, are you ready? Game start!";
 const GAME_OVER_VOICE="Game over. Congratulations to winners!";
@@ -645,7 +646,7 @@ function checkPrizeWinners(){
   let changed=false;
   const newlyWon=[];
 
-// For every prize, collect ALL booked tickets that qualify on the
+ // For every prize, collect ALL booked tickets that qualify on the
   // same draw, instead of stopping after the first matching ticket.
   for(const key of selected){
     if(getPrizeWinnerList(key).length) continue;
@@ -821,7 +822,7 @@ function searchMyTicket(){
   const customerGroups={};
   const notBooked=[];
 
-requested.forEach(ticketNo=>{
+ requested.forEach(ticketNo=>{
     const booking=bookings[ticketNo];
     if(!booking||booking.booked!==true){notBooked.push(ticketNo);return;}
 
@@ -885,19 +886,73 @@ requested.forEach(ticketNo=>{
 
 function updatePlayerGameStatus(){
 const el=document.getElementById("playerGameStatus");
-el.className="gameStatus "+(gameRunning?"statusRunning":"statusStopped");
-el.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPPED";
+if(el){
+  el.className="gameStatus "+(gameRunning?"statusRunning":"statusStopped");
+  el.style.display="block";
+  if(!gameRunning) el.textContent="🔴 GAME STOPPED";
+}
 const adminEl=document.getElementById("adminGameStatus");
 if(adminEl){adminEl.textContent=gameRunning?"🟢 GAME RUNNING":"🔴 GAME STOPPED";adminEl.style.color=gameRunning?"#39ff70":"#ff5555"}
 }
 
 function setGameStatus(status){
-if(status){cloudController=true;if(gameRunning){alert("Game is already running.");return}gameOverAnnounced=false;clearVoiceQueue();if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}gameRunning=true;localStorage.setItem("tombolaGameRunning","true");updateCountdown();updatePlayerGameStatus();renderNumberBoard();showGameBoard(true);speak(GAME_START_VOICE);clearInterval(drawTimer);drawTimer=setInterval(drawNextNumber,8000);alert("🟢 Game is now RUNNING. Har 8 seconds mein agla number aur aapki recording aayegi.")}else{cloudController=true;gameRunning=false;localStorage.setItem("tombolaGameRunning","false");updateCountdown();clearInterval(drawTimer);drawTimer=null;stopNumberRecording();updatePlayerGameStatus();speak("Game stopped");alert("🔴 Game is now STOPPED.")}}
-
+if(status){
+  cloudController=true;
+  if(gameRunning){alert("Game is already running.");return}
+  gameOverAnnounced=false;
+  clearVoiceQueue();
+  if(drawnNumbers.length>=90){drawnNumbers=[];saveDrawnNumbers();prizeWinners={};savePrizeWinners()}
+  gameRunning=true;
+  localStorage.setItem("tombolaGameRunning","true");
+  updateCountdown();
+  renderNumberBoard();
+  showGameBoard(true);
+  speak(GAME_START_VOICE);
+  clearInterval(drawTimer);drawTimer=null;
+  clearInterval(gameStartCountdownTimer);
+  let secondsLeft=10;
+  const statusEl=document.getElementById("playerGameStatus");
+  if(statusEl){
+    statusEl.style.display="block";
+    statusEl.className="gameStatus statusRunning";
+    statusEl.textContent="⏳ "+secondsLeft;
+  }
+  gameStartCountdownTimer=setInterval(()=>{
+    if(!gameRunning){
+      clearInterval(gameStartCountdownTimer);
+      gameStartCountdownTimer=null;
+      return;
+    }
+    secondsLeft--;
+    if(secondsLeft>0){
+      if(statusEl)statusEl.textContent="⏳ "+secondsLeft;
+      return;
+    }
+    clearInterval(gameStartCountdownTimer);
+    gameStartCountdownTimer=null;
+    if(statusEl)statusEl.textContent="🟢 GAME IS LIVE";
+    drawNextNumber();
+    drawTimer=setInterval(drawNextNumber,8000);
+  },1000);
+  alert("🟢 Game will start in 10 seconds.");
+}else{
+  cloudController=true;
+  gameRunning=false;
+  localStorage.setItem("tombolaGameRunning","false");
+  updateCountdown();
+  clearInterval(gameStartCountdownTimer);gameStartCountdownTimer=null;
+  clearInterval(drawTimer);drawTimer=null;
+  stopNumberRecording();
+  updatePlayerGameStatus();
+  speak("Game stopped");
+  alert("🔴 Game is now STOPPED.");
+}
+}
 function cancelGame(){
 if(!confirm("Are you sure you want to CANCEL this game? Drawn numbers will be cleared, but ticket bookings will remain."))return;
 cloudController=true;
 gameRunning=false;
+clearInterval(gameStartCountdownTimer);gameStartCountdownTimer=null;
 gameOverAnnounced=false;
 clearVoiceQueue();
 stopNumberRecording();
