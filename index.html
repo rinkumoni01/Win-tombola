@@ -69,15 +69,16 @@ button,input{font-family:inherit}
 .centerNumberPopup.show{opacity:1;top:50%;transform:translate(-50%,-50%) scale(1)}.calledListTitle{text-align:center;font-weight:bold;color:#ed005f;margin:12px 0 7px}.calledList{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:4px}.calledChip{background:#000;color:#fff;border:3px solid #e9f900;border-radius:50%;width:44px;height:44px;min-width:44px;padding:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:17px;font-weight:bold;box-shadow:0 2px 5px rgba(0,0,0,.25)}.myTicketBox{margin-top:14px;background:rgba(247,247,247,.14);border-radius:10px;padding:12px;border:2px solid #ddd}.myTicketTitle{text-align:center;font-size:19px;font-weight:bold;color:#ed005f;margin-bottom:8px}.myTicketRow{display:flex;gap:7px}.myTicketInput{flex:1;min-width:0;padding:12px;border:2px solid #aaa;border-radius:8px;font-size:17px}.myTicketBtn{background:#ed005f;color:#fff;border:0;border-radius:8px;padding:12px 15px;font-size:16px;font-weight:bold}.myTicketFound{background:#fff;border:3px solid #ff684e;border-radius:10px;padding:10px;margin:10px 0;text-align:center;font-size:17px;color:#07145e}\n.myTicketResult{margin-top:10px}.myTicketResult .ticket{margin:0}.markedCell{background:#18c957!important;color:#fff!important;border-color:#078b35!important}.noTicket{text-align:center;background:#fff0f0;color:#d00;padding:10px;border-radius:8px;font-weight:bold}.voiceNote{text-align:center;font-size:12px;color:#666;margin-top:8px}
 .prizeBoard{margin-top:14px;background:rgba(255,255,255,.14);border:2px solid #ddd;border-radius:12px;padding:12px}
 .prizeBoardTitle{text-align:center;color:#ed005f;font-size:20px;font-weight:bold;margin-bottom:10px}
-.playerPrize{background:#fff;border:2px solid #ddd;border-radius:9px;padding:9px 10px;margin-bottom:7px;font-weight:bold}
+.playerPrize{background:transparent;border:0;border-radius:9px;padding:9px 10px;margin-bottom:7px;font-weight:bold;text-align:center}
 .playerPrize.on{border-color:#16b84e}
-.playerPrize.done{background:#eaffef;border-color:#16b84e}
-.playerPrize .pStatus{font-size:13px;font-weight:bold;margin-top:4px}
-.playerPrize .winner{color:#07145e;font-size:15px;margin-top:5px}
+.playerPrize.done{background:transparent;border:0}
+.playerPrize .pStatus{font-size:13px;font-weight:bold;margin-top:4px;text-align:center}
+.playerPrize .winner{color:#07145e;font-size:15px;margin-top:5px;text-align:center}
+.adminWinner{text-align:center}
 .winnerViewBtn{margin-top:7px;background:#ed005f;color:#fff;border:0;border-radius:7px;padding:7px 12px;font-size:14px;font-weight:bold;cursor:pointer}.winnerViewBtn:active{transform:scale(.98)}
 .winnerTicketModalBox{max-width:560px}.winnerTicketModalBox h2{margin-bottom:8px}.winnerTicketWrap{background:#f7f7f7;border-radius:10px;padding:10px}.winnerTicketWrap .ticket{margin:0}.winnerTicketWrap .ticketName{color:#111}.winnerTicketPrize{text-align:center;background:#eaffef;border:2px solid #16b84e;border-radius:8px;padding:8px;margin-bottom:10px;font-weight:bold;color:#07145e}
 .gameOverBox{margin-top:12px;background:#07145e;color:#e9f900;border:3px solid #e9f900;border-radius:10px;padding:12px;text-align:center;font-size:22px;font-weight:bold;display:none}
-.adminWinner{background:#eaffef;border:1px solid #16b84e;border-radius:8px;padding:8px;margin-top:7px}
+.adminWinner{background:transparent;border:0;border-radius:8px;padding:8px;margin-top:7px}
 .announcementBox{padding:45px 18px 30px;border-width:4px;border-radius:15px}
 .announcementTitle{margin-bottom:28px}
 .announcementText{font-size:19px;line-height:1.42}
@@ -708,7 +709,7 @@ function renderPlayerPrizes(){
     const winners=getPrizeWinnerList(key);
     const done=winners.length>0;
     const winnerHtml=winners.map(w=>`<div class="winner">TNO: ${w.ticketNo} (${escapeHtml(w.name)})<br><button class="winnerViewBtn" onclick="viewWinnerTicket('${key}',${Number(w.ticketNo)})">👁️ VIEW</button></div>`).join('');
-    return `<div class="playerPrize ${done?"done":"on"}"><div>${PRIZE_NAMES[key]}</div><div class="pStatus">${done?"✅ COMPLETED":""}</div>${winnerHtml}</div>`;
+    return `<div class="playerPrize ${done?"done":"on"}"><div>${PRIZE_NAMES[key]}</div><div class="pStatus">""</div>${winnerHtml}</div>`;
   }).join("");
   const over=document.getElementById("gameOverBox");
   if(over){const done=selected.length>0&&selected.every(k=>getPrizeWinnerList(k).length>0);over.style.display=done?"block":"none";}
