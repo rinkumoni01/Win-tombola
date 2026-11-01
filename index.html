@@ -45,7 +45,6 @@ button,input{font-family:inherit}
 .adminBookingTable{width:100%;border-collapse:collapse;background:#fff;border:2px solid #07145e}
 .adminBookingTable th,.adminBookingTable td{border:2px solid #07145e;padding:10px 8px;text-align:left;font-size:16px;font-weight:bold}
 .adminBookingTable th{background:#f3f3f3;color:#111}
-.bookedShotBtn{width:100%;margin:10px 0;background:#07145e;color:#fff;border:2px solid #e9f900;border-radius:8px;padding:12px;font-size:16px;font-weight:900;cursor:pointer}.bookedShotPanel{display:none;background:#fff;padding:10px;border-radius:10px;margin-top:10px}.bookedShotTitle{text-align:center;font-size:18px;font-weight:900;color:#07145e;margin:4px 0 12px}.bookedShotGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.bookedShotTicket{min-width:0;border:2px solid #ff684e;border-radius:7px;padding:5px;background:#fff;break-inside:avoid}.bookedShotHead{display:flex;gap:5px;align-items:center;margin-bottom:4px}.bookedShotNo{background:#ff6a48;color:#fff;border-radius:5px;padding:4px 7px;font-weight:900;font-size:13px}.bookedShotName{font-size:12px;font-weight:900;overflow-wrap:anywhere}.bookedShotTicket .ticketGrid{border-width:2px;border-radius:4px}.bookedShotTicket .cell{min-height:0;aspect-ratio:1.35/1;font-size:clamp(8px,2.2vw,13px);border-width:1px}.bookedShotClose{width:100%;margin-top:10px;background:#ddd;border:0;border-radius:7px;padding:10px;font-weight:bold;cursor:pointer}@media print{body *{visibility:hidden!important}#bookedTicketScreenshot,#bookedTicketScreenshot *{visibility:visible!important}.bookedShotPanel{display:block!important;position:absolute;left:0;top:0;width:100%;margin:0}.bookedShotGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.bookedShotClose,.bookedShotBtn{display:none!important}}
 .adminBookingTable td:first-child{width:55px;text-align:center}
 .adminBookingTable td:nth-child(3){width:55px;text-align:center}
 .adminBookingTable td:nth-child(4){width:70px;text-align:center}
@@ -152,6 +151,27 @@ body{width:100%;min-width:0;overflow-x:hidden}
  .ticketNo{width:34px;height:34px;font-size:14px}
  .ticketName{font-size:12px;padding:7px 3px}
  .cell{min-height:29px;font-size:12px}
+ .numberGrid{gap:2px}
+ .drawNumber{font-size:10px;padding:0}
+ .modalBox{padding:12px}
+ .certificateBox{border-width:4px;padding:12px}
+}
+@media (max-width:330px){
+ .headerActions{gap:6px}
+ .gameStatus{font-size:12px}
+ .cell{min-height:26px;font-size:11px}
+ .ticketNo{width:30px;height:30px}
+}
+
+/* Header banner first; date/time boxes and action icons sit directly underneath. */
+.header{position:relative !important;top:auto !important;z-index:20;padding:0 !important;margin:0 !important;background:transparent !important;box-shadow:none !important}
+.topHeaderImage{display:block;width:100%;height:auto;max-width:100%;object-fit:contain}
+.headerControls{display:flex;flex-direction:column;align-items:center;width:100%;max-width:900px;margin:0 auto;padding:8px 0 0;position:relative;z-index:10}
+.headerControls .gameInfo{width:100%;max-width:900px;margin:0 auto;padding:0 12px}
+.headerControls .headerActions{width:100%;margin:10px auto 0;padding:0 12px;justify-content:center}
+</style>
+</head>
+<body>
 
 <div class="announcementModal" id="announcementModal">
   <div class="announcementBox">
@@ -345,8 +365,6 @@ body{width:100%;min-width:0;overflow-x:hidden}
 <div class="adminCard">
 <h3>📋 Booked Tickets</h3>
 <div id="adminBookings" class="adminList"></div>
-<button class="bookedShotBtn" onclick="showBookedTicketsScreenshot()">📸 SHOW ALL BOOKED TICKETS (20+)</button>
-<div id="bookedTicketScreenshot" class="bookedShotPanel"></div>
 </div>
 
 <div class="adminCard">
@@ -628,7 +646,7 @@ function checkPrizeWinners(){
   let changed=false;
   const newlyWon=[];
 
-// For every prize, collect ALL booked tickets that qualify on the
+  // For every prize, collect ALL booked tickets that qualify on the
   // same draw, instead of stopping after the first matching ticket.
   for(const key of selected){
     if(getPrizeWinnerList(key).length) continue;
@@ -780,7 +798,7 @@ function searchMyTicket(){
   const result=document.getElementById("myTicketResult");
   if(!input||!result)return;
 
-  const visibleSet=getVisibleTicketNumbers();
+const visibleSet=getVisibleTicketNumbers();
   const raw=String(input.value||"").trim();
 
   if(!raw){
@@ -1024,28 +1042,6 @@ box.appendChild(div);
 }
 }
 
-function showBookedTicketsScreenshot(){
-  const panel=document.getElementById("bookedTicketScreenshot");
-  if(!panel)return;
-  const keys=bookedTickets();
-  if(!keys.length){alert("No booked tickets to show.");return;}
-  let html=`<div class="bookedShotTitle">🎟️ WIN TAMBOLA — BOOKED TICKETS (${keys.length})</div><div class="bookedShotGrid">`;
-  keys.forEach(no=>{
-    const name=escapeHtml(bookings[no].name||"Unknown");
-    const ticket=getTicketData(no);
-    let cells="";
-    for(let r=0;r<3;r++)for(let c=0;c<9;c++){
-      const value=ticket[r][c];
-      cells+=`<div class="cell ${value===""?"empty":""}">${value}</div>`;
-    }
-    html+=`<div class="bookedShotTicket"><div class="bookedShotHead"><span class="bookedShotNo">${no}</span><span class="bookedShotName">${name}</span></div><div class="ticketGrid">${cells}</div></div>`;
-  });
-  html+=`</div><button class="bookedShotClose" onclick="document.getElementById('bookedTicketScreenshot').style.display='none'">CLOSE</button>`;
-  panel.innerHTML=html;
-  panel.style.display="block";
-  panel.scrollIntoView({behavior:"smooth",block:"start"});
-}
-
 function renderAdminBookings(){
 const box=document.getElementById("adminBookings");box.innerHTML="";
 let keys=Object.keys(bookings).map(Number).filter(n=>bookings[n]&&bookings[n].booked).sort((a,b)=>a-b);
@@ -1150,7 +1146,8 @@ function updateCountdown(){
 const el=document.getElementById("countdown");
 if(gameRunning){
   if(gameStartCountdownRemaining!==null){
-    el.textContent="00:00:"+String(Math.max(0,gameStartCountdownRemaining)).padStart(2,"0");
+
+ el.textContent="00:00:"+String(Math.max(0,gameStartCountdownRemaining)).padStart(2,"0");
     el.style.fontSize="clamp(22px,5.5vw,36px)";
   }else{
     el.textContent="GAME IS LIVE";
@@ -1290,8 +1287,7 @@ async function loadCloudState(){
     gameRunning=st.gameRunning===true;
     localStorage.setItem("tombolaGameRunning",String(gameRunning));
     cloudApplying=false;
-
- renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();
+    renderTickets();updateGameDisplay();updateCountdown();updatePlayerGameStatus();renderNumberBoard();renderPlayerPrizes();renderAdminPrizeWinners();
     if(gameRunning)showGameBoard(true);
     else if(drawnNumbers.length===0)showGameBoard(false);
 
